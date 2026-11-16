@@ -40,13 +40,15 @@ from ugv_nav.config import DEFAULT_CONFIG, load_config
 from ugv_nav.edge_client import EdgeClient
 from ugv_nav.fast_planner import RoutePlanner
 from ugv_nav.localization import compute_axis_scale, validate_scale
-from ugv_nav.map_store import (EDIT_DIR, _atomic_save_npy, edited_path, example_points, load_edited, load_env, paint,
-                               revert_to_original, save_edited)
+from ugv_nav.map_store import (CORNER_NAMES, CORNERS, EDIT_DIR, _atomic_save_npy, corner_pose, edited_path,
+                               example_points, inner_box, load_edited, load_env, paint, revert_to_original,
+                               save_edited, validate_field_scale)
 from ugv_nav.mission import MissionConfig, SearchMission
 from ugv_nav.navigator import PLANNED, RUNNING, Navigator, NavigatorConfig
-from ugv_nav.path_processing import path_length, remove_collinear
+from ugv_nav.path_processing import path_length, remove_collinear, validate_path
 from ugv_nav.safety_monitor import SafetyConfig
 from ugv_nav.settings_store import load_settings, save_settings
+from ugv_nav.sim_backend import simulated_room
 from ugv_nav.sim_session import SimulatedUGVSession
 from ugv_nav.smoothing import smooth_route
 
@@ -90,6 +92,15 @@ class ConsoleApp(Views):
         self.cam_samples = []
         self.cal = None                            # active scale-calibration run
         self.pending_pose = None
+        self.dock = None                           # corner start waiting for Confirm pose: dict(corner, pose)
+        self.room_dir = self.edit_dir.parent / 'rooms'     # what the LiDAR learnt about the room (per environment)
+        self.field_scale = {}                      # environment -> (x, y): real field size / size in the data file
+        self.field_samples = []                    # corners measured with the robot (cmd_field_sample)
+        self.field_measured = None                 # real inner size (x, y) from those corners; None = not measured
+        self.lidar_mount, self.lidar_mount_ok = (0.0, 0.0, 0.0), False     # learnt on the REAL robot
+        self._room_saved = None
+        self._room_check = 0.0
+        self._found_seen = 0
         self.current_env = None
         self.map_source, self.map_unsaved, self.edited = 'original', False, False
         self.notice = ''
@@ -195,12 +206,26 @@ class ConsoleApp(Views):
             net, nav = self.edge_cfg.network, self.edge_cfg.navigator
             self.opts.update(host=net.ugv_host, port=int(net.ugv_port),
                              auto_continue=bool(nav.auto_continue_after_replan), smooth_path=bool(nav.smooth_path),
-                             lidar_correction=bool(nav.lidar_correction),
+                             lidar_correction=bool(nav.lidar_correction), auto_find=bool(nav.auto_find),
+                             lidar_sees='room' if nav.lidar_reference == 'room' else 'walls',
                              scale_x=float(nav.localization.scale_x), scale_y=float(nav.localization.scale_y))
             if first_run:                          # start from the robot values in config/navigation.toml
                 fp = self.edge_cfg.planner.footprint
                 self.opts.update(radius=fp.radius_m, margin=float(fp.margin_m), verified=fp.radius_m is not None)
         self.opts.update(O.from_saved(saved))
+        scales = saved.get('field_scale')
+        for env, value in (scales.items() if isinstance(scales, dict) else []):
+            try:
+                if env in O.SCHEMA['env'].choices:
+                    self.field_scale[env] = validate_field_scale(value)
+            except (TypeError, ValueError):
+                pass
+        mount = saved.get('lidar_mount')
+        if (isinstance(mount, list) and len(mount) == 3
+                and all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) for v in mount)
+                and abs(mount[0]) <= 0.3 and abs(mount[1]) <= 0.3):
+            self.lidar_mount = tuple(float(v) for v in mount)
+            self.lidar_mount_ok = saved.get('lidar_mount_ok') is True
         with self._lock:
             self._load_env()
         self._settings_dirty = True
@@ -208,7 +233,9 @@ class ConsoleApp(Views):
     def _save_settings(self):
         self._settings_dirty = False
         try:
-            save_settings(self.settings_path, dict(self.opts))
+            save_settings(self.settings_path, dict(self.opts, field_scale={k: list(v) for k, v in self.field_scale.items()},
+                                                   lidar_mount=list(self.lidar_mount),
+                                                   lidar_mount_ok=bool(self.lidar_mount_ok)))
         except OSError as exc:
             self._say('Could not save settings: %s' % exc, 'warn')
 
@@ -266,8 +293,23 @@ class ConsoleApp(Views):
         if 'lidar_correction' in keys:
             if self.nav:
                 self.nav.cfg.lidar_correction = o['lidar_correction']
-            message = ('Continuous LiDAR position correction ON (beta): small corrections about once a second.'
-                       if o['lidar_correction'] else 'Continuous LiDAR position correction OFF.')
+            message = ('Live LiDAR tracking ON: the position follows what the LiDAR sees.'
+                       if o['lidar_correction'] else 'Live LiDAR tracking OFF: the position comes from odometry only.')
+        if 'auto_find' in keys and self.nav:
+            self.nav.cfg.auto_find = o['auto_find']
+        if 'lidar_sees' in keys and o['lidar_sees'] != before['lidar_sees']:
+            was = self.nav is not None
+            self._disconnect()
+            self._bump('map', 'plan')
+            message = ('The LiDAR looks over the arena walls: it sees the room, and the console follows the robot in '
+                       'that room.' if o['lidar_sees'] == 'room' else
+                       'The LiDAR sees the arena walls: the scan is compared with the map.')
+            message += ' Connect again.' if was else ''
+        if 'corner_gap_cm' in keys and self.dock:
+            self._corner_start(self.dock['corner'], turn=False)
+            message = self.notice
+        if 'heading' in keys:
+            self.dock = None
         if 'robot_speed' in keys:
             message = self._apply_speed()
         if keys & set(O.MISSION_KEYS) and self.mission is not None:
@@ -350,18 +392,24 @@ class ConsoleApp(Views):
             return self._ok('%s loaded (%s map).%s' % (env, 'your saved edited' if self.map_source == 'saved'
                                                       else 'original', note))
 
+    def _scale(self, env=None):
+        return tuple(self.field_scale.get(env or self.opts['env'], (1.0, 1.0)))
+
     def _load_env(self):
         env = self.opts['env']
-        grid, gt = load_env(env)
+        scale = self._scale(env)
+        grid, gt = load_env(env, scale)
         self.grid, self.gt = grid, gt
         self.edited = False
-        self.start_point = example_points(env)[0]
+        self.start_point = grid.cell_to_world(grid.world_to_cell(example_points(env, scale)[0]))
         self.goal_point = None                     # the operator chooses the goal: never preset
         self.pending_pose = None
+        self.dock = None
+        self.field_samples, self.field_measured = [], None
         self.sim.set_route([])
         self.map_unsaved, self.map_source = False, 'original'
         try:
-            saved = load_edited(env, self.edit_dir)
+            saved = load_edited(env, self.edit_dir, scale)
         except (ValueError, OSError) as exc:
             saved = None
             self._say('Saved map for %s could not be loaded (%s); using the original.' % (env, exc), 'warn')
@@ -425,7 +473,7 @@ class ConsoleApp(Views):
     def cmd_save_map(self, args):
         with self._lock:
             try:
-                path = save_edited(self.opts['env'], self.grid, self.edit_dir)
+                path = save_edited(self.opts['env'], self.grid, self.edit_dir, self._scale())
             except (OSError, ValueError) as exc:
                 return self._fail('Save failed: %s' % exc, 'error')
             self.map_source, self.map_unsaved = 'saved', False
@@ -588,16 +636,21 @@ class ConsoleApp(Views):
             o = self.opts
             try:
                 base = self.edge_cfg.navigator if self.edge_cfg else NavigatorConfig()
+                room_mode = o['lidar_sees'] == 'room'
                 nav_cfg = dataclasses.replace(base, safety=self._safety_config(),
                                               auto_continue_after_replan=o['auto_continue'],
                                               allow_tight_radius=o['allow_tight'], smooth_path=o['smooth_path'],
-                                              lidar_correction=o['lidar_correction'])
+                                              lidar_correction=o['lidar_correction'], auto_find=o['auto_find'],
+                                              lidar_reference='room' if room_mode else 'map')
                 planner_cfg = self.planner_config()
                 if o['mode'] == SIM:
                     start = self.pending_pose or self.start_point
                     half_l, half_w = nav_cfg.safety.half_length_m, nav_cfg.safety.half_width_m
+                    sim = dict(odom_scale_error=0.02)
+                    if room_mode:                  # like the MentorPi: the LiDAR looks over the arena into the room
+                        sim.update(lidar_world=simulated_room(self.gt), scan_noise_m=0.008)
                     self.session = SimulatedUGVSession(self.gt, (start[0], start[1], math.radians(o['heading'])),
-                                                       half_l, half_w, sim_kwargs=dict(odom_scale_error=0.02))
+                                                       half_l, half_w, sim_kwargs=sim)
                     self.client = self.session.client
                 else:
                     if self.edge_cfg is None:
@@ -619,6 +672,14 @@ class ConsoleApp(Views):
                 self.nav.mission = self.mission
                 self.nav.set_scale(validate_scale(o['scale_x'], 'X scale'), validate_scale(o['scale_y'], 'Y scale'))
                 self._apply_speed()
+                room_note = ''
+                if room_mode:
+                    if self.session is not None:  # the simulated LiDAR sits exactly in the centre: nothing to learn
+                        self.nav.set_lidar_mount((0.0, 0.0, 0.0), True)
+                    else:
+                        self.nav.set_lidar_mount(self.lidar_mount, self.lidar_mount_ok)
+                    room_note = self._load_room()
+                self._room_saved, self._found_seen = None, 0
                 self.nav.run_in_background()
                 if o['camera_on']:
                     self._camera_timer = threading.Timer(0.8, self._camera_autostart)
@@ -626,8 +687,9 @@ class ConsoleApp(Views):
                     self._camera_timer.start()
                 self._settings_dirty = True
                 self._bump('map', 'plan', 'settings')
-                return self._ok('Connecting... The UGV is DISARMED. Place the robot, set Start + heading and '
-                                'press Confirm pose.')
+                return self._ok('Connecting... The UGV is DISARMED. %s'
+                                % (room_note or 'Place the robot (Corner start, or Start + heading) and press '
+                                   'Confirm pose.'))
             except Exception as exc:
                 self._disconnect()
                 return self._fail('Connection failed: %s' % exc, 'error')
@@ -648,6 +710,7 @@ class ConsoleApp(Views):
             self.mission.stop()                   # survivor list stays visible until the next Connect
         if self.nav:
             self._collect_nav_log()
+            self._room_housekeeping(force=True)
             self.nav.emergency_stop('Disconnecting')
             self.nav.shutdown()
         if self.session:
@@ -658,6 +721,7 @@ class ConsoleApp(Views):
         self.cal = None
         self._auth = None
         self.sim_blocks = None
+        self.field_samples, self.field_measured = [], None
 
     def close(self):
         """Program exit: stop everything, keep unsaved map edits as a backup file, save settings."""
@@ -704,6 +768,7 @@ class ConsoleApp(Views):
                 self.opts['heading'] = round(heading, 1)
                 self._bump('settings')
                 self._settings_dirty = True
+            self.dock = None
             self._bump('plan')
             if not self.nav_active():
                 self.start_point = self.grid.cell_to_world(self.grid.world_to_cell((x, y)))
@@ -757,6 +822,7 @@ class ConsoleApp(Views):
                 return result(True, self.notice)
             current = self.pending_pose or self.start_point
             if current is None or math.dist((sx, sy), current) > 1e-6:
+                self.dock = None
                 self.pending_pose = self.start_point = (sx, sy)
                 if self.nav:
                     return self._ok('Start set to (%.3f, %.3f). Press Confirm pose, then Plan again to plan to the '
@@ -770,17 +836,291 @@ class ConsoleApp(Views):
             try:
                 xy = self.pending_pose or self.start_point
                 pose = (xy[0], xy[1], math.radians(float(self.opts['heading'])))
+                docked = bool(self.dock and math.dist(self.dock['pose'][:2], xy) < 1e-6
+                              and abs(self.dock['pose'][2] - float(self.opts['heading'])) < 1e-6)
                 if self.session:                  # simulator: physically place the simulated robot there
                     if self.nav.state == RUNNING:
                         return self._fail('Stop the robot first.')
                     self.session.backend.place(pose)
                     time.sleep(0.15)
                 self.nav.set_planner_config(self.planner_config())
-                self.nav.set_initial_pose(pose)
+                self.nav.set_initial_pose(pose, source='dock' if docked else 'manual')
                 self._bump('plan')
                 return self._ok(self.nav.message, 'success')
             except ValueError as exc:
                 return self._fail('Robot pose rejected: %s' % exc)
+
+    # ------------------------------------------------------------------ where is the robot? (no pin by eye)
+    def _corner_start(self, corner, turn=True):
+        half_l, half_w = self.robot_half_size()
+        heading = float(self.opts['heading'])
+        if turn and self.dock and self.dock['corner'] == corner:
+            heading += 90.0                        # same corner again: the robot faces the next way
+        gap = float(self.opts['corner_gap_cm']) / 100.0
+        x, y, heading = corner_pose(self.grid, corner, heading, half_l, half_w, gap)
+        heading = heading if heading <= 180 else heading - 360
+        if not self.grid.contains(self.grid.world_to_cell((x, y))):
+            raise ValueError('That corner is outside the map.')
+        self.pending_pose = self.start_point = (round(x, 4), round(y, 4))
+        self.opts['heading'] = heading
+        self.dock = dict(corner=corner, pose=(self.pending_pose[0], self.pending_pose[1], heading))
+        self._bump('plan', 'settings')
+        self._settings_dirty = True
+        facing = {0: 'right (+x)', 90: 'up (+y)', 180: 'left (-x)', -90: 'down (-y)'}[int(heading)]
+        try:
+            ok, _ = validate_path([self.pending_pose], self.grid, self.planner_config().planning_radius)
+        except ValueError:
+            ok = True
+        text = ('Corner start: stand the robot square in the %s corner, %.0f cm from both walls%s, facing %s. Then '
+                'press Confirm pose. Click the same corner again to turn it.'
+                % (CORNER_NAMES[corner], gap * 100, ' (one block length)' if abs(gap - 0.10) < 1e-6 else '', facing))
+        if not ok:
+            text += (' NOTE: on the map this spot is too close to a wall or obstacle for A* to start from: use a '
+                     'larger distance or another corner.')
+        self._say(text, 'info' if ok else 'warn')
+        return ok, text
+
+    def cmd_corner_start(self, args):
+        """Start pose from a corner of the arena: a physical reference instead of a pin placed by eye."""
+        corner = arg_choice(args, 'corner', CORNERS)
+        with self._lock:
+            if not self.nav_active():
+                return self._fail('Corner start is for Simulator and Robot mode.')
+            ok, text = self._corner_start(corner)
+            return result(True, text, 'info' if ok else 'warn')
+
+    def cmd_find_robot(self, args):
+        """Ask the LiDAR where the robot is (no pin). ``choose``: pick one of the places offered before."""
+        nav = self.nav
+        if not nav:
+            return self._fail('Connect first.')
+        choose = args.get('choose')
+        if choose is not None:
+            choose = int(arg_number(args, 'choose', 0, 8))
+        deadline = time.monotonic() + 2.5
+        while nav.state != RUNNING and not nav.robot_still() and time.monotonic() < deadline:
+            time.sleep(0.1)
+        ok, message = nav.find_robot(choose)
+        with self._lock:
+            if self.nav is not nav:
+                return self._fail('Not connected any more.')
+            self._bump('plan')
+            if ok:
+                self._follow_found()
+                return self._ok(message, 'success')
+            found = nav.found
+            if found:
+                return result(False, message, 'warn', candidates=[
+                    dict(x=round(c['pose'][0], 3), y=round(c['pose'][1], 3),
+                         heading=round(math.degrees(c['pose'][2]), 1), fit=round(c['matched'], 2))
+                    for c in found['candidates']])
+            return self._fail(message)
+
+    def _follow_found(self):
+        """The navigator placed the robot by LiDAR: show the Start marker there too."""
+        pose = self.nav.estimator.pose() if self.nav else None
+        if pose is None:
+            return
+        self.dock = None
+        self.pending_pose = self.start_point = (round(pose[0], 3), round(pose[1], 3))
+        self.opts['heading'] = round(math.degrees(pose[2]), 1)
+        self._bump('plan', 'settings')
+
+    def cmd_nudge_pose(self, args):
+        """Move the confirmed position a little by hand: dx / dy in cm (map axes), turn in degrees."""
+        dx, dy = arg_number(args, 'dx', -50, 50, 0.0), arg_number(args, 'dy', -50, 50, 0.0)
+        turn = arg_number(args, 'turn', -180, 180, 0.0)
+        with self._lock:
+            nav = self.nav
+            if not nav:
+                return self._fail('Connect first.')
+            pose = nav.estimator.pose()
+            if pose is None:
+                return self._fail('Set the robot pose first (Corner start or Start, then Confirm pose).')
+            if nav.state == RUNNING:
+                return self._fail('Stop the robot first.')
+            new = (pose[0] + dx / 100.0, pose[1] + dy / 100.0, pose[2] + math.radians(turn))
+            try:
+                nav.adjust_pose(new)
+            except ValueError as exc:
+                return self._fail('Not moved: %s' % exc)
+            self._found_seen = nav.found_seq
+            self._follow_found()
+            return self._ok(nav.message)
+
+    def cmd_forget_room(self, args):
+        """Throw away what the LiDAR learnt about the room (and, on request, about its own mounting)."""
+        with self._lock:
+            path = self._room_path()
+            had = path.exists()
+            if had:
+                path.unlink()
+            if arg_bool(args, 'mount') and self.session is None:
+                self.lidar_mount, self.lidar_mount_ok = (0.0, 0.0, 0.0), False
+                self._settings_dirty = True
+            nav = self.nav
+            if nav is not None and nav.cfg.lidar_reference == 'room':
+                if nav.state == RUNNING:
+                    return self._fail('Stop the robot first.')
+                if self.session is None:
+                    nav.set_lidar_mount(self.lidar_mount, self.lidar_mount_ok)
+                else:
+                    nav.set_lidar_mount((0.0, 0.0, 0.0), True)
+                pose = nav.estimator.pose()
+                if pose is not None:
+                    nav._room().restart(pose, trusted=False)
+            self._room_saved = None
+            self._bump('settings')
+            return self._ok('Room outline forgotten%s. It is drawn again from the next Confirm pose.'
+                            % (' (saved file removed)' if had else ''))
+
+    def _room_path(self):
+        return self.room_dir / ('%s_room%s.npz' % (self.opts['env'], '_sim' if self.session is not None else ''))
+
+    def _load_room(self):
+        path = self._room_path()
+        if not path.is_file():
+            return ''
+        try:
+            text = self.nav.load_room(path.read_bytes())
+        except (OSError, ValueError) as exc:
+            self._say('The saved room outline is not used: %s.' % exc, 'warn')
+            return ''
+        return ('Known %s: the robot is found by itself in a moment (or press Find robot).' % text
+                if self.opts['auto_find'] else 'Known %s: press Find robot.' % text)
+
+    def _room_housekeeping(self, force=False):
+        """Remember what the robot taught us: the LiDAR mounting (real robot) and the room outline."""
+        nav = self.nav
+        if nav is None or nav.cfg.lidar_reference != 'room' or nav.room is None:
+            return
+        room = nav.room
+        if self.session is None:
+            mount = tuple(round(float(v), 5) for v in nav.safety.lidar_mount)
+            moved = mount != tuple(round(float(v), 5) for v in self.lidar_mount)
+            if moved or bool(room.calibrated) != self.lidar_mount_ok:
+                self.lidar_mount, self.lidar_mount_ok = mount, bool(room.calibrated)
+                self._settings_dirty = True
+                self._bump('settings')
+                if moved and self._room_path().exists():           # drawn with the old mounting: useless now
+                    self._room_path().unlink()
+        key = (id(room.map), room.map.rev)
+        now = time.monotonic()
+        if key == self._room_saved or (not force and now - self._room_check < 10.0):
+            return
+        self._room_check = now
+        data = nav.room_file()
+        if data is None:
+            return
+        try:
+            self.room_dir.mkdir(parents=True, exist_ok=True)
+            path = self._room_path()
+            tmp = path.with_suffix('.tmp')
+            tmp.write_bytes(data)
+            tmp.replace(path)
+            self._room_saved = key
+        except OSError as exc:
+            self._say('Could not save the room outline: %s' % exc, 'warn')
+
+    # ------------------------------------------------------------------ real size of the field
+    def _map_inner(self, env=None):
+        """Inner size (x, y) of the field as the DATA FILE draws it, in metres at 3 cm per cell."""
+        base, _ = load_env(env or self.opts['env'])
+        x0, x1, y0, y1 = inner_box(base)
+        return x1 - x0, y1 - y0
+
+    def _set_field_scale(self, scale, why):
+        env = self.opts['env']
+        if self.map_unsaved:
+            raise ValueError('Save or discard the unsaved map edits first.')
+        if self.is_moving():
+            raise ValueError('Stop the robot first.')
+        scale = validate_field_scale(scale)
+        if all(abs(v - 1.0) < 1e-9 for v in scale):
+            self.field_scale.pop(env, None)
+        else:
+            self.field_scale[env] = scale
+        self._settings_dirty = True
+        note = ''
+        if self.session is not None:               # the simulated world has the old size: build it again
+            self._disconnect()
+            note = ' Simulator stopped: press Start simulator again.'
+        self._load_env()
+        if self.nav:
+            self.nav.forget_pose('The field size changed')
+            self._room_saved = None
+            note = ' Place the robot and confirm its pose again.'
+        w, h = self._map_inner()
+        self._bump('map', 'plan', 'settings')
+        return self._ok('%s: the field of %s is now %.2f x %.2f m inside the walls (the data file alone says '
+                        '%.2f x %.2f m).%s' % (why, env, w * scale[0], h * scale[1], w, h, note), 'success')
+
+    def cmd_field_apply(self, args):
+        """Real inner size of the field (wall to wall, metres): the map is stretched to it."""
+        x, y = arg_number(args, 'x', 0.5, 10.0), arg_number(args, 'y', 0.5, 10.0)
+        with self._lock:
+            w, h = self._map_inner()
+            return self._set_field_scale((x / w, y / h), 'Field size applied')
+
+    def cmd_field_reset(self, args):
+        with self._lock:
+            return self._set_field_scale((1.0, 1.0), 'Field size reset')
+
+    def cmd_field_sample(self, args):
+        """Measure the field with the robot: stand it in a corner exactly like for a corner start (the same
+        distance from both walls) and call this with that corner. Two corners give the real distance between
+        the walls, taken from the LiDAR's view of the room (not from the wheels)."""
+        corner = arg_choice(args, 'corner', CORNERS)
+        with self._lock:
+            nav = self.nav
+            if not nav or nav.cfg.lidar_reference != 'room' or nav.room is None:
+                return self._fail('Measuring with the robot needs live LiDAR tracking of the room (Robot tab). '
+                                  'Without it, measure the inner width and depth with a tape and type them in.')
+            if nav.state == RUNNING or not nav.robot_still():
+                return self._fail('The robot must stand still.')
+            room = nav.room
+            pose = nav.estimator.pose()
+            if pose is None or room.state != 'locked' or not room.calibrated:
+                return self._fail('The LiDAR is not sure where the robot is right now: %s. Wait a moment after '
+                                  'putting it down. Measuring works once the robot has driven through the arena '
+                                  '(then the LiDAR has drawn the whole room).' %
+                                  ('it is still learning how the LiDAR is mounted' if not room.calibrated
+                                   else room.reason or room.state))
+            half_l, half_w = self.robot_half_size()
+            heading = (int(round(math.degrees(pose[2]) / 90.0)) % 4) * 90
+            if abs(((math.degrees(pose[2]) - heading + 180) % 360) - 180) > 12:
+                return self._fail('Stand the robot square to the walls (it is turned %.0f deg).'
+                                  % (((math.degrees(pose[2]) - heading + 180) % 360) - 180))
+            gap = float(self.opts['corner_gap_cm']) / 100.0
+            ex, ey = (half_l, half_w) if heading in (0, 180) else (half_w, half_l)
+            ex, ey = ex + gap, ey + gap             # robot centre to the wall = half the body + the spacer
+            expect = corner_pose(self.grid, corner, heading, half_l, half_w, gap)
+            if math.dist(expect[:2], pose[:2]) > 0.45:
+                return self._fail('The robot does not seem to be in the %s corner (the LiDAR puts it %.0f cm away). '
+                                  'Stand it there like for a corner start, wait until the console shows it there, '
+                                  'then try again.' % (CORNER_NAMES[corner], 100 * math.dist(expect[:2], pose[:2])))
+            self.field_samples = [s_ for s_ in self.field_samples if s_['corner'] != corner]
+            self.field_samples.append(dict(corner=corner, x=pose[0], y=pose[1], ex=ex, ey=ey))
+            xs = {s_['corner'][1]: s_ for s_ in self.field_samples}
+            ys = {s_['corner'][0]: s_ for s_ in self.field_samples}
+            width = (xs['r']['x'] + xs['r']['ex']) - (xs['l']['x'] - xs['l']['ex']) if len(xs) == 2 else None
+            depth = (ys['t']['y'] + ys['t']['ey']) - (ys['b']['y'] - ys['b']['ey']) if len(ys) == 2 else None
+            self.field_measured = (width, depth)
+            self._bump('settings')
+            if width is None and depth is None:
+                return self._ok('%s corner measured. Now carry the robot to another corner, stand it there the '
+                                'same way (%.0f cm from both walls), wait until the console shows it there, and '
+                                'press that corner.' % (CORNER_NAMES[corner].capitalize(), gap * 100))
+            parts = [('width (X) %.2f m' % width) if width is not None else '',
+                     ('depth (Y) %.2f m' % depth) if depth is not None else '']
+            return self._ok('Measured with the robot: %s. Press Apply to use it for the map.'
+                            % ' and '.join(p for p in parts if p), 'success')
+
+    def cmd_field_clear(self, args):
+        with self._lock:
+            self.field_samples, self.field_measured = [], None
+            self._bump('settings')
+            return result(True)
 
     def cmd_sync_pose_sim(self, args):
         """Simulator only: re-localize to the simulated robot's true pose (like a perfect re-measure)."""
@@ -1199,6 +1539,16 @@ class ConsoleApp(Views):
     def tick_once(self, dt=0.04):
         self._offline_step(dt)
         self._collect_nav_log()
+        nav = self.nav
+        if nav is not None and nav.cfg.lidar_reference == 'room':
+            if self._lock.acquire(blocking=False):
+                try:
+                    self._room_housekeeping()
+                    if nav.found_seq != self._found_seen:       # found by itself: move the Start marker along
+                        self._found_seen = nav.found_seq
+                        self._follow_found()
+                finally:
+                    self._lock.release()
 
     def _tick_loop(self):
         last = time.monotonic()

@@ -39,12 +39,19 @@ from .fast_planner import RoutePlanner
 from .localization import LocalizationConfig, PoseEstimator, wrap
 from .map_update import mark_scan_obstacles
 from .path_processing import path_length, remove_collinear, shortcut, validate_path
+from .room_map import RoomMap, RoomTracker
 from .safety_monitor import SafetyConfig, SafetyMonitor, remaining_path_clear
 from ugv_bridge.safety import stopping_distance
 from .scan_match import ScanMatcher
 from .smoothing import smooth_route
 
 IDLE, PLANNED, RUNNING, ARRIVED, STOPPED = 'IDLE', 'PLANNED', 'RUNNING', 'ARRIVED', 'STOPPED'
+
+# When may the robot be placed by the LiDAR search WITHOUT asking the operator? Only with a strong fit on
+# surroundings that were mostly seen before and no second place that fits nearly as well. Measured in the
+# simulated room: with these limits no wrong place was accepted (220 of 220 right in a fully drawn room; in
+# a half-drawn room the doubtful ones are shown to the operator instead).
+SURE = dict(min_score=0.80, min_known=0.60, margin=0.08)
 
 
 @dataclass
@@ -53,8 +60,11 @@ class NavigatorConfig:
     command_ttl_s: float = 0.3
     use_shortcut: bool = False
     smooth_path: bool = True              # straighten the grid zig-zag (never worse for the planner's objective)
-    lidar_correction: bool = False        # BETA: keep correcting the pose by matching the LiDAR scan to the map
+    lidar_correction: bool = False        # keep correcting the pose from the LiDAR (see lidar_reference)
     lidar_correction_period_s: float = 1.0
+    lidar_reference: str = 'map'          # what the LiDAR can see: 'map' = the arena walls of the operator map,
+                                          # 'room' = only things taller than the arena (ugv_nav.room_map)
+    auto_find: bool = True                # room: find the robot by itself when no pose is set / it was carried
     planner_engine: str = 'fast'          # 'fast' = same A* results, cached + ~50x quicker; 'original' = ugv_planner
     replan_on_obstacle: bool = True       # update edge map + replan on the edge when an unmapped obstacle blocks
     auto_continue_after_replan: bool = False  # drive the new route without waiting for the operator
@@ -125,6 +135,15 @@ class Navigator:
         self.lidar_fix = None             # last automatic LiDAR correction attempt (diagnostics)
         self._match_quality = None
         self._loop = dict(last=None, periods=[], durations=[])   # control-loop timing (diagnostics)
+        self.room = None                  # RoomTracker (lidar_reference == 'room')
+        self.lidar_mount_ok = False       # the LiDAR mounting was verified by the robot's own motion
+        self.found = None                 # last "find robot" result that needs the operator: dict(reason, candidates)
+        self.found_seq = 0                # counts poses adopted from the LiDAR search (displays follow them)
+        self._search = None               # background search for the robot: dict(thread, result, gen)
+        self._next_search = 0.0
+        self._search_misses = 0           # automatic searches in a row that found nothing (they get rarer)
+        self._pose_gen = 0                # changes whenever the pose is set / the room drawing is replaced
+        self._spots = None                # (base grid, places the robot can stand)
 
     # ------------------------------------------------------------ helpers
     def _note(self, text):
@@ -201,6 +220,9 @@ class Navigator:
                 self.lidar_mask = np.zeros(grid.shape, bool)
             if self.vision_mask.shape != grid.shape:
                 self.vision_mask = np.zeros(grid.shape, bool); self.vision_obstacles = []
+            if self.room is not None and tuple(self.room.extent) != tuple(grid.extent):
+                self.room = None                    # another arena size: the room drawing no longer fits
+                self._pose_gen += 1
             self._compose()
             self.path, self.plan_result = [], None
             if self.state == PLANNED:
@@ -349,8 +371,10 @@ class Navigator:
             self.estimator.set_scale(scale_x, scale_y)
             self._note('Scale calibration applied: X %.3f, Y %.3f.' % (scale_x, scale_y))
 
-    def set_initial_pose(self, map_pose):
-        """Calibration: the robot is physically at ``map_pose`` (x, y, yaw) right now."""
+    def set_initial_pose(self, map_pose, source='manual'):
+        """Calibration: the robot is physically at ``map_pose`` (x, y, yaw) right now. ``source``: 'manual'
+        (pin / typed), 'dock' (a corner start: a physical reference, so the room drawing made from it is
+        worth keeping)."""
         with self._lock:
             self._cancel_auto()
             if self.state == RUNNING:
@@ -366,9 +390,32 @@ class Navigator:
             self.estimator.calibrate(map_pose)
             self.trajectory = []
             self.path, self.plan_result = [], None
+            self.found = None
+            self._pose_gen += 1
+            self._search_misses = 0
             if self.state in (PLANNED, ARRIVED):
                 self.state = IDLE
+            if self.cfg.lidar_reference == 'room':
+                self._room().restart(tuple(map_pose), trusted=(source == 'dock'))
+                self._room_step(self.client.snapshot(), self.clock())     # start drawing the room right away
             self._note('Initial pose set to (%.3f, %.3f, %.1f°).' % (x, y, math.degrees(map_pose[2])))
+
+    def forget_pose(self, why='The map changed'):
+        """The confirmed pose is no longer valid (e.g. the map was rescaled): the operator must set it again."""
+        with self._lock:
+            self._cancel_auto()
+            if self.state == RUNNING:
+                self._halt(STOPPED, '%s while running: stopped.' % why, 'operator')
+            est = self.estimator
+            est.map_T_odom = est.anchor = est.imu_offset = None
+            est.distance = est.rotation = 0.0
+            self._pose_gen += 1
+            self.trajectory, self.path, self.plan_result, self.goal, self.found = [], [], None, None, None
+            if self.state in (PLANNED, ARRIVED):
+                self.state = IDLE
+            if self.room is not None:
+                self.room.pose = None
+            self._note('%s: place the robot and confirm its pose again.' % why)
 
     def set_goal(self, goal_xy):
         """Plan with the existing A* from the current localized pose. Does not move the robot."""
@@ -578,25 +625,46 @@ class Navigator:
             self._scan_matcher = (self.base_grid, ScanMatcher(self.base_grid, self.planner.cache))
         return self._scan_matcher[1]
 
+    def _room(self):
+        if self.room is None:
+            self.room = RoomTracker(self.base_grid.extent, mount=self.safety.lidar_mount,
+                                    calibrated=self.lidar_mount_ok)
+        return self.room
+
+    def set_lidar_mount(self, mount, verified):
+        """Extra LiDAR mounting (x, y, yaw) on top of the robot's own setting, e.g. remembered from last time."""
+        with self._lock:
+            self.safety.lidar_mount = tuple(float(v) for v in mount)
+            self.lidar_mount_ok = bool(verified)
+            self.room = None
+            self._pose_gen += 1
+
+    def _reference(self):
+        """(matcher, room tracker or None) for what the LiDAR can see; matcher None = nothing to compare with."""
+        if self.cfg.lidar_reference == 'room':
+            room = self._room()
+            return (None if room.map.empty else room.map.matcher()), room
+        return self._matcher(), None
+
     def map_match(self):
-        """How well the LiDAR scan fits the map at the estimated pose: dict(matched 0..1, score, points) or
-        None (no pose / no scan). Display only; never waits for the control thread."""
+        """How well the LiDAR scan fits the reference (arena map or room drawing) at the estimated pose:
+        dict(matched 0..1, score, points) or None. Display only; never waits for the control thread."""
         if not self._lock.acquire(blocking=False):
             return self._match_quality
         try:
             pose = self.estimator.pose()
             tel = self.client.snapshot()['telemetry'] or {}
-            scan = tel.get('scan')
-            if pose is None or not scan:
+            matcher, _ = self._reference()
+            if pose is None or not tel.get('scan') or matcher is None:
                 self._match_quality = None
             else:
-                self._match_quality = self._matcher().evaluate(pose, scan.get('points'))
+                self._match_quality = matcher.evaluate(pose, self.safety.lidar_points(tel))
             return self._match_quality
         finally:
             self._lock.release()
 
     def relocalize_with_lidar(self, window_xy=0.30, window_yaw=math.radians(20.0)):
-        """Operator action: correct the pose by fitting the LiDAR scan to the map. Returns (ok, message).
+        """Operator action: correct the pose by fitting the LiDAR scan to the reference. Returns (ok, message).
         Only when the robot stands still; refused when the fit is poor or ambiguous."""
         with self._lock:
             if self.state == RUNNING:
@@ -613,20 +681,28 @@ class Navigator:
                 return False, 'No fresh LiDAR scan.'
             if not self.robot_still(snap):
                 return False, 'Wait until the robot stands still.'
-            result = self._matcher().match(pose, scan.get('points'), window_xy, window_yaw)
+            matcher, room = self._reference()
+            if matcher is None:
+                return False, 'The LiDAR has not drawn the room yet: stand still for a moment after Confirm pose.'
+            result = matcher.match(pose, self.safety.lidar_points(tel), window_xy, window_yaw, precise=True)
             if not result.ok:
                 return False, 'LiDAR re-localization not possible: %s.' % result.reason
             self._cancel_auto()
             self.estimator.correct(result.pose)
+            if room is not None:
+                room.adopt(result.pose)
             self._note('Pose corrected with LiDAR: moved %.1f cm, turned %.1f deg; %.0f %% of the scan now lies on '
-                       'mapped walls.' % (result.shift_m * 100, math.degrees(result.turn_rad), result.matched * 100))
+                       '%s.' % (result.shift_m * 100, math.degrees(result.turn_rad), result.matched * 100,
+                                'the room outline' if room is not None else 'mapped walls'))
             message = self.message
             if self.goal is not None and self.state in (PLANNED, IDLE, STOPPED) and not self.safety.estop:
                 self._plan()
             return True, message
 
     def _lidar_correct(self, snap, now):
-        """BETA (off by default): small automatic pose corrections from the LiDAR, about once a second."""
+        """Keep the pose in step with what the LiDAR sees (arena walls, or the room when it looks over them)."""
+        if self.cfg.lidar_reference == 'room':
+            return self._room_step(snap, now)
         if not self.cfg.lidar_correction or now < self._next_lidar_fix:
             return
         self._next_lidar_fix = now + self.cfg.lidar_correction_period_s
@@ -637,7 +713,8 @@ class Navigator:
                 or abs(odom.get('wz', 0.0)) > 0.3:
             return
         pose = est.pose()
-        result = self._matcher().match(pose, scan.get('points'), window_xy=0.09, window_yaw=math.radians(6.0))
+        result = self._matcher().match(pose, self.safety.lidar_points(tel), window_xy=0.09,
+                                       window_yaw=math.radians(6.0))
         self.lidar_fix = dict(ok=result.ok, reason=result.reason, matched=round(result.matched, 2),
                               shift_cm=round(result.shift_m * 100, 1), turn_deg=round(math.degrees(result.turn_rad), 1))
         if not result.ok:
@@ -647,6 +724,211 @@ class Navigator:
             target = (pose[0] + 0.5 * (target[0] - pose[0]), pose[1] + 0.5 * (target[1] - pose[1]),
                       wrap(pose[2] + 0.5 * wrap(target[2] - pose[2])))
         est.correct(target)
+
+    # ------------------------------------------------------------ LiDAR looks over the arena: the room
+    def _room_step(self, snap, now):
+        self._collect_search()
+        if not self.cfg.lidar_correction:
+            return
+        room, est = self._room(), self.estimator
+        tel = snap['telemetry'] or {}
+        scan, odom = tel.get('scan'), tel.get('odom') or {}
+        if est.fault or est.odom is None or not scan:
+            return
+        still = self.robot_still(snap)
+        if est.map_T_odom is None:              # nobody said where the robot is: look for it in a known room
+            if self.cfg.auto_find and not room.map.empty and still and self.state != RUNNING:
+                self._start_search(self.safety.lidar_points(tel), now)
+            return
+        age = max(0.0, min(0.5, float(scan.get('age', 0.0)) - float(odom.get('age', 0.0))))
+        step = room.step(now, est.pose(), self.safety.lidar_points(tel), est.odom, float(odom.get('vx', 0.0)),
+                         float(odom.get('wz', 0.0)), age, still)
+        for note in step.notes:
+            self._note(note)
+        if step.mount is not None:
+            self.safety.lidar_mount = tuple(step.mount)
+        self.lidar_mount_ok = room.calibrated
+        if step.correct is not None:
+            try:
+                est.correct(step.correct)
+            except ValueError:
+                pass
+        room.estimator_is(est.pose())
+        if step.search and self.cfg.auto_find and self.state != RUNNING:
+            self._start_search(self.safety.lidar_points(tel), now)
+
+    def _standing_spots(self):
+        """Places in the arena where the robot's centre can be at all, on a 6 cm lattice (for searching)."""
+        if self._spots is None or self._spots[0] is not self.base_grid:
+            grid = self.base_grid
+            sc = self.safety.cfg
+            need = max(0.03, min(sc.half_length_m or 0.11, sc.half_width_m or 0.09) - 0.03)
+            clear = self.planner.cache.distance(grid, 0.30)
+            rows, cols = np.nonzero(clear[::2, ::2] >= need)
+            spots = np.column_stack((grid.origin[0] + (2 * cols + 0.5) * grid.resolution,
+                                     grid.origin[1] + (2 * rows + 0.5) * grid.resolution))
+
+            def possible(x, y, clear=clear, grid=grid, need=need - 0.02):
+                r, c = grid.world_to_cell((x, y))
+                return grid.contains((r, c)) and clear[r, c] >= need
+            self._spots = (grid, spots, possible)
+        return self._spots[1], self._spots[2]
+
+    def _start_search(self, points, now):
+        """Search the whole arena for the robot in the background (the control loop keeps running)."""
+        if self._search is not None or now < self._next_search:
+            return
+        matcher, _ = self._reference()
+        if matcher is None:
+            return
+        spots, possible = self._standing_spots()
+        job = dict(result=None, done=False, gen=self._pose_gen)
+
+        def work():
+            try:
+                job['result'] = matcher.locate(points, spots, possible=possible, **SURE)
+            finally:
+                job['done'] = True
+        job['thread'] = threading.Thread(target=work, name='find-robot', daemon=True)
+        self._search = job
+        self._next_search = now + min(4.0 * 2 ** self._search_misses, 60.0)     # fruitless searches get rarer
+        job['thread'].start()
+
+    def _collect_search(self):
+        job = self._search
+        if job is None or not job['done']:
+            return
+        self._search = None
+        result = job['result']
+        if job['gen'] != self._pose_gen:                     # the operator set the pose meanwhile: his word counts
+            return
+        if result is None or not result.ok:
+            self._search_misses = min(self._search_misses + 1, 6)
+        if result is not None and not result.ok and self.room is not None and self.room.state == 'lost':
+            self.room.reason = result.reason                 # why the robot is not found (shown to the operator)
+        if result is None or not result.ok or self.state == RUNNING or not self.robot_still():
+            return
+        had_pose = self.estimator.map_T_odom is not None
+        self._apply_found(result.pose, 'Robot found by itself' if not had_pose else 'The robot was moved: found again',
+                          result)
+
+    def adjust_pose(self, map_pose):
+        """Operator action: the robot stands still, but the estimate should be a little different (nudge).
+        No footprint check: the robot is where it is."""
+        with self._lock:
+            if self.state == RUNNING:
+                raise ValueError('Stop the robot first.')
+            self._ingest()
+            self._apply_found(map_pose, 'Position set by hand', hint=False)
+            if self.room is not None and self.cfg.lidar_reference == 'room':
+                self.room.restart(tuple(float(v) for v in map_pose), trusted=False)
+                self._room_step(self.client.snapshot(), self.clock())
+
+    def _apply_found(self, pose, how, result=None, hint=True):
+        """Adopt a pose that came from the LiDAR search (no pin). Not a footprint check: the robot may stand
+        closer to a wall than A* would ever drive (then planning reports that the start is not clear)."""
+        x, y, yaw = (float(v) for v in pose)
+        if not self.base_grid.contains(self.base_grid.world_to_cell((x, y))):
+            raise ValueError('That place is outside the map.')
+        if self.estimator.odom is None:
+            raise ValueError('No odometry received yet.')
+        self._cancel_auto()
+        fault = self.estimator.fault
+        self.estimator.calibrate((x, y, yaw))
+        self.estimator.fault = fault
+        self.trajectory = []
+        self.path, self.plan_result = [], None
+        self.found = None
+        self._pose_gen += 1
+        self._search_misses = 0
+        unfinished = self.state in (PLANNED, STOPPED) and self.goal is not None      # a route was waiting / interrupted
+        if self.state in (PLANNED, ARRIVED):
+            self.state = IDLE
+        if self.room is not None:
+            self.room.adopt((x, y, yaw))
+        self.found_seq += 1
+        fit = '' if result is None else ' (%.0f %% of the LiDAR view fits)' % (100 * result.matched)
+        self._note('%s at (%.2f, %.2f) m, heading %.0f deg%s.%s'
+                   % (how, x, y, math.degrees(yaw), fit,
+                      ' Check the picture: if the robot is somewhere else, set Start by hand.' if hint else ''))
+        text = self.message
+        if unfinished and not self.safety.estop:
+            self._plan()                            # the route to the same goal, from where the robot really is
+            self.message = '%s %s' % (text, self.message)
+        return text
+
+    def find_robot(self, choose=None):
+        """Operator action "Find robot": where does the LiDAR view fit? Returns (ok, message).
+        ``choose`` = index into the candidates of the previous, ambiguous answer."""
+        with self._lock:
+            if self.state == RUNNING:
+                return False, 'Stop the robot first.'
+            if choose is not None:
+                options = (self.found or {}).get('candidates') or []
+                if not 0 <= int(choose) < len(options):
+                    return False, 'That choice is no longer available: press Find robot again.'
+                try:
+                    self._apply_found(options[int(choose)]['pose'], 'Robot placed by your choice')
+                except ValueError as exc:
+                    return False, str(exc)
+                return True, self.message
+            snap = self._ingest()
+            tel = snap['telemetry'] or {}
+            scan = tel.get('scan')
+            if not scan or scan.get('age', 9.0) > self.safety.cfg.scan_stale_s:
+                return False, 'No fresh LiDAR scan.'
+            if not self.robot_still(snap):
+                return False, 'Wait until the robot stands still.'
+            matcher, room = self._reference()
+            if matcher is None:
+                return False, ('The LiDAR has not drawn this room yet. Do one corner start first (Corner start, then '
+                               'Confirm pose); after that the robot is found by itself.')
+            points = self.safety.lidar_points(tel)
+            spots, possible = self._standing_spots()
+            generation = self._pose_gen
+        result = matcher.locate(points, spots, possible=possible)          # about a second; without the lock
+        with self._lock:
+            if self.state == RUNNING or not self.robot_still() or generation != self._pose_gen:
+                return False, 'The robot moved during the search: try again.'
+            top = result.candidates[0] if result.candidates else None
+            if result.ok and top['score'] >= SURE['min_score'] and top['known'] >= SURE['min_known']:
+                try:
+                    self._apply_found(result.pose, 'Robot found', result)
+                except ValueError as exc:
+                    return False, str(exc)
+                return True, self.message
+            if top is None:
+                self.found = None
+                return False, 'Robot not found: %s.' % result.reason
+            # a possible place, but not sure enough to decide alone: the operator looks at the picture and chooses
+            self.found = dict(reason=result.reason, candidates=[
+                dict(pose=tuple(float(v) for v in c['pose']), score=c['score'], matched=c['matched'])
+                for c in result.candidates[:4]])
+            if len(result.candidates) > 1:
+                return False, 'Robot not found for sure: %s.' % result.reason
+            return False, ('The LiDAR is not sure (it has only drawn part of this room so far). Is the robot at the '
+                           'marked place? Click it in the list to accept, or set Start by hand.')
+
+    def room_file(self):
+        """The room drawing as bytes if it is worth keeping (started from a corner start, mounting verified)."""
+        with self._lock:
+            room = self.room
+            if room is None or not room.trusted or not room.calibrated or room.map.scans < 5:
+                return None
+            return room.map.to_bytes(dict(mount=list(self.safety.lidar_mount), saved=time.strftime('%Y-%m-%d %H:%M')))
+
+    def load_room(self, data):
+        """Use a room drawing from an earlier session. Returns a short description; ValueError if it does not fit."""
+        with self._lock:
+            room_map, meta = RoomMap.from_bytes(data)
+            if any(abs(a - b) > 1e-6 for a, b in zip(room_map.extent, self.base_grid.extent)):
+                raise ValueError('it was made for another field size')
+            if any(abs(a - b) > 1e-4 for a, b in zip(meta.get('mount', (0, 0, 0)), self.safety.lidar_mount)):
+                raise ValueError('it was made with another LiDAR mounting')
+            self._room().use_map(room_map, trusted=True)
+            self._pose_gen += 1
+            self._search_misses = 0
+            return 'room outline from %s (%d wall cells)' % (meta.get('saved', 'an earlier session'), room_map.cells())
 
     def _not_really_moving(self, telemetry):
         """Odometry says the robot moved, but does it really? (MentorPi odometry can be computed from the
@@ -817,7 +1099,9 @@ class Navigator:
                     speed_fraction=self.speed_fraction, scale=(self.estimator.scale_x, self.estimator.scale_y),
                     auto_replans=self.auto_replans, auto_pending=self._auto_resume_at is not None,
                     motion=self.motion, stop_kind=self.stop_kind, plan_info=dict(self.plan_info),
-                    stop_zone_m=zone, segment=None if self.tracker is None else self.tracker.segment)
+                    stop_zone_m=zone, segment=None if self.tracker is None else self.tracker.segment,
+                    room=None if self.room is None or self.cfg.lidar_reference != 'room' else self.room.status(),
+                    found=self.found, searching=self._search is not None)
 
 
 def _scan_bins(points, n=72):

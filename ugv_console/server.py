@@ -39,7 +39,7 @@ MIME = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
         '.json': 'application/json', '.ico': 'image/x-icon'}
 MAX_BODY = 512 * 1024
 SLOW_EVERY = 4            # publisher ticks between "slow" sections (20 Hz / 4 = 5 Hz)
-SLOWER = {'trail': 8, 'seen': 12, 'diag': 8}
+SLOWER = {'trail': 8, 'seen': 12, 'diag': 8, 'room': 12}
 SECURITY_HEADERS = (('Cache-Control', 'no-store'), ('X-Content-Type-Options', 'nosniff'),
                     ('Referrer-Policy', 'no-referrer'), ('X-Frame-Options', 'DENY'),
                     ('Content-Security-Policy',

@@ -52,6 +52,8 @@ export class MapView {
     this.plan = {path: [], start: null, goal: null, unsafe: [], segment: null, pending_goal: false};
     this.trail = {est: [], truth: []};
     this.scan = {pts: [], unknown: ''};
+    this.room = {pts: []};              // wall cells the LiDAR drew of the room around the arena
+    this.found = [];                    // places offered by "Find robot" when several fit
     this.vision = {pins: [], blocks: []};
     this.survivors = [];
     this.opts = {}; this.robot = {half_length: 0.11, half_width: 0.09}; this.camera = null;
@@ -458,6 +460,7 @@ export class MapView {
     if (o.show_path) this.drawPath(ctx, px, now);
     if (o.show_trail) this.drawTrail(ctx, px);
     if (this.mode !== 'offline') {
+      if (o.show_room) this.drawRoom(ctx, px);
       if (o.show_scan) this.drawScan(ctx, px);
       this.drawBlocks(ctx, px);
       if (this.pose && o.show_fov && this.camera) this.drawFov(ctx);
@@ -465,6 +468,7 @@ export class MapView {
       if (this.truth && o.show_truth) this.drawBody(ctx, this.truth, px, true);
     }
     if (this.pose) this.drawRobot(ctx, px, now);
+    if (this.mode !== 'offline') this.drawFound(ctx, px);
     this.drawToolPreview(ctx, px);
 
     // screen-space overlays (always upright, constant size)
@@ -473,6 +477,7 @@ export class MapView {
     this.drawGoal(ctx, now);
     if (this.mode !== 'offline') this.drawPinLabels(ctx);
     this.drawSurvivors(ctx, now);
+    if (this.mode !== 'offline') this.drawFoundLabels(ctx);
     if (this.pose) this.drawRobotLabel(ctx);
     this.drawMeasure(ctx);
     this.drawGizmo(ctx);
@@ -601,6 +606,37 @@ export class MapView {
     if (this.mode === 'sim' && this.opts.show_truth) draw(this.trail.truth, this.pal.truth, 1.2, [2, 4]);
     const est = this.pose ? this.trail.est.concat([[this.pose.x, this.pose.y]]) : this.trail.est;
     draw(est, this.pal.trail, 2.6);
+  }
+
+  drawRoom(ctx, px) {                                           // the room outline: small soft squares
+    const pts = this.room.pts || [];
+    if (!pts.length) return;
+    const size = Math.max(this.room.res || 0.03, 2 * px), half = size / 2;
+    ctx.fillStyle = this.pal.text; ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) ctx.rect(pts[i][0] - half, pts[i][1] - half, size, size);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  drawFound(ctx, px) {                                          // numbered outlines: "is the robot here?"
+    for (let k = 0; k < this.found.length; k++) {
+      const c = this.found[k], yaw = c.heading * Math.PI / 180;
+      ctx.save();
+      ctx.translate(c.x, c.y); ctx.rotate(yaw);
+      this.bodyPath(ctx);
+      ctx.fillStyle = this.pal.goal; ctx.globalAlpha = 0.18; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.setLineDash([4 * px, 3 * px]); ctx.strokeStyle = this.pal.goal; ctx.lineWidth = 1.8 * px; ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(this.robot.half_length + 0.06, 0); ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  drawFoundLabels(ctx) {
+    for (let k = 0; k < this.found.length; k++) {
+      const p = this.toScreen(this.found[k].x, this.found[k].y);
+      this.chip(ctx, `${k + 1} ?`, p.x, p.y - 26, this.pal.goal);
+    }
   }
 
   drawScan(ctx, px) {

@@ -78,6 +78,21 @@ python3 -m ugv_bridge.run_bridge --config ugv_bridge/config/bridge_config.json -
 ```
 Laptop: start the console, **Robot** mode, **Connect**.
 
+## Optional: let the console see more of the room
+The console follows the robot by looking at the room with the LiDAR ([How it works](HOW_IT_WORKS.md), 4a). By
+default the bridge reports LiDAR points up to 3 m. In a larger room, raise that in `bridge_config.json` on the
+robot and restart the bridge:
+```json
+"telemetry_scan_range_m": 8.0,
+"telemetry_scan_points": 360
+```
+Nothing else changes.
+
+If the console reports that the LiDAR is mounted turned (for example by 180°), the robot's own stop zone looks
+the wrong way. Put the mounting the console measured into `bridge_config.json` as
+`"lidar_mount": [metres ahead, metres to the left, turn in radians]` (180° = 3.1416), restart the bridge, and
+press **Forget mounting** in the console (Robot tab) so that it is not applied twice.
+
 ## Things to avoid
 - Do not run HiWonder's phone app or joystick control at the same time as the bridge.
 - Do not add the bridge to startup services. Start it by hand.

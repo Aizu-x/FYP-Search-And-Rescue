@@ -33,13 +33,20 @@ class SafetyMonitor:
     def __init__(self, config: SafetyConfig):
         self.cfg = config
         self.estop = False
+        self.lidar_mount = (0.0, 0.0, 0.0)    # extra LiDAR mounting (x, y, yaw) learnt on the edge (room_map)
 
     def dimensions_known(self):
         return bool(self.cfg.half_length_m and self.cfg.half_width_m)
 
     def lidar_points(self, telemetry):
         scan = telemetry.get('scan') if telemetry else None
-        return None if scan is None else [tuple(p) for p in scan.get('points', [])]
+        if scan is None:
+            return None
+        mx, my, yaw = self.lidar_mount
+        if mx == 0.0 and my == 0.0 and yaw == 0.0:
+            return [tuple(p) for p in scan.get('points', [])]
+        c, s = math.cos(yaw), math.sin(yaw)
+        return [(mx + c * p[0] - s * p[1], my + s * p[0] + c * p[1]) for p in scan.get('points', [])]
 
     def unknown_points(self, points, pose, grid, sigma):
         """Robot-frame LiDAR points that do NOT correspond to an occupied cell of the map.

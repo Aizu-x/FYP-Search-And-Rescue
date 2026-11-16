@@ -134,6 +134,24 @@ export class UI {
     $('#btn-search-here').addEventListener('click', () => this.authorize('search_here'));
     $('#banner-btn').addEventListener('click', () => this.bannerAction && this.bannerAction());
 
+    // where is the robot: corner start, find, nudge
+    $$('#corners button').forEach((b) => b.addEventListener('click', () => run('corner_start', {corner: b.dataset.corner})));
+    $$('#field-corners button').forEach((b) => b.addEventListener('click', () => run('field_sample', {corner: b.dataset.corner})));
+    $('#btn-find').addEventListener('click', () => this.findRobot());
+    $$('#nudge button').forEach((b) => b.addEventListener('click', () => {
+      const [dx, dy, turn] = b.dataset.nudge.split(',').map(Number);
+      run('nudge_pose', {dx, dy, turn});
+    }));
+    $('#found-list').addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-choose]');
+      if (b) run('find_robot', {choose: Number(b.dataset.choose)});
+    });
+    for (const id of ['field-x', 'field-y']) {
+      $('#' + id).addEventListener('input', () => this.dirty.add(id));
+      $('#' + id).addEventListener('keydown', (e) => { if (e.key === 'Enter') this.applyField(); });
+    }
+    $('#btn-field-apply').addEventListener('click', () => this.applyField());
+
     // robot + camera tabs
     $('#btn-scale-apply').addEventListener('click', () => this.applyScale());
     $('#btn-cal-finish').addEventListener('click', () => run('cal_finish', {x: Number($('#cal-x').value), y: Number($('#cal-y').value)}));
@@ -196,6 +214,31 @@ export class UI {
     return r;
   }
 
+  async findRobot() {
+    const btn = $('#btn-find');
+    btn.disabled = true;
+    try {
+      const r = await post('find_robot', {});
+      if (r.ok) toast(r.message, 'success', 7000);
+      else toast(r.message || 'Robot not found.', 'warn', 8000);       // several places fit: they are listed in the card
+    } finally { btn.disabled = false; }
+  }
+
+  applyField() {
+    const x = Number($('#field-x').value), y = Number($('#field-y').value);
+    this.dirty.delete('field-x'); this.dirty.delete('field-y');
+    return run('field_apply', {x, y}).then((r) => { if (!r.ok) this.fieldInputs(true); return r; });
+  }
+
+  fieldInputs(force) {
+    const f = this.settings && this.settings.field;
+    if (!f) return;
+    for (const [id, value] of [['field-x', f.measured_w || f.real_w], ['field-y', f.measured_h || f.real_h]]) {
+      if (force) this.dirty.delete(id);
+      if (!this.dirty.has(id) && document.activeElement !== $('#' + id)) $('#' + id).value = Number(value).toFixed(2);
+    }
+  }
+
   planRoute() {
     const v = (id) => { const t = $('#' + id).value.trim(); return t === '' ? null : Number(t); };   // blank goal = not chosen
     for (const id of ['sx', 'sy', 'gx', 'gy']) this.dirty.delete(id);
@@ -249,7 +292,7 @@ export class UI {
 
   on_settings(s) {
     const first = !this.settings;
-    const modeChanged = first || this.settings.opts.mode !== s.opts.mode;
+    const modeChanged = first || this.settings.opts.mode !== s.opts.mode || this.settings.opts.lidar_sees !== s.opts.lidar_sees;
     this.settings = s;
     const o = s.opts;
     if (this.theme !== o.theme) {
@@ -289,6 +332,28 @@ export class UI {
     const cal = $('#cal-tag');
     cal.textContent = s.calibrating ? `${s.calibrating.toUpperCase()} run active` : '';
     cal.className = 'tag' + (s.calibrating ? ' warn' : '');
+    // corner start + real field size
+    $$('#corners button').forEach((b) => b.classList.toggle('active', b.dataset.corner === s.dock));
+    const f = s.field;
+    if (f) {
+      $$('#field-corners button').forEach((b) => b.classList.toggle('done', f.corners.includes(b.dataset.corner)));
+      $('#field-tag').textContent = f.scaled ? `${f.real_w.toFixed(2)} × ${f.real_h.toFixed(2)} m` : 'file size';
+      $('#field-tag').className = 'tag ' + (f.scaled ? 'ok' : '');
+      $('#field-info').innerHTML = `The map file draws the floor <b>${f.map_w.toFixed(2)} × ${f.map_h.toFixed(2)} m</b> inside the walls` +
+        (f.scaled ? `; the console uses your real size <b>${f.real_w.toFixed(2)} × ${f.real_h.toFixed(2)} m</b>.` : '. If your real field is another size, the robot ends up somewhere else than the picture shows.');
+      const got = [f.measured_w ? `X ${f.measured_w.toFixed(2)} m` : '', f.measured_h ? `Y ${f.measured_h.toFixed(2)} m` : ''].filter(Boolean);
+      const mes = $('#field-measure');
+      mes.className = 'note' + (got.length ? ' ok' : '');
+      mes.textContent = got.length ? `measured: ${got.join(', ')}. Press Apply.` :
+        f.corners.length ? 'one corner measured: now the opposite corner' : 'with the robot: stand it in two corners like for a corner start and click each one';
+      this.fieldInputs(false);
+    }
+    const lid = s.lidar, mount = $('#mount-tag');
+    if (lid && o.lidar_sees === 'room' && o.mode === 'robot') {
+      mount.textContent = lid.mount_ok ? 'mounting verified' : 'learning mounting';
+      mount.className = 'tag ' + (lid.mount_ok ? 'ok' : 'warn');
+    } else { mount.textContent = ''; }
+    $('#match-label').textContent = o.lidar_sees === 'room' ? 'Room fit' : 'LiDAR fit';
     this.title();
   }
 
@@ -331,8 +396,11 @@ export class UI {
     const item = (cls, color, text) => `<span><i class="${cls}" style="background:${color}"></i>${text}</span>`;
     $('#legend').innerHTML = [item('', 'var(--m-wall)', 'Wall'), item('', 'var(--m-inflation)', 'Keep-out'), item('line', 'var(--m-path)', 'Route'),
       item('line', 'var(--m-trail)', nav ? 'Driven' : 'Played'), item('round', 'var(--m-start)', 'Start'), item('round', 'var(--m-goal)', 'Goal')]
-      .concat(nav ? [item('round', 'var(--m-scan)', 'LiDAR on walls'), item('round', 'var(--m-scan-unknown)', 'LiDAR: not on map'),
-        item('', 'var(--m-lidar-cell)', 'Found by LiDAR'), item('', 'var(--m-green)', 'Green block'), item('', 'var(--m-red)', 'Red block')]
+      .concat(nav ? (this.settings.opts.lidar_sees === 'room'
+        ? [item('round', 'var(--m-scan)', 'LiDAR (sees the room)'), item('', 'color-mix(in srgb, var(--m-text) 35%, transparent)', 'Room outline'),
+          item('round', 'var(--m-scan-unknown)', 'Tall object in the arena')]
+        : [item('round', 'var(--m-scan)', 'LiDAR on walls'), item('round', 'var(--m-scan-unknown)', 'LiDAR: not on map')]).concat([
+        item('', 'var(--m-lidar-cell)', 'Found by LiDAR'), item('', 'var(--m-green)', 'Green block'), item('', 'var(--m-red)', 'Red block')])
         : [item('line', 'var(--m-red)', 'GT violation')]).join('');
   }
 
@@ -390,6 +458,34 @@ export class UI {
       $('#sigma-val').textContent = ok || n.loc[0] === 'LOW_CONFIDENCE' ? `${cm} / ${Math.round(n.max_sigma * 100)} cm` : '—';
     } else { chip('#chip-loc', '', '—'); $('#sigma-bar').style.width = '0'; $('#sigma-val').textContent = '—'; }
 
+    // live tracking (LiDAR) + places offered by "Find robot"
+    const room = n.connected ? n.room : null, track = $('#track-tag'), tinfo = $('#track-info');
+    const tracking = this.settings && this.settings.opts.lidar_correction;
+    if (!n.connected || !this.settings || this.settings.opts.lidar_sees !== 'room') { track.textContent = ''; tinfo.textContent = ''; }
+    else if (!tracking) { track.textContent = 'tracking off'; track.className = 'tag'; tinfo.className = 'note'; tinfo.textContent = 'Live LiDAR tracking is off (Robot tab): the position comes from odometry only.'; }
+    else if (!room) { track.textContent = ''; tinfo.textContent = ''; }
+    else {
+      const learn = room.learn || {};
+      const names = {locked: 'tracking', learning: 'drawing room', searching: 'searching', lost: 'lost', waiting: 'no position yet'};
+      const good = room.state === 'locked' && room.calibrated;
+      track.textContent = n.searching ? 'searching…' : (room.state === 'locked' && !room.calibrated ? 'watching' : names[room.state] || room.state);
+      track.className = 'tag ' + (good ? 'ok' : room.state === 'lost' ? 'bad' : 'warn');
+      tinfo.className = 'note' + (room.state === 'lost' ? ' warn' : '');
+      tinfo.textContent =
+        room.state === 'waiting' ? (room.cells ? 'The room is known: the robot is searched for by itself, or press Find robot.' : 'Place the robot (Corner start) and press Confirm pose: the LiDAR then draws the room around the arena.') :
+        room.state === 'lost' || room.state === 'searching' ? `The LiDAR view does not fit here${room.reason ? ' (' + room.reason + ')' : ''}. ${room.state === 'lost' ? 'Searching for the robot…' : ''}` :
+        !room.calibrated ? `Watching only: learning how the LiDAR is mounted from the robot's motion (straight ${Math.round((learn.straight || 0) * 100)} %, turns ${Math.round((learn.turn || 0) * 100)} %). Until then the position comes from odometry.` :
+        `The position follows the room outline (${room.cells} wall cells)${room.trusted ? ', remembered for next time' : ''}.`;
+    }
+    const list = $('#found-list'), found = n.connected && n.found ? n.found : [];
+    const sig = found.map((c) => `${c.x.toFixed(2)},${c.y.toFixed(2)},${c.heading.toFixed(0)}`).join('|');
+    if (sig !== this.foundSig) {
+      this.foundSig = sig;
+      list.innerHTML = found.length ? `<div class="q">${found.length > 1 ? 'Several places fit the LiDAR view. Where is the robot?' : 'The LiDAR is not sure. Is the robot here? Click to accept.'}</div>` + found.map((c, k) =>
+        `<button class="btn" data-choose="${k}"><b>${k + 1}</b>&nbsp; x ${c.x.toFixed(2)}, y ${c.y.toFixed(2)} m, facing ${c.heading.toFixed(0)}° &nbsp;(${Math.round(c.fit * 100)} %)</button>`).join('') : '';
+    }
+    this.map.found = found;
+
     // authorize button + hint
     const a = n.authorize || {enabled: false, label: 'AUTHORIZE', hint: ''};
     const btn = $('#btn-authorize');
@@ -421,7 +517,8 @@ export class UI {
     if (!n.connected) { el.hidden = true; return; }
     if (!link.ok) show('bad', 'No link to the UGV' + (link.error ? ': ' + link.error : ' yet…'));
     else if (n.loc && n.loc[0] === 'LOW_CONFIDENCE') {
-      const tip = this.settings && !this.settings.opts.lidar_correction ? ' Tip: "Correct the position continuously" in the Robot tab avoids these stops.' : '';
+      const tip = this.settings && !this.settings.opts.lidar_correction ? ' Tip: "Live LiDAR tracking" in the Robot tab avoids these stops.'
+        : n.room && !n.room.calibrated ? ' The LiDAR is still learning how it is mounted; once that is verified these stops go away.' : '';
       show('', (m && m.active && m.paused ? 'Mission paused: the' : 'The') + ` drift limit was reached (about ${Math.round((n.sigma || 0) * 100)} cm).` + tip,
         'Re-localize with LiDAR', () => run('relocalize'));
     }
@@ -434,6 +531,7 @@ export class UI {
   }
 
   on_scan(s) { this.map.scan = s; }
+  on_room(r) { this.map.room = r; }
 
   on_vision(v) {
     this.map.vision = v;
@@ -550,13 +648,20 @@ export class UI {
       val.textContent = `${pct} %`;
     } else { bar.style.width = '0'; val.textContent = '—'; }
     $('#tiles').innerHTML = tiles.join('');
-    const fix = d.lidar_fix, info = $('#lidar-fix-info');
-    if (this.settings && this.settings.opts.lidar_correction && fix) {
+    const fix = d.lidar_fix, info = $('#lidar-fix-info'), o = this.settings ? this.settings.opts : {};
+    if (o.lidar_sees === 'room') {
+      const lid = this.settings.lidar || {};
+      info.className = 'note';
+      info.innerHTML = 'The LiDAR looks over the arena, so it sees the room, not the arena walls. After Confirm pose it draws the room outline and follows the robot\'s true movement in it: no drift, also when the robot is carried.' +
+        (o.mode === 'robot' ? ` LiDAR mounting learnt from the robot's motion: <b>${lid.mount_cm ? lid.mount_cm[0] : 0} cm</b> ahead, <b>${lid.mount_cm ? lid.mount_cm[1] : 0} cm</b> left, turned <b>${lid.mount_deg || 0}°</b>` +
+          (lid.mount_ok ? ' (verified).' : ' (not verified yet: until then the position is only watched, not corrected).') : '') +
+        (lid.room_saved ? ' A room outline is saved for this environment.' : '');
+    } else if (o.lidar_correction && fix) {
       info.className = 'note ' + (fix.ok ? 'ok' : 'warn');
       info.textContent = fix.ok ? `Last correction: ${fix.shift_cm} cm, ${fix.turn_deg}° · ${Math.round(fix.matched * 100)} % of the scan on walls.` : `No correction just now: ${fix.reason}.`;
-    } else if (!(this.settings && this.settings.opts.lidar_correction)) {
+    } else {
       info.className = 'note';
-      info.textContent = 'Off: the position comes from odometry only (use "Re-localize with LiDAR" when it drifts). On: small corrections about once a second while walls are in view. Simulator-tested only.';
+      info.textContent = 'The scan is compared with the arena walls on the map: small corrections about once a second while walls are in view.';
     }
   }
 }

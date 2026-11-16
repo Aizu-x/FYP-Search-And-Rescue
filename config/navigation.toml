@@ -60,11 +60,14 @@ scale_x = 1.0                # map-axis scale corrections; normally set from the
 scale_y = 1.0                # (the console's saved values take priority when you connect)
 
 [lidar_localization]
-# The console always shows how well the LiDAR scan fits the map, and "Re-localize with LiDAR" corrects the
-# pose on request. continuous_correction = true (BETA, simulator-tested only) also applies small corrections
-# about once a second, so the drift estimate does not grow while walls are in view.
-continuous_correction = false
-period_s = 1.0
+# What can the LiDAR see?
+#   "room"  = it sits higher than the arena walls (MentorPi): it only sees the room around the arena. The console
+#             draws that room and follows the robot's true movement in it (ugv_nav/room_map.py).
+#   "walls" = it sees the arena walls: the scan is compared with the map itself.
+sees = "room"
+continuous_correction = true        # keep the position in step with the LiDAR while driving (console switch too)
+find_robot_automatically = true     # "room": find the robot by itself when it was placed or carried somewhere
+period_s = 1.0                      # "walls": seconds between corrections
 
 [safety]
 stop_distance_m = 0.12       # LiDAR stop zone = margin + v*reaction + v^2/(2*decel), unmapped obstacles only

@@ -28,7 +28,7 @@ There is no goal until you set one: choose the **Goal** tool and click the map.
 
 ## Simulator, step by step
 1. Top bar **Simulator**, Drive tab **Start simulator**.
-2. Tool **Start**: click where the robot stands, drag to set the heading, **Confirm pose**.
+2. **Corner start**: click a corner (or use the **Start** tool: click where the robot stands, drag for the heading), then **Confirm pose**.
 3. Tool **Goal**: click the map. The orange line is the A\* route.
 4. **AUTHORIZE**, read the question, confirm.
 5. Camera tab: **Camera + YOLO** on, then **Place / remove blocks** to drop green or red test blocks.
@@ -36,8 +36,46 @@ There is no goal until you set one: choose the **Goal** tool and click the map.
 ## Real robot
 1. Robot on, laptop on the robot's Wi-Fi, bridge started on the robot ([Robot setup](ROBOT_SETUP.md)).
 2. Top bar **Robot**, Drive tab: enter the robot's IP, **Connect**.
-3. Place the robot, set **Start** + heading, **Confirm pose**.
+3. Tell the console where the robot is: see the next section.
 4. Set the **Goal**, then **AUTHORIZE**.
+
+## Where is the robot?
+The picture is only right if the console knows where the robot really stands. Three ways, best first:
+
+| Way | What you do | Needs |
+|---|---|---|
+| **Corner start** | Stand the robot square in a corner, **one block length (10 cm)** away from both walls. Click that corner (click again to turn the robot), then **Confirm pose**. | nothing: a block is your ruler |
+| **Find robot** | Put the robot anywhere and press **Find robot**. After the first few sessions it is also found by itself when you connect or carry it. | one earlier corner start in this room |
+| **Start pin** | Tool **Start**: click, drag for the heading, **Confirm pose**. | a good eye (least accurate) |
+
+**Adjust** (the small arrows) moves the shown position by 1 cm or turns it by 2°. Typing coordinates works too.
+
+### Why the LiDAR looks at the room
+On the MentorPi the LiDAR sits higher than the arena walls, so it never sees the arena. It does see the room
+around it (walls, furniture). The room does not move, so the console draws its outline (grey squares around
+the map) and follows the robot's true movement in it:
+
+* **Live LiDAR tracking** keeps the position right while driving, without the drift of the wheels. The tag in
+  the *Robot position* card shows *tracking*.
+* Carry the robot somewhere else: it is found again within a few seconds.
+* The first time on a new robot the tag shows *watching*: the console first learns from the robot's own motion
+  where the LiDAR is mounted (it needs about half a metre of straight driving and a few turns). Until that is
+  verified, nothing is corrected and the position comes from odometry, as before.
+* The LiDAR reaches 3 m. A place is only found where the room has been drawn, so let the robot drive through the
+  arena once after a corner start. If the console is not sure, it marks the place and asks you to click it.
+
+If your LiDAR does see the arena walls (another robot or higher walls): Robot tab, *The LiDAR sees: arena walls*.
+
+## Real field size
+The map files draw the floor **2.76 × 2.76 m** between the walls. If your real field is another size, the robot
+ends up somewhere else than the picture shows (8 % wrong is 24 cm at the far wall).
+
+1. Measure the inner width (X) and depth (Y) between the outer walls with a tape.
+2. Robot tab, **Real field size**: type both numbers, **Apply**. The map is stretched to the real size; all
+   coordinates are then real metres. **Use file size** goes back.
+
+Without a tape: after one drive through the arena, stand the robot in two opposite corners like for a corner
+start and click each corner under **Measure**. The distance between them comes from the LiDAR, not the wheels.
 
 ## Search mission
 Camera on, tick **Search for survivors at the goal**, then **AUTHORIZE + SEARCH**
@@ -78,11 +116,11 @@ why it was not used. The camera tilt is measured automatically from the known bl
 * **LiDAR finds** are a separate purple layer that you can keep or clear.
 
 ## Position and calibration
-* **Drift limit:** the robot stops when its estimated position error passes 15 cm. Press
-  **Re-localize (LiDAR)** to correct it from the walls, then continue.
-* **Continuous LiDAR correction** (Robot tab, beta) does this automatically while driving.
-* **Scale calibration** (Robot tab): Confirm pose, **Start X run**, drive, enter the real end position,
-  **Finish run**. **Reset to 1.000** removes old values.
+* **Drift limit:** without live tracking the robot stops when its estimated position error passes 15 cm.
+  Press **Re-localize** or **Find robot**, or do a corner start again. With live tracking this does not build up.
+* **Scale calibration** (Robot tab) is only needed without live tracking: Confirm pose, **Start X run**, drive,
+  enter the real end position, **Finish run**. **Reset to 1.000** removes old values.
+* **Forget room / Forget mounting** (Robot tab): start learning again, for example in another room.
 
 ## Your own settings
 | File | Purpose |
@@ -101,7 +139,9 @@ Coming from the older project folder? This copies your key, values and edited ma
 |---|---|
 | "The shared key file ... is missing" | Copy `mentorpi.key` into `config/`, or run `import-old` |
 | "YOLO is not available" | `pip install -r requirements-yolo.txt` (Python 3.11-3.13) |
-| Drift limit stops the robot | **Re-localize (LiDAR)**. If *LiDAR fit* is low, set Start and **Confirm pose** by hand |
+| Drift limit stops the robot | **Find robot** or a corner start. Check that *Live LiDAR tracking* is on (Robot tab) |
+| "Robot not found" | The LiDAR has not drawn that part of the room: corner start, then one drive through the arena |
+| The robot is somewhere else than the picture shows | Corner start again; check **Real field size**; **Forget room** if furniture was moved a lot |
 | "the robot is NOT really moving" | Commands arrive but the LiDAR view does not change: check battery and motor power |
 | Window closed by accident | Open the link from the terminal again within 25 s, or restart |
 

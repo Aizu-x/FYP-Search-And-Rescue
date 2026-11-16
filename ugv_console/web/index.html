@@ -129,19 +129,36 @@
           </div>
 
           <div class="card" data-show="sim robot">
-            <div class="card-h"><svg class="ic"><use href="#i-crosshair"/></svg><h3>Robot position</h3></div>
+            <div class="card-h"><svg class="ic"><use href="#i-crosshair"/></svg><h3>Robot position</h3><span class="tag" id="track-tag"></span></div>
             <div class="card-b">
+              <div class="corner-row" title="Stand the robot square in a corner, this far from both walls (10 cm = one block length), and click that corner. Click it again to turn the robot.">
+                <span class="pt-label">Corner start</span>
+                <div class="corners" id="corners">
+                  <button data-corner="tl" aria-label="Top-left corner">&#8598;</button><button data-corner="tr" aria-label="Top-right corner">&#8599;</button>
+                  <button data-corner="bl" aria-label="Bottom-left corner">&#8601;</button><button data-corner="br" aria-label="Bottom-right corner">&#8600;</button>
+                </div>
+                <input class="narrow" type="number" data-opt="corner_gap_cm" step="1" aria-label="Distance from the walls"><span class="unit">cm from walls</span>
+              </div>
               <button class="btn primary block" data-cmd="confirm_pose" title="The robot is at Start with this heading right now"><svg class="ic"><use href="#i-check"/></svg>Confirm pose</button>
               <div class="btn-row">
-                <button class="btn" data-cmd="relocalize" title="Fit the LiDAR scan to the map and correct the position (robot must stand still)"><svg class="ic"><use href="#i-radar"/></svg>Re-localize (LiDAR)</button>
-                <button class="btn" data-cmd="sync_pose_sim" data-show="sim" title="Simulator: jump to the true pose"><svg class="ic"><use href="#i-target"/></svg>True pose</button>
+                <button class="btn" id="btn-find" title="Ask the LiDAR where the robot is. Works after one corner start has taught it the room."><svg class="ic"><use href="#i-radar"/></svg>Find robot</button>
+                <button class="btn" data-cmd="relocalize" title="Small correction of the position from the LiDAR (robot must stand still)"><svg class="ic"><use href="#i-target"/></svg>Re-localize</button>
+                <button class="btn" data-cmd="sync_pose_sim" data-show="sim" title="Simulator: jump to the true pose"><svg class="ic"><use href="#i-pin"/></svg>True pose</button>
               </div>
-              <div class="meter-row" title="Estimated drift since the pose was last confirmed. Driving stops at the limit.">
+              <div class="nudge" id="nudge" title="Move the shown position by 1 cm, or turn it by 2 degrees. The robot itself does not move.">
+                <span class="pt-label">Adjust</span>
+                <button data-nudge="-1,0,0" aria-label="1 cm left">&#8592;</button><button data-nudge="1,0,0" aria-label="1 cm right">&#8594;</button>
+                <button data-nudge="0,1,0" aria-label="1 cm up">&#8593;</button><button data-nudge="0,-1,0" aria-label="1 cm down">&#8595;</button>
+                <button data-nudge="0,0,2" aria-label="Turn 2 degrees left">&#10226;</button><button data-nudge="0,0,-2" aria-label="Turn 2 degrees right">&#10227;</button>
+              </div>
+              <div id="found-list"></div>
+              <div class="meter-row" title="Estimated drift since the position was last confirmed or corrected. Driving stops at the limit.">
                 <span>Drift</span><div class="meter"><i id="sigma-bar"></i></div><span class="val" id="sigma-val">—</span>
               </div>
-              <div class="meter-row" title="Share of LiDAR points that lie on mapped walls at the estimated position. Low = the position (or the map) is off.">
-                <span>LiDAR fit</span><div class="meter good"><i id="match-bar"></i></div><span class="val" id="match-val">—</span>
+              <div class="meter-row" title="Share of the LiDAR points that lie where they should at the shown position. Low = the position is off.">
+                <span id="match-label">LiDAR fit</span><div class="meter good"><i id="match-bar"></i></div><span class="val" id="match-val">—</span>
               </div>
+              <div class="note" id="track-info"></div>
             </div>
           </div>
 
@@ -281,10 +298,38 @@
             </div>
           </div>
           <div class="card" data-show="sim robot">
-            <div class="card-h"><svg class="ic"><use href="#i-radar"/></svg><h3>LiDAR position correction</h3><span class="tag warn">beta</span></div>
+            <div class="card-h"><svg class="ic"><use href="#i-radar"/></svg><h3>LiDAR position</h3><span class="tag" id="mount-tag"></span></div>
             <div class="card-b">
-              <label class="switch-row"><input type="checkbox" data-opt="lidar_correction"><i class="switch"></i><span>Correct the position continuously</span></label>
-              <div class="note" id="lidar-fix-info">Off: the position comes from odometry only (use "Re-localize with LiDAR" when it drifts). On: small corrections about once a second while walls are in view. Simulator-tested only.</div>
+              <div class="row"><label>The LiDAR sees</label>
+                <div class="seg small" data-opt="lidar_sees"><button data-value="room" title="The LiDAR sits higher than the arena walls (MentorPi): it only sees the room around the arena">the room</button><button data-value="walls" title="The LiDAR sees the arena walls themselves">arena walls</button></div></div>
+              <label class="switch-row"><input type="checkbox" data-opt="lidar_correction"><i class="switch"></i><span>Live LiDAR tracking</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="auto_find"><i class="switch"></i><span>Find the robot by itself</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="show_room"><i class="switch"></i><span>Show the room outline</span></label>
+              <div class="note" id="lidar-fix-info"></div>
+              <div class="btn-row">
+                <button class="btn" data-cmd="forget_room" title="Throw away the room outline; it is drawn again from the next Confirm pose">Forget room</button>
+                <button class="btn" data-cmd="forget_room" data-args='{"mount":true}' data-show="robot" title="Also forget how the LiDAR is mounted; it is measured again while driving">Forget mounting</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-ruler"/></svg><h3>Real field size</h3><span class="tag" id="field-tag"></span></div>
+            <div class="card-b">
+              <div class="note" id="field-info"></div>
+              <div class="pt-row"><span class="pt-label">Inside walls</span><input id="field-x" type="number" step="0.01" aria-label="Real width X"><input id="field-y" type="number" step="0.01" aria-label="Real depth Y"><span class="unit">m</span></div>
+              <div class="btn-row">
+                <button class="btn primary" id="btn-field-apply">Apply</button>
+                <button class="btn" data-cmd="field_reset">Use file size</button>
+              </div>
+              <div class="corner-row" data-show="sim robot" title="Stand the robot in a corner exactly like for a corner start (same distance from both walls), wait until the console shows it there, then click that corner. Two opposite corners measure the field.">
+                <span class="pt-label">Measure</span>
+                <div class="corners" id="field-corners">
+                  <button data-corner="tl" aria-label="Top-left corner">&#8598;</button><button data-corner="tr" aria-label="Top-right corner">&#8599;</button>
+                  <button data-corner="bl" aria-label="Bottom-left corner">&#8601;</button><button data-corner="br" aria-label="Bottom-right corner">&#8600;</button>
+                </div>
+                <span class="note" id="field-measure">with the robot: stand it in two corners like for a corner start and click each one</span>
+              </div>
+              <div class="note">Width (X) and depth (Y) of the floor between the inner faces of the outer walls. Type the tape-measure values and press Apply: the map is stretched to the real size.</div>
             </div>
           </div>
         </section>

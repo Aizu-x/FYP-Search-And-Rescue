@@ -46,7 +46,10 @@ SCHEMA = {
     'heading': Opt('float', 0.0, -360.0, 360.0, label='Heading (deg)'),
     'auto_continue': Opt('bool', False, label='Auto-continue after replan'),
     'allow_tight': Opt('bool', False, label='Allow radius below turning circle'),
-    'lidar_correction': Opt('bool', False, label='Continuous LiDAR position correction (beta)'),
+    'lidar_correction': Opt('bool', True, label='Live LiDAR tracking'),
+    'lidar_sees': Opt('choice', 'room', choices=('room', 'walls'), label='The LiDAR sees'),
+    'auto_find': Opt('bool', True, label='Find the robot automatically'),
+    'corner_gap_cm': Opt('float', 10.0, 0.0, 40.0, label='Corner start: distance from the walls (cm)'),
     'brush': Opt('int', 1, 0, 10, label='Brush radius (cells)'),
     'scale_x': Opt('float', 1.0, 0.7, 1.3, label='X scale'),
     'scale_y': Opt('float', 1.0, 0.7, 1.3, label='Y scale'),
@@ -77,7 +80,7 @@ SCHEMA = {
     'show_path': Opt('bool', True), 'show_gt': Opt('bool', False), 'show_search': Opt('bool', False),
     'show_seen': Opt('bool', True), 'show_inflation': Opt('bool', True), 'show_scan': Opt('bool', True),
     'show_truth': Opt('bool', True), 'show_fov': Opt('bool', True), 'show_zone': Opt('bool', True),
-    'show_trail': Opt('bool', True), 'show_grid': Opt('bool', True),
+    'show_trail': Opt('bool', True), 'show_grid': Opt('bool', True), 'show_room': Opt('bool', True),
     'theme': Opt('choice', 'dark', choices=('dark', 'light'), label='Theme'),
 }
 

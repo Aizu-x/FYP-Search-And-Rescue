@@ -8,7 +8,11 @@ protocol, watchdog and edge client are all exercised exactly as on the robot.
   robot), with configurable scale error and yaw drift so map alignment and
   drift handling are tested honestly.
 * LiDAR: 360 rays ray-marched through a "world" grid (e.g. the GT map), plus
-  optional circular obstacles injected at run time.
+  optional circular obstacles injected at run time. With ``lidar_world`` the LiDAR
+  looks OVER the arena walls (like a MentorPi whose LiDAR sits higher than the
+  arena) and only sees that other grid, e.g. the room around the arena
+  (``simulated_room``). ``lidar_mount`` puts the sensor off-centre / turned on the
+  robot, ``scan_noise_m`` adds range noise.
 * Ground-truth collision detection against the world grid for reporting only.
 """
 from __future__ import annotations
@@ -30,8 +34,13 @@ class SimBackend(Backend):
 
     def __init__(self, world_grid, start_pose=(0.5, 0.5, 0.0), body_radius=0.1, tau=0.1,
                  odom_scale_error=0.0, yaw_drift_rad_per_s=0.0, rays=360, max_range=3.0, rate_hz=100.0,
-                 clock=time.monotonic, realtime=True):
+                 clock=time.monotonic, realtime=True, lidar_world=None, lidar_mount=(0.0, 0.0, 0.0),
+                 scan_noise_m=0.0, seed=7):
         self.world = world_grid
+        self.lidar_world = lidar_world        # None: the LiDAR sees the arena walls of ``world_grid``
+        self.lidar_mount = tuple(float(v) for v in lidar_mount)   # true sensor pose on the robot (x, y, yaw)
+        self.scan_noise = float(scan_noise_m)
+        self._rng = np.random.default_rng(seed)
         self.checker = CollisionChecker(world_grid)
         self.body_radius = body_radius
         self.tau, self.scale_err, self.yaw_drift = tau, odom_scale_error, yaw_drift_rad_per_s
@@ -128,22 +137,29 @@ class SimBackend(Backend):
 
     def _scan(self):
         x, y, yaw = self.truth
+        mx, my, myaw = self.lidar_mount
+        c, s = math.cos(yaw), math.sin(yaw)
+        x, y, yaw = x + c * mx - s * my, y + s * mx + c * my, yaw + myaw      # where the sensor really is
+        world = self.lidar_world if self.lidar_world is not None else self.world
         angles = -math.pi + np.arange(self.rays) * (2 * math.pi / self.rays)
-        res = self.world.resolution
+        res = world.resolution
         steps = np.arange(0.06, self.max_range, res / 2)
         dirs = yaw + angles
         px = x + np.outer(np.cos(dirs), steps)
         py = y + np.outer(np.sin(dirs), steps)
-        cols = np.floor((px - self.world.origin[0]) / res).astype(int)
-        rows = np.floor((py - self.world.origin[1]) / res).astype(int)
-        h, w = self.world.shape
+        cols = np.floor((px - world.origin[0]) / res).astype(int)
+        rows = np.floor((py - world.origin[1]) / res).astype(int)
+        h, w = world.shape
         inside = (rows >= 0) & (rows < h) & (cols >= 0) & (cols < w)
-        hit = ~inside
-        hit[inside] = self.world.cells[rows[inside], cols[inside]]
+        # arena: beyond the map is wall. Room: beyond the room grid there is nothing to see.
+        hit = ~inside if self.lidar_world is None else np.zeros(inside.shape, bool)
+        hit[inside] = world.cells[rows[inside], cols[inside]]
         for ox, oy, r in self.obstacles:
             hit |= (px - ox) ** 2 + (py - oy) ** 2 <= r * r
         first = np.where(hit.any(axis=1), hit.argmax(axis=1), -1)
         ranges = np.where(first >= 0, steps[np.maximum(first, 0)], float('inf'))
+        if self.scan_noise:
+            ranges = ranges + self._rng.normal(0.0, self.scan_noise, len(ranges))
         return dict(angle_min=-math.pi, angle_increment=2 * math.pi / self.rays,
                     ranges=[float(r) for r in ranges], range_min=0.05, range_max=self.max_range)
 
@@ -151,3 +167,29 @@ class SimBackend(Backend):
     def truth_pose(self):
         with self._lock:
             return self.truth
+
+
+def simulated_room(arena_grid, left=0.60, right=0.95, bottom=0.45, top=0.75, furniture=True):
+    """A room around the arena for a LiDAR that looks over the arena walls: four room walls (with an open
+    door) and a few pieces of furniture OUTSIDE the arena. Returns a Grid with its own origin; pass it as
+    ``lidar_world``. The arena itself is empty in it (its walls and blocks are lower than the LiDAR)."""
+    from ugv_planner.grid import Grid
+    res = arena_grid.resolution
+    ax0, ax1, ay0, ay1 = arena_grid.extent
+    n = lambda metres: int(round(metres / res))        # noqa: E731
+    cl, cr, cb, ct = n(left), n(right), n(bottom), n(top)
+    h, w = arena_grid.shape
+    cells = np.zeros((h + cb + ct, w + cl + cr), np.uint8)
+    cells[:2, :] = cells[-2:, :] = 1
+    cells[:, :2] = cells[:, -2:] = 1
+    door = slice(cl + n(1.9), cl + n(2.7))
+    cells[:2, door] = 0                                # open door in the bottom wall
+    if furniture:
+        H, W = cells.shape
+        cells[H - n(0.55):H - 2, 2:n(1.5)] = 1                         # bed along the top wall, left
+        cells[cb + n(0.9):cb + n(2.2), W - n(0.5):W - 2] = 1           # wardrobe on the right wall
+        cells[2:n(0.3), cl + n(0.3):cl + n(0.9)] = 1                   # shelf on the bottom wall
+        for r0, c0 in ((cb + n(0.5), n(0.15)), (cb + n(1.1), n(0.15)), (cb + n(0.5), n(0.4)), (cb + n(1.1), n(0.4))):
+            cells[r0:r0 + 2, c0:c0 + 2] = 1                            # desk legs on the left
+        cells[H - n(0.35):H - n(0.2), W - n(0.7):W - n(0.55)] = 1      # a bin in the top-right corner
+    return Grid(cells, res, (ax0 - cl * res, ay0 - cb * res))

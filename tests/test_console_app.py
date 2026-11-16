@@ -306,7 +306,7 @@ class SimulatorWorkflowTests(ConsoleCase):
 
     def test_relocalize_and_scale_commands(self):
         app = self.app
-        self.start_simulator()
+        self.start_simulator(lidar_sees='walls', lidar_correction=False)      # a LiDAR that sees the arena walls
         self.assertFalse(self.cmd('cal_finish', x=2.0, y=0.4)['ok'])            # no run started
         self.ok('cal_start', axis='x')
         self.assertEqual(app.view('settings')['calibrating'], 'x')
@@ -555,3 +555,175 @@ class OrientationTests(ConsoleCase):
         stored = np.load(app.edit_dir / 'ENV3_occupancy_edited.npy')
         self.assertTrue(np.array_equal(np.rot90(np.flipud(stored), -1), app.grid.cells))
         self.assertTrue(np.array_equal(load_edited('ENV3', app.edit_dir).cells, app.grid.cells))
+
+
+class WhereIsTheRobotTests(ConsoleCase):
+    """Corner start, Find robot, nudge, real field size (simulator: the LiDAR looks over the arena into a room)."""
+
+    def room(self):
+        return self.app.view('nav')['room']
+
+    def start_in_corner(self, corner='bl', **options):
+        self.ok('set_mode', mode='sim')
+        self.options(**dict(ROBOT, **options))
+        r = self.ok('corner_start', corner=corner)
+        self.ok('connect')
+        self.assertTrue(wait_for(lambda: self.app.client.link_ok(), timeout=6))
+        time.sleep(0.3)
+        self.ok('confirm_pose')
+        return r
+
+    def error(self):
+        estimate, truth = self.app.nav.estimator.pose(), self.app.session.backend.truth_pose()
+        return math.dist(estimate[:2], truth[:2])
+
+    def test_defaults_describe_a_lidar_that_looks_over_the_arena(self):
+        o = self.app.opts
+        self.assertEqual((o['lidar_sees'], o['lidar_correction'], o['auto_find'], o['corner_gap_cm']),
+                         ('room', True, True, 10.0))
+        field = self.app.view('settings')['field']
+        self.assertAlmostEqual(field['map_w'], 2.76, delta=0.04)                # what the data file draws
+        self.assertFalse(field['scaled'])
+
+    def test_corner_start_gives_the_pose_and_clicking_again_turns_it(self):
+        app = self.app
+        self.assertFalse(self.cmd('corner_start', corner='bl')['ok'])           # planner mode has no robot
+        self.ok('set_mode', mode='sim')
+        self.options(**ROBOT)
+        r = self.ok('corner_start', corner='bl')
+        self.assertIn('bottom-left', r['message'])
+        self.assertIn('one block length', r['message'])
+        x0, _, y0, _ = __import__('ugv_nav.map_store', fromlist=['inner_box']).inner_box(app.grid)
+        self.assertAlmostEqual(app.pending_pose[0], x0 + 0.10 + 0.11, delta=0.02)   # wall + gap + half length
+        self.assertAlmostEqual(app.pending_pose[1], y0 + 0.10 + 0.09, delta=0.02)
+        self.assertEqual((app.opts['heading'], app.view('settings')['dock']), (0.0, 'bl'))
+        self.ok('corner_start', corner='bl')                                    # same corner again: turned by 90 deg
+        self.assertEqual(app.opts['heading'], 90.0)
+        self.assertAlmostEqual(app.pending_pose[0], x0 + 0.10 + 0.09, delta=0.02)   # now the width is along x
+        self.options(corner_gap_cm=15)
+        self.assertAlmostEqual(app.pending_pose[0], x0 + 0.15 + 0.09, delta=0.02)
+        self.ok('set_start', x=1.2, y=0.42)                                     # a pin by hand is no corner start
+        self.assertIsNone(app.view('settings')['dock'])
+        self.assertFalse(self.cmd('corner_start', corner='nowhere')['ok'])
+        self.assertFalse(self.cmd('find_robot')['ok'])                          # not connected
+
+    def test_room_is_learnt_from_a_corner_start_and_the_next_session_needs_no_pin(self):
+        app = self.app
+        self.start_in_corner()
+        self.assertTrue(wait_for(lambda: self.room()['state'] == 'locked', timeout=6), self.room())
+        room = self.room()
+        self.assertTrue(room['trusted'] and room['calibrated'])
+        self.assertGreater(len(app.view('room')['pts']), 100)                   # the outline the page draws
+        for goal in ((2.4, 0.42), (2.6, 2.5)):                                  # a drive through the arena draws the room
+            self.ok('set_goal', x=goal[0], y=goal[1])
+            self.assertTrue(self.authorize()['ok'])
+            self.assertTrue(wait_for(lambda: app.nav.state == 'ARRIVED', timeout=90, step=0.1), app.nav.message)
+            self.assertLess(self.error(), 0.05)
+        # carried to another place: found again without the operator, the Start marker follows
+        app.session.backend.place((1.5, 2.5, 1.0))
+        self.assertTrue(wait_for(lambda: self.error() < 0.04, timeout=15, step=0.2))
+        self.assertTrue(wait_for(lambda: math.dist(app.start_point, (1.5, 2.5)) < 0.05, timeout=3))
+        # nudge: the operator moves the shown position by 2 cm; no footprint rule (the robot is where it is)
+        before = app.nav.estimator.pose()
+        self.ok('nudge_pose', dx=2, dy=-1, turn=2)
+        after = app.nav.estimator.pose()
+        self.assertAlmostEqual(after[0] - before[0], 0.02, delta=0.003)
+        self.assertAlmostEqual(after[1] - before[1], -0.01, delta=0.003)
+        self.assertFalse(self.room()['trusted'])                                # a hand-made position is not kept
+        self.ok('disconnect')
+        saved = list((self.dir / 'rooms').glob('*'))
+        self.assertEqual([p.name for p in saved], ['ENV1_room_sim.npz'])        # (written before the nudge)
+        # next session
+        r = self.ok('connect')
+        self.assertIn('found by itself', r['message'])
+        self.assertTrue(wait_for(lambda: app.nav is not None and app.nav.estimator.pose() is not None, timeout=15, step=0.2))
+        self.assertLess(self.error(), 0.04)
+        self.assertEqual(app.view('nav')['loc'][0], 'OK')
+        self.assertTrue(self.ok('find_robot')['ok'])                            # the button gives the same answer
+        self.assertLess(self.error(), 0.04)
+        self.ok('forget_room')
+        self.assertEqual(list((self.dir / 'rooms').glob('*')), [])
+
+    def test_find_robot_needs_a_known_room(self):
+        self.start_simulator()                                                  # pin by hand, nothing learnt before
+        self.ok('disconnect')
+        self.ok('connect')
+        self.assertTrue(wait_for(lambda: self.app.client.link_ok(), timeout=6))
+        time.sleep(0.4)
+        r = self.cmd('find_robot')
+        self.assertFalse(r['ok'])
+        self.assertIn('corner start', r['message'])
+        self.assertIsNone(self.app.nav.estimator.pose())
+
+    def test_real_field_size_stretches_the_map_and_is_remembered(self):
+        app1 = self.make(settings=True)
+        self.assertEqual(app1.grid.shape, (100, 100))
+        self.assertFalse(self.cmd('field_apply', app1, x=30, y=3)['ok'])
+        self.assertFalse(self.cmd('field_apply', app1, x=1.0, y=3.0)['ok'])     # 36 % of the map: a typing mistake
+        r = self.ok('field_apply', app1, x=3.0, y=2.9)
+        self.assertIn('3.00 x 2.90 m', r['message'])
+        self.assertEqual(app1.grid.shape, app1.gt.shape)
+        self.assertEqual(app1.grid.shape, (105, 109))
+        field = app1.view('settings')['field']
+        self.assertEqual((field['real_w'], field['real_h'], field['scaled']), (3.0, 2.9, True))
+        self.assertEqual(app1.view('map')['w'], 109)
+        self.ok('set_goal', app1, x=2.9, y=2.7)                                 # beyond the old 2.76 m field: now floor
+        self.assertTrue(app1.result.found)
+        self.ok('set_env', app1, env='ENV2')
+        self.assertEqual(app1.grid.shape, (100, 100))                           # the size belongs to ENV1 only
+        self.ok('set_env', app1, env='ENV1')
+        self.assertEqual(app1.grid.shape, (105, 109))
+        self.ok('paint', app1, points=[[1.5, 1.5]], value=1, brush=1, end=True)
+        self.assertFalse(self.cmd('field_reset', app1)['ok'])                   # unsaved edits first
+        self.ok('save_map', app1)
+        app1.close()
+        app2 = self.make(settings=True)
+        self.assertEqual(app2.grid.shape, (105, 109))                           # remembered, with the saved edit
+        self.assertEqual(app2.map_source, 'saved')
+        self.assertTrue(app2.grid.cells[app2.grid.world_to_cell((1.5, 1.5))])
+        self.ok('field_reset', app2)
+        self.assertEqual(app2.grid.shape, (100, 100))
+        self.assertTrue(app2.grid.cells[app2.grid.world_to_cell((1.5 / 1.087, 1.5 / 1.051))])   # the edit moved along
+
+    def test_field_is_measured_by_putting_the_robot_into_two_corners(self):
+        from ugv_nav.map_store import corner_pose, inner_box
+        app = self.app
+        self.ok('set_mode', mode='sim')
+        self.ok('field_apply', x=3.0, y=2.9)                                    # the simulated arena really is 3.0 x 2.9 m
+        x0, x1, y0, y1 = inner_box(app.gt)
+        self.start_in_corner()
+        self.assertTrue(wait_for(lambda: self.room()['state'] == 'locked', timeout=6))
+        self.assertFalse(self.cmd('field_sample', corner='tr')['ok'])           # the robot is not in that corner
+        self.ok('field_sample', corner='bl')                                    # it stands there from the corner start
+        self.assertEqual(app.view('settings')['field']['corners'], ['bl'])
+        there = corner_pose(app.gt, 'tr', 0, 0.11, 0.09, 0.10)                  # carried to the opposite corner,
+        there = (there[0], there[1], 0.0)                                       # one block length from both walls
+        app.session.backend.place(there)
+        time.sleep(4.0)                    # the LiDAR reaches 3 m: it has never seen that end of the room
+        r = self.cmd('field_sample', corner='tr')
+        self.assertFalse(r['ok'])
+        self.assertIn('driven through the arena', r['message'])
+        self.assertGreater(self.error(), 1.0)                                   # ... and it does not pretend to know
+        # so: back to the start, one drive through the arena, then measure
+        back = corner_pose(app.gt, 'bl', 0, 0.11, 0.09, 0.10)
+        app.session.backend.place((back[0], back[1], 0.0))
+        self.assertTrue(wait_for(lambda: self.error() < 0.04 and self.room()['state'] == 'locked', timeout=20, step=0.2))
+        for corner in ('br', 'tr'):                                             # a drive through the arena
+            goal = corner_pose(app.grid, corner, 0, 0.11, 0.09, 0.30)
+            self.ok('set_goal', x=goal[0], y=goal[1])
+            self.assertTrue(self.authorize()['ok'])
+            self.assertTrue(wait_for(lambda: app.nav.state == 'ARRIVED', timeout=90, step=0.1), app.nav.message)
+        app.session.backend.place(there)
+        self.assertTrue(wait_for(lambda: self.error() < 0.04 and self.room()['state'] == 'locked', timeout=25, step=0.2),
+                        self.room())
+        r = self.ok('field_sample', corner='tr')
+        self.assertIn('Measured with the robot', r['message'])
+        field = app.view('settings')['field']
+        self.assertEqual(sorted(field['corners']), ['bl', 'tr'])
+        self.assertAlmostEqual(field['measured_w'], x1 - x0, delta=0.05)        # the real distance between the walls
+        self.assertAlmostEqual(field['measured_h'], y1 - y0, delta=0.05)
+        self.ok('field_clear')
+        self.assertIsNone(app.view('settings')['field']['measured_w'])
+        # applying a size while connected: the simulator is rebuilt, nothing keeps an old position
+        self.ok('field_apply', x=2.8, y=2.8)
+        self.assertIsNone(app.nav)

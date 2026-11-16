@@ -42,6 +42,12 @@ def _pick(cls, section):
     return cls(**section)
 
 
+def _lidar_reference(sees):
+    if sees not in ('room', 'walls'):
+        raise ValueError('[lidar_localization] sees must be "room" or "walls".')
+    return 'room' if sees == 'room' else 'map'
+
+
 def local_config_path(path=None):
     """config/navigation.local.toml next to config/navigation.toml."""
     path = Path(path or DEFAULT_CONFIG)
@@ -75,8 +81,10 @@ def load_config(path=DEFAULT_CONFIG) -> EdgeConfig:
                                       half_width_m=float(robot.get('half_width_m', 0.0)) or None))
     nav = NavigatorConfig(control_rate_hz=rate, command_ttl_s=ttl, use_shortcut=bool(p.get('use_shortcut', False)),
                           smooth_path=bool(p.get('smooth_path', True)),
-                          lidar_correction=bool(data.get('lidar_localization', {}).get('continuous_correction', False)),
+                          lidar_correction=bool(data.get('lidar_localization', {}).get('continuous_correction', True)),
                           lidar_correction_period_s=float(data.get('lidar_localization', {}).get('period_s', 1.0)),
+                          lidar_reference=_lidar_reference(data.get('lidar_localization', {}).get('sees', 'room')),
+                          auto_find=bool(data.get('lidar_localization', {}).get('find_robot_automatically', True)),
                           planner_engine=str(p.get('engine', 'fast')),
                           replan_on_obstacle=replan, obstacle_map_range_m=map_range,
                           auto_continue_after_replan=auto, max_auto_replans=max_auto, auto_continue_delay_s=auto_delay,

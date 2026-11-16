@@ -11,6 +11,7 @@ config/navigation.before_import.toml
 config/console_settings.json
 config/gui_settings.json
 data/edited/
+data/rooms/
 
 # generated when you run the batch / demo commands
 example_outputs/

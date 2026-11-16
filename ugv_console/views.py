@@ -21,7 +21,7 @@ from . import options as O
 from .options import OFFLINE, SIM
 
 SECTIONS = ('static', 'settings', 'map', 'plan', 'nav', 'scan', 'vision', 'mission', 'seen', 'trail', 'log',
-            'offline', 'diag')
+            'offline', 'diag', 'room')
 
 
 def pack_mask(mask):
@@ -123,7 +123,23 @@ class Views:
             planning_radius=radius, planner_error=planner_error,
             tight=radius is not None and radius + 1e-9 < turning,
             calibrating=None if not self.cal else self.cal['axis'], camera=cam,
-            map_status=dict(source=self.map_source, unsaved=self.map_unsaved, env=o['env'])))
+            map_status=dict(source=self.map_source, unsaved=self.map_unsaved, env=o['env']),
+            field=self._field_view(), dock=None if not self.dock else self.dock['corner'],
+            lidar=dict(mount_cm=[round(self.lidar_mount[0] * 100, 1), round(self.lidar_mount[1] * 100, 1)],
+                       mount_deg=round(math.degrees(self.lidar_mount[2]), 1), mount_ok=self.lidar_mount_ok,
+                       room_saved=self._room_path().is_file())))
+
+    def _field_view(self):
+        """Size of the field inside the walls: what the data file says, and what is used (real size)."""
+        try:
+            w, h = self._map_inner()
+        except (ValueError, OSError):
+            return None
+        sx, sy = self._scale()
+        measured = self.field_measured or (None, None)
+        return dict(map_w=round(w, 3), map_h=round(h, 3), real_w=round(w * sx, 3), real_h=round(h * sy, 3),
+                    scaled=(sx, sy) != (1.0, 1.0), corners=[s['corner'] for s in self.field_samples],
+                    measured_w=measured[0], measured_h=measured[1])
 
     def _view_map(self):
         grid, nav = self.grid, self.nav
@@ -232,6 +248,10 @@ class Views:
             cmd=None if cmd is None or snap['state'] != RUNNING else [cmd.vx, cmd.wz],
             zone=snap['stop_zone_m'], scale=list(snap['scale']), anchor=snap['anchor'],
             goal=snap['goal'], has_path=bool(snap['path']),
+            room=snap.get('room'), searching=bool(snap.get('searching')),
+            found=None if not snap.get('found') else [
+                dict(x=c['pose'][0], y=c['pose'][1], heading=math.degrees(c['pose'][2]), fit=c['matched'])
+                for c in snap['found']['candidates']],
             link=dict(state=link['state'], ok=link['link_ok'], rtt_ms=None if link['rtt'] is None else link['rtt'] * 1000,
                       armed=bool(tel.get('armed')), safety_stop=tel.get('safety_stop') or '',
                       error=(link['error'] or '')[:120], age=link['telemetry_age']),
@@ -243,10 +263,10 @@ class Views:
             return dict(pts=[], unknown='')
         sample = nav.fast_state() or {}
         pose = sample.get('pose')
-        scan = (client.snapshot()['telemetry'] or {}).get('scan')
-        if pose is None or not scan:
+        telemetry = client.snapshot()['telemetry'] or {}
+        if pose is None or not telemetry.get('scan'):
             return dict(pts=[], unknown='')
-        points = [tuple(p) for p in scan.get('points', [])]
+        points = nav.safety.lidar_points(telemetry)          # robot frame, LiDAR mounting applied
         unknown = set(nav.safety.unknown_points(points, pose, nav.grid, sample.get('sigma', 0.0)))
         return dict(pts=[[round(v, 3) for v in transform_point(pose, p)] for p in points],
                     unknown=''.join('1' if p in unknown else '0' for p in points))
@@ -321,6 +341,20 @@ class Views:
             dispatch_allowed=self.dispatch_allowed, dispatch_message=self.dispatch_message,
             weight=cfg.clearance_weight, extra_cm=cfg.preferred_clearance_m * 100, message=res.message,
             edited=self.edited))
+
+    def _view_room(self):
+        """What the LiDAR has drawn of the room around the arena (wall cells, map coordinates)."""
+        nav = self.nav
+        if nav is None or nav.room is None or nav.cfg.lidar_reference != 'room' or not self.opts['show_room']:
+            return dict(pts=[])
+        room = nav.room.map
+        key = (id(room), room.rev)
+        cached = self._view_cache.get('room')
+        if cached and cached[0] == key:
+            return cached[1]
+        data = dict(pts=[] if room.empty else room.wall_points(), res=room.res)
+        self._view_cache['room'] = (key, data)
+        return data
 
     def _view_diag(self):
         nav, v = self.nav, self.vision
