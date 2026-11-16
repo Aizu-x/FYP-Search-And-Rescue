@@ -159,6 +159,6 @@ Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works]
 
 ## Credits
 
-Final-year project. A\* navigation, console and robot integration by this repository's author; the YOLOv5n
-red / green block detector in `third_party/wro_yolo/` was trained by a project teammate. Robot platform:
-HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble).
+Final-year project by **Abbas Faisal Modhaffar**: A\* navigation, operator console and robot integration.
+The YOLOv5n red / green block detector in `third_party/wro_yolo/` was trained by a project teammate.
+Robot platform: HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble).
