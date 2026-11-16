@@ -1,4 +1,4 @@
-"""Edge navigation entry point (version 2: web console). The original ``main.py`` is unchanged.
+"""Entry point: web console, simulator demo and robot connection tools. ``main.py`` is the stand-alone planner.
 
     python nav_main.py gui                      # operator console in its own window (planner / simulator / robot)
     python nav_main.py import-old <folder>      # copy key, robot settings, edited maps from the previous project
