@@ -1,0 +1,85 @@
+# Edge-side navigation configuration (read by ugv_nav.config.load_config).
+# Values marked MEASURE / VERIFY are NOT known yet. Physical navigation is refused
+# until robot dimensions are filled in.
+
+[network]
+ugv_host = ""                # VERIFY: the MentorPi's Wi-Fi IP address (e.g. from `hostname -I` on the Pi)
+ugv_port = 8765
+key_file = "mentorpi.key"    # relative to this config folder; same key file as on the Pi (never commit it)
+client_id = "edge-laptop"
+link_timeout_s = 0.6         # telemetry older than this = link lost -> stop
+
+[map]
+environment = "ENV1"         # ENV1/ENV2/ENV3 from ugv_planner (occupancy, not GT, is used for planning)
+resolution_m = 0.03          # must match ugv_planner (100 x 100 cells = 3 m x 3 m)
+# The map frame is the ugv_planner frame: origin = lower-left corner of the arena image,
+# x to the right, y up (image rows flipped in memory). VERIFY physically by marking
+# the arena origin corner and x axis on the floor before Test E.
+
+[robot]
+radius_m = 0.143             # 22 x 18 cm body -> enclosing circle hypot(0.11, 0.09) = 0.142 m
+margin_m = 0.02              # extra planning margin (localization/tracking); radius_m + margin_m must be
+                             # >= hypot(half_length_m, half_width_m) + safety.rotate_clearance_m
+half_length_m = 0.11         # measured length 22 cm
+half_width_m = 0.09          # measured width 18 cm
+
+[planner]
+connectivity = 8
+inflation = true
+clearance_weight = 4.0       # same default as the existing GUI
+preferred_clearance_m = 0.20
+use_shortcut = false         # (old option) greedy line-of-sight shortcut; ignored while smooth_path = true
+smooth_path = true           # straighten the grid zig-zag; never worse for clearance preference (console toggle too)
+engine = "fast"              # "fast" = identical A* routes, cached, ~50x quicker; "original" = ugv_planner as is
+
+[controller]
+max_v = 0.15                 # 100 % on the console speed slider (= the bridge limit max_vx on the Pi)
+min_v = 0.03
+max_w = 0.6                  # 100 % turning speed (= bridge max_wz)
+min_w = 0.15
+kp_w = 1.5
+kd_w = 0.1
+lookahead_m = 0.15
+rotate_threshold_deg = 35.0
+goal_tolerance_m = 0.05
+slow_radius_m = 0.25
+max_cross_track_m = 0.10
+progress_timeout_s = 8.0
+control_rate_hz = 10.0
+command_ttl_s = 0.3
+
+[localization]
+heading_source = "odom"      # "odom" or "imu" -- choose after Test D
+stale_after_s = 0.5
+sigma0_m = 0.02
+drift_per_m = 0.05           # MEASURE in Test D and adjust
+drift_per_rad_m = 0.01
+max_sigma_m = 0.15
+max_jump_m = 0.15
+scale_x = 1.0                # map-axis scale corrections; normally set from the console's Calibration row
+scale_y = 1.0                # (the console's saved values take priority when you connect)
+
+[lidar_localization]
+# The console always shows how well the LiDAR scan fits the map, and "Re-localize with LiDAR" corrects the
+# pose on request. continuous_correction = true (BETA, simulator-tested only) also applies small corrections
+# about once a second, so the drift estimate does not grow while walls are in view.
+continuous_correction = false
+period_s = 1.0
+
+[safety]
+stop_distance_m = 0.12       # LiDAR stop zone = margin + v*reaction + v^2/(2*decel), unmapped obstacles only
+reaction_time_s = 0.4
+brake_decel = 0.3
+rotate_clearance_m = 0.02
+ignore_known_obstacles = true   # mapped walls are handled by A* clearance; the bridge still sees everything
+known_tolerance_cells = 2.0
+scan_stale_s = 0.6
+require_lidar = true
+replan_on_obstacle = true
+obstacle_map_range_m = 1.0
+# Auto-continue: after an unmapped obstacle stops the robot and A* (on the edge) finds a new
+# route to the same goal, drive it without pressing AUTHORIZE again. Operator STOP, Wi-Fi loss,
+# localization loss and all other faults still require authorization. Can also be toggled in the GUI.
+auto_continue_after_replan = false
+max_auto_replans = 5          # per operator authorization
+auto_continue_delay_s = 1.0   # robot must be standing still this long before it continues

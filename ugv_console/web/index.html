@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UGV Search &amp; Rescue</title>
+<link rel="icon" href="/icon.svg">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v5h5"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6.5V20l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></symbol>
+    <symbol id="i-robot" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="10" rx="2.5"/><path d="M12 4.5V8"/><circle cx="12" cy="3.6" r="1" fill="currentColor"/><circle cx="9.5" cy="13" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13" r="1.2" fill="currentColor" stroke="none"/><path d="M2.8 12v3M21.2 12v3"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.3" r="3.4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.5-6.2 6.5-11a6.5 6.5 0 1 0-13 0c0 4.8 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4 2.5 4H6"/></symbol>
+    <symbol id="i-brush" viewBox="0 0 24 24"><path d="M14.5 4.5l5 5L11 18H6v-5z"/><path d="M12.5 6.5l5 5"/></symbol>
+    <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 20-3.5-3.5a2 2 0 0 1 0-2.8L13 4.2a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L10.6 20z"/><path d="M7 20h13"/><path d="m8.5 8.7 6.8 6.8"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m9 6 3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></symbol>
+    <symbol id="i-ruler" viewBox="0 0 24 24"><path d="m3.5 15.5 12-12 5 5-12 12z"/><path d="m7.5 11.5 2 2M10.5 8.5l2 2M13.5 5.5l2 2"/></symbol>
+    <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M8 7 4 11l4 4"/><path d="M4 11h10a5 5 0 0 1 0 10h-3"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 21.5 20h-19z"/><path d="M12 10v5M12 17.6v.2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.4v.2"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M5 6h8M17 6h2M5 12h2M11 12h8M5 18h10M19 18h.2"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.2 5.2 7 7M17 17l1.8 1.8M18.8 5.2 17 7M7 17l-1.8 1.8"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6 12.5a9 9 0 0 1 12 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 18 6"/></symbol>
+    <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="m9 12 2.2 2.2L15 10.5"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 5-4.5 3.5 3 2.5-2 3 3.5"/></symbol>
+  </defs>
+</svg>
+
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"><svg class="ic"><use href="#i-robot"/></svg></div>
+      <div class="brand-text"><strong>UGV Search &amp; Rescue</strong><span>Edge A* navigation · YOLO detection</span></div>
+    </div>
+    <div class="seg mode-seg" id="mode-seg" aria-label="Mode">
+      <button data-mode="offline" title="Plan and play back A* routes (no robot)"><svg class="ic"><use href="#i-route"/></svg>Planner</button>
+      <button data-mode="sim" title="Simulated robot, LiDAR and camera on this laptop"><svg class="ic"><use href="#i-cube"/></svg>Simulator</button>
+      <button data-mode="robot" title="The real MentorPi over Wi-Fi"><svg class="ic"><use href="#i-robot"/></svg>Robot</button>
+    </div>
+    <div class="chips">
+      <span class="chip" id="chip-link" data-show="sim robot"><i class="dot"></i><span>Offline</span></span>
+      <span class="chip" id="chip-nav"><i class="dot"></i><span>Planner</span></span>
+      <span class="chip" id="chip-loc" data-show="sim robot" title="Estimated position drift (grows with distance driven)"><svg class="ic"><use href="#i-crosshair"/></svg><span>—</span></span>
+      <span class="chip" id="chip-mission" data-show="sim robot"><svg class="ic"><use href="#i-search"/></svg><span>Mission off</span></span>
+    </div>
+    <button class="icon-btn" id="btn-theme" title="Light / dark theme"><svg class="ic"><use href="#i-sun"/></svg></button>
+    <button class="stop" id="btn-stop" title="Stop the robot now (Esc)"><svg class="ic"><use href="#i-stop"/></svg><span>STOP</span><kbd>Esc</kbd></button>
+  </header>
+
+  <main class="layout">
+    <!-- ============================================================ left: controls -->
+    <aside class="side left">
+      <nav class="tabs" id="tabs">
+        <button data-tab="drive" class="active"><svg class="ic"><use href="#i-route"/></svg>Drive</button>
+        <button data-tab="map"><svg class="ic"><use href="#i-map"/></svg>Map</button>
+        <button data-tab="robot"><svg class="ic"><use href="#i-sliders"/></svg>Robot</button>
+        <button data-tab="camera" data-show="sim robot"><svg class="ic"><use href="#i-camera"/></svg>Camera</button>
+        <button data-tab="search" data-show="sim robot"><svg class="ic"><use href="#i-search"/></svg>Search</button>
+      </nav>
+      <div class="tab-body">
+        <!-- ---------------------------------------------------- Drive -->
+        <section class="tab-panel active" data-panel="drive">
+          <ol class="steps" id="steps" data-show="sim robot">
+            <li data-step="1"><b>1</b><span>Connect</span></li>
+            <li data-step="2"><b>2</b><span>Place robot</span></li>
+            <li data-step="3"><b>3</b><span>Goal</span></li>
+            <li data-step="4"><b>4</b><span>Go</span></li>
+          </ol>
+
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-plug"/></svg><h3 id="conn-title">Connection</h3><span class="tag" id="conn-tag"></span></div>
+            <div class="card-b">
+              <div class="pt-row" data-show="robot">
+                <span class="pt-label">UGV IP, port</span>
+                <input data-opt="host" type="text" placeholder="192.168.149.1" spellcheck="false" autocomplete="off" class="host">
+                <input data-opt="port" type="number" min="1" max="65535" class="port">
+              </div>
+              <button class="btn primary block" id="btn-connect"><svg class="ic"><use href="#i-plug"/></svg><span>Connect</span></button>
+              <div class="note" id="conn-note"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-route"/></svg><h3>Route</h3><span class="tag" id="route-tag"></span></div>
+            <div class="card-b">
+              <div class="row"><label for="env">Environment</label><select id="env" class="grow-0"></select></div>
+              <div class="pt-row">
+                <button class="tool-chip" data-tool="start" title="Click the map to set the start (drag to set the heading)"><svg class="ic"><use href="#i-pin"/></svg>Start</button>
+                <input id="sx" type="number" step="0.001" aria-label="Start x"><input id="sy" type="number" step="0.001" aria-label="Start y"><span class="unit">m</span>
+              </div>
+              <div class="pt-row" data-show="sim robot">
+                <span class="pt-label">Heading</span>
+                <input data-opt="heading" type="number" step="1" aria-label="Heading" class="narrow"><span class="unit wide">° &nbsp;(0 = +x, 90 = +y)</span>
+              </div>
+              <div class="pt-row">
+                <button class="tool-chip goal" data-tool="goal" title="Click the map to set the goal"><svg class="ic"><use href="#i-flag"/></svg>Goal</button>
+                <input id="gx" type="number" step="0.001" aria-label="Goal x"><input id="gy" type="number" step="0.001" aria-label="Goal y"><span class="unit">m</span>
+              </div>
+              <button class="btn block" id="btn-plan"><svg class="ic"><use href="#i-route"/></svg>Plan route</button>
+              <div class="note" id="route-info"></div>
+            </div>
+          </div>
+
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-crosshair"/></svg><h3>Robot position</h3></div>
+            <div class="card-b">
+              <button class="btn primary block" data-cmd="confirm_pose" title="The robot is at Start with this heading right now"><svg class="ic"><use href="#i-check"/></svg>Confirm pose</button>
+              <div class="btn-row">
+                <button class="btn" data-cmd="relocalize" title="Fit the LiDAR scan to the map and correct the position (robot must stand still)"><svg class="ic"><use href="#i-radar"/></svg>Re-localize (LiDAR)</button>
+                <button class="btn" data-cmd="sync_pose_sim" data-show="sim" title="Simulator: jump to the true pose"><svg class="ic"><use href="#i-target"/></svg>True pose</button>
+              </div>
+              <div class="meter-row" title="Estimated drift since the pose was last confirmed. Driving stops at the limit.">
+                <span>Drift</span><div class="meter"><i id="sigma-bar"></i></div><span class="val" id="sigma-val">—</span>
+              </div>
+              <div class="meter-row" title="Share of LiDAR points that lie on mapped walls at the estimated position. Low = the position (or the map) is off.">
+                <span>LiDAR fit</span><div class="meter good"><i id="match-bar"></i></div><span class="val" id="match-val">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-play"/></svg><h3>Go</h3></div>
+            <div class="card-b">
+              <label class="switch-row"><input type="checkbox" data-opt="search_at_goal"><i class="switch"></i><span>Search for survivors at the goal</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="auto_continue"><i class="switch"></i><span>Auto-continue after replan</span></label>
+              <button class="btn go block big" id="btn-authorize" disabled><svg class="ic"><use href="#i-shield"/></svg><span>AUTHORIZE</span></button>
+              <div class="note" id="authorize-hint"></div>
+              <div class="btn-row">
+                <button class="btn" id="btn-search-here" title="Start the survivor search where the robot stands"><svg class="ic"><use href="#i-search"/></svg>Search from here</button>
+                <button class="btn danger-soft" data-cmd="stop_mission"><svg class="ic"><use href="#i-stop"/></svg>Stop mission</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-gauge"/></svg><h3>Robot speed</h3><span class="tag" id="speed-tag"></span></div>
+            <div class="card-b">
+              <input type="range" data-opt="robot_speed" min="10" max="100" step="5">
+              <div class="btn-row three">
+                <button class="btn" data-set-opt="robot_speed" data-value="30">Slow 30</button>
+                <button class="btn" data-set-opt="robot_speed" data-value="60">Medium 60</button>
+                <button class="btn" data-set-opt="robot_speed" data-value="100">Fast 100</button>
+              </div>
+              <div class="note" id="speed-info"></div>
+            </div>
+          </div>
+
+          <div class="card" data-show="offline">
+            <div class="card-h"><svg class="ic"><use href="#i-play"/></svg><h3>Route playback</h3><span class="tag" id="sim-tag"></span></div>
+            <div class="card-b">
+              <div class="btn-row three">
+                <button class="btn go" data-cmd="sim_control" data-args='{"action":"start"}'><svg class="ic"><use href="#i-play"/></svg>Start</button>
+                <button class="btn" data-cmd="sim_control" data-args='{"action":"pause"}'><svg class="ic"><use href="#i-pause"/></svg>Pause</button>
+                <button class="btn" data-cmd="sim_control" data-args='{"action":"reset"}'><svg class="ic"><use href="#i-reset"/></svg>Reset</button>
+              </div>
+              <div class="row"><label>Speed</label><input type="range" data-opt="sim_speed" min="0.05" max="1" step="0.05"><span class="val" id="sim-speed-val"></span></div>
+              <div class="note">Plays the planned route with a simulated point robot. GT and occupancy monitors stop it before a violation.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------- Map -->
+        <section class="tab-panel" data-panel="map">
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-brush"/></svg><h3>Edit map</h3><span class="tag" id="map-tag"></span></div>
+            <div class="card-b">
+              <div class="btn-row">
+                <button class="btn tool" data-tool="paint"><svg class="ic"><use href="#i-brush"/></svg>Paint wall</button>
+                <button class="btn tool" data-tool="erase"><svg class="ic"><use href="#i-eraser"/></svg>Erase</button>
+              </div>
+              <div class="row"><label>Brush size</label><input type="range" data-opt="brush" min="0" max="10" step="1"><span class="val" id="brush-val"></span></div>
+              <div class="btn-row">
+                <button class="btn primary" data-cmd="save_map"><svg class="ic"><use href="#i-save"/></svg>Save map</button>
+                <button class="btn" data-cmd="revert_map"><svg class="ic"><use href="#i-undo"/></svg>Original</button>
+              </div>
+              <div class="note">Drag on the map. Saved maps load automatically; the original files are never changed.</div>
+            </div>
+          </div>
+          <div class="card" id="lidar-card" hidden>
+            <div class="card-h"><svg class="ic"><use href="#i-radar"/></svg><h3>Found by LiDAR</h3><span class="tag warn" id="lidar-tag"></span></div>
+            <div class="card-b">
+              <div class="note">Obstacles the LiDAR added while driving (purple). They are not part of your map until you keep them.</div>
+              <div class="btn-row">
+                <button class="btn" data-cmd="lidar_layer" data-args='{"action":"keep"}'><svg class="ic"><use href="#i-plus"/></svg>Add to map</button>
+                <button class="btn" data-cmd="lidar_layer" data-args='{"action":"clear"}'><svg class="ic"><use href="#i-x"/></svg>Clear</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-layers"/></svg><h3>Layers</h3></div>
+            <div class="card-b tight">
+              <label class="switch-row"><input type="checkbox" data-opt="show_path"><i class="switch"></i><span>Planned route</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="show_trail"><i class="switch"></i><span>Driven trail</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="show_inflation"><i class="switch"></i><span>Keep-out zone (robot radius)</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="show_grid"><i class="switch"></i><span>Grid and scale</span></label>
+              <label class="switch-row" data-show="sim robot"><input type="checkbox" data-opt="show_scan"><i class="switch"></i><span>LiDAR points</span></label>
+              <label class="switch-row" data-show="sim robot"><input type="checkbox" data-opt="show_fov"><i class="switch"></i><span>Camera view cone</span></label>
+              <label class="switch-row" data-show="sim robot"><input type="checkbox" data-opt="show_zone"><i class="switch"></i><span>Safety stop zone</span></label>
+              <label class="switch-row" data-show="sim robot"><input type="checkbox" data-opt="show_seen"><i class="switch"></i><span>Searched floor (mission)</span></label>
+              <label class="switch-row" data-show="sim"><input type="checkbox" data-opt="show_truth"><i class="switch"></i><span>True robot position (simulator)</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="show_gt"><i class="switch"></i><span>Ground-truth overlay</span></label>
+              <label class="switch-row" data-show="offline"><input type="checkbox" data-opt="show_search"><i class="switch"></i><span>Cells A* expanded</span></label>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-download"/></svg><h3>Export</h3></div>
+            <div class="card-b">
+              <button class="btn block" id="btn-picture"><svg class="ic"><use href="#i-image"/></svg>Save map picture (PNG)</button>
+              <button class="btn block" data-cmd="export_run" data-show="offline"><svg class="ic"><use href="#i-download"/></svg>Export run (PNG / CSV / JSON)</button>
+              <button class="btn block" id="btn-batch" data-show="offline"><svg class="ic"><use href="#i-list"/></svg>Run all three examples</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------- Robot -->
+        <section class="tab-panel" data-panel="robot">
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-sliders"/></svg><h3>Footprint &amp; A* planner</h3></div>
+            <div class="card-b">
+              <div class="row"><label>Movement</label>
+                <div class="seg small" data-opt="connectivity"><button data-value="4">4-way</button><button data-value="8">8-way</button></div></div>
+              <div class="row"><label>Radius</label><input type="number" data-opt="radius" step="0.001" min="0" placeholder="unknown"><span class="unit">m</span></div>
+              <div class="row"><label>Safety margin</label><input type="number" data-opt="margin" step="0.005" min="0"><span class="unit">m</span></div>
+              <div class="row"><label>Prefer extra clearance</label><input type="number" data-opt="extra_clearance" step="0.01" min="0.005"><span class="unit">m</span></div>
+              <div class="row"><label title="0 = shortest route">Clearance weight</label><input type="number" data-opt="clearance_weight" step="0.5" min="0"><span class="unit"></span></div>
+              <label class="switch-row"><input type="checkbox" data-opt="smooth_path"><i class="switch"></i><span>Smooth route (straighten zig-zags)</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="inflation"><i class="switch"></i><span>Use inflation for planning</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="verified"><i class="switch"></i><span>Measured radius verified</span></label>
+              <label class="switch-row" data-show="sim robot"><input type="checkbox" data-opt="allow_tight"><i class="switch"></i><span>Allow radius below turning circle</span></label>
+              <div class="note" id="planner-info"></div>
+            </div>
+          </div>
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-ruler"/></svg><h3>Scale calibration</h3><span class="tag" id="cal-tag"></span></div>
+            <div class="card-b">
+              <div class="pt-row"><span class="pt-label">X / Y scale</span><input id="scale-x" type="number" step="0.001"><input id="scale-y" type="number" step="0.001"></div>
+              <div class="btn-row">
+                <button class="btn" id="btn-scale-apply">Apply</button>
+                <button class="btn" data-cmd="reset_scale">Reset to 1.000</button>
+              </div>
+              <div class="btn-row">
+                <button class="btn" data-cmd="cal_start" data-args='{"axis":"x"}'>Start X run</button>
+                <button class="btn" data-cmd="cal_start" data-args='{"axis":"y"}'>Start Y run</button>
+              </div>
+              <div class="pt-row">
+                <button class="tool-chip" data-tool="pick-cal" title="Click the robot's REAL centre on the map"><svg class="ic"><use href="#i-crosshair"/></svg>Real end</button>
+                <input id="cal-x" type="number" step="0.001"><input id="cal-y" type="number" step="0.001"><span class="unit">m</span>
+              </div>
+              <div class="btn-row">
+                <button class="btn primary" id="btn-cal-finish">Finish run</button>
+                <button class="btn" data-cmd="cal_cancel">Cancel</button>
+              </div>
+              <div class="note">Confirm pose, start a run, drive straight along that axis, then enter the robot's real end position and press Finish run.</div>
+            </div>
+          </div>
+          <div class="card" data-show="sim robot">
+            <div class="card-h"><svg class="ic"><use href="#i-radar"/></svg><h3>LiDAR position correction</h3><span class="tag warn">beta</span></div>
+            <div class="card-b">
+              <label class="switch-row"><input type="checkbox" data-opt="lidar_correction"><i class="switch"></i><span>Correct the position continuously</span></label>
+              <div class="note" id="lidar-fix-info">Off: the position comes from odometry only (use "Re-localize with LiDAR" when it drifts). On: small corrections about once a second while walls are in view. Simulator-tested only.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------- Camera -->
+        <section class="tab-panel" data-panel="camera">
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Camera + YOLO</h3><span class="tag" id="cam-tag"></span></div>
+            <div class="card-b">
+              <label class="switch-row"><input type="checkbox" data-opt="camera_on"><i class="switch"></i><span>Camera + YOLO on</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="shape_filter"><i class="switch"></i><span>Ignore boxes that cannot be a block</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="colour_check"><i class="switch"></i><span>Box must contain its colour (green / red)</span></label>
+              <div class="row"><label>Minimum YOLO confidence</label><input type="number" data-opt="yolo_min_conf" step="5"><span class="unit">%</span></div>
+              <button class="btn block" data-cmd="clear_camera_obstacles"><svg class="ic"><use href="#i-x"/></svg>Clear camera obstacles</button>
+              <div class="note" id="cam-info">Green = survivor, red = obstacle. Blocks appear on the map after 3 sightings.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-sliders"/></svg><h3>Camera mount</h3></div>
+            <div class="card-b">
+              <div class="row"><label>Height</label><input type="number" data-opt="camera_height_cm" step="0.5"><span class="unit">cm</span></div>
+              <div class="row"><label>Tilt down</label><input type="number" data-opt="camera_pitch_deg" step="0.5"><span class="unit">°</span></div>
+              <div class="row"><label>Ahead of robot centre</label><input type="number" data-opt="camera_forward_cm" step="0.5"><span class="unit">cm</span></div>
+              <div class="row"><label>Yaw (left +)</label><input type="number" data-opt="camera_yaw_deg" step="0.5"><span class="unit">°</span></div>
+              <label class="switch-row"><input type="checkbox" data-opt="auto_tilt"><i class="switch"></i><span>Auto tilt from block size</span></label>
+              <div class="note" id="tilt-info">Shows the camera a whole block: the tilt is measured from its known 10 cm height.</div>
+              <button class="btn block" data-cmd="use_tilt_estimate" id="btn-use-tilt"><svg class="ic"><use href="#i-check"/></svg>Use measured tilt now</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-crosshair"/></svg><h3>Manual calibration</h3><span class="tag" id="samples-tag">0 samples</span></div>
+            <div class="card-b">
+              <div class="pt-row">
+                <button class="tool-chip" data-tool="pick-block" title="Click the block's REAL centre on the map"><svg class="ic"><use href="#i-crosshair"/></svg>Block</button>
+                <input id="blk-x" type="number" step="0.001"><input id="blk-y" type="number" step="0.001"><span class="unit">m</span>
+              </div>
+              <div class="btn-row three">
+                <button class="btn" id="btn-sample">Add sample</button>
+                <button class="btn primary" data-cmd="camera_fit">Fit</button>
+                <button class="btn" data-cmd="camera_samples_clear">Clear</button>
+              </div>
+              <div class="note">Optional (also fits forward offset and yaw): put a block at 2-4 measured spots in view, add a sample for each, then Fit.</div>
+            </div>
+          </div>
+          <div class="card" data-show="sim">
+            <div class="card-h"><svg class="ic"><use href="#i-cube"/></svg><h3>Simulator test blocks</h3></div>
+            <div class="card-b">
+              <div class="row"><label>Colour</label>
+                <div class="seg small" data-opt="sim_block_colour"><button data-value="green">Green (survivor)</button><button data-value="red">Red</button></div></div>
+              <button class="btn tool block" data-tool="block"><svg class="ic"><use href="#i-cube"/></svg>Place / remove blocks on the map</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------------------------------------------------- Search -->
+        <section class="tab-panel" data-panel="search">
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-search"/></svg><h3>Survivor search</h3></div>
+            <div class="card-b">
+              <div class="row"><label>How close to the green object</label><input type="number" data-opt="mission_gap_cm" step="1"><span class="unit">cm</span></div>
+              <div class="row"><label>Stand there before "secured"</label><input type="number" data-opt="mission_hold_s" step="0.5"><span class="unit">s</span></div>
+              <label class="switch-row"><input type="checkbox" data-opt="mission_end"><i class="switch"></i><span>End the mission when secured and no other green is seen</span></label>
+              <div class="row"><label>Same survivor if closer than</label><input type="number" data-opt="mission_same_cm" step="1"><span class="unit">cm</span></div>
+              <div class="row"><label>Look-around step</label><input type="number" data-opt="mission_step_deg" step="5"><span class="unit">°</span></div>
+              <div class="row"><label>Hold still at each step</label><input type="number" data-opt="mission_dwell_s" step="0.1"><span class="unit">s</span></div>
+              <div class="row"><label>Look-around turn speed</label><input type="number" data-opt="mission_turn_rate" step="0.05"><span class="unit">rad/s</span></div>
+              <div class="row"><label>Camera search range</label><input type="number" data-opt="mission_range_m" step="0.1"><span class="unit">m</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-info"/></svg><h3>How the search works</h3></div>
+            <div class="card-b">
+              <ol class="how">
+                <li>Drive to the goal with A*.</li>
+                <li>Turn on the spot in steps and hold still so YOLO can look.</li>
+                <li>A confirmed <b class="g">green</b> object is pinged as a survivor.</li>
+                <li>The first green object seen is approached at once, also on the way to the goal.</li>
+                <li>Stop at the chosen distance, face it, stand still for the chosen time: <i>secured</i>.</li>
+                <li>Another green object known: go to it. None: <b>mission complete</b>.</li>
+                <li>No green object yet: go to floor the camera has not seen and look again.</li>
+              </ol>
+              <div class="note">STOP, link loss and localization loss pause the mission. Fix the cause, then press RESUME MISSION.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- ============================================================ centre: map -->
+    <section class="stage" id="stage">
+      <canvas id="map" tabindex="0" aria-label="Map"></canvas>
+      <div class="hud map-title" id="map-title"></div>
+      <div class="toolbar" id="toolbar">
+        <button data-tool="pan" class="active" title="Move the view (1) · wheel = zoom"><svg class="ic"><use href="#i-move"/></svg></button>
+        <button data-tool="start" title="Set start: click, drag to turn (2)"><svg class="ic"><use href="#i-pin"/></svg></button>
+        <button data-tool="goal" title="Set goal (3)"><svg class="ic"><use href="#i-flag"/></svg></button>
+        <i class="sep"></i>
+        <button data-tool="paint" title="Paint wall (4)"><svg class="ic"><use href="#i-brush"/></svg></button>
+        <button data-tool="erase" title="Erase wall (5)"><svg class="ic"><use href="#i-eraser"/></svg></button>
+        <button data-tool="block" data-show="sim" title="Place / remove a test block (6)"><svg class="ic"><use href="#i-cube"/></svg></button>
+        <button data-tool="measure" title="Measure a distance (7)"><svg class="ic"><use href="#i-ruler"/></svg></button>
+      </div>
+      <div class="viewbar">
+        <button id="btn-zoom-in" title="Zoom in (+)"><svg class="ic"><use href="#i-plus"/></svg></button>
+        <button id="btn-zoom-out" title="Zoom out (-)"><svg class="ic"><use href="#i-minus"/></svg></button>
+        <button id="btn-fit" title="Fit the whole map (F)"><svg class="ic"><use href="#i-fit"/></svg></button>
+        <button id="btn-rotate" title="Rotate the view 90° (R). Only the picture turns."><svg class="ic"><use href="#i-rotate"/></svg></button>
+        <button id="btn-follow" title="Keep the robot centred"><svg class="ic"><use href="#i-target"/></svg></button>
+      </div>
+      <div class="hud cursor" id="cursor">x —  ·  y —</div>
+      <div class="hud hint" id="hint"></div>
+      <div class="banner" id="banner" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="banner-text"></span><button class="btn small" id="banner-btn" hidden></button></div>
+      <div class="legend" id="legend"></div>
+      <div class="tooltip" id="tip" hidden></div>
+    </section>
+
+    <!-- ============================================================ right: live data -->
+    <aside class="side right">
+      <div class="card" data-show="sim robot">
+        <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Live camera</h3><span class="tag" id="cam-fps"></span></div>
+        <div class="card-b flush">
+          <div class="cam-wrap"><canvas id="cam"></canvas><div class="cam-empty" id="cam-empty"><svg class="ic"><use href="#i-camera"/></svg><span>Camera off</span></div></div>
+          <div class="cam-status" id="cam-status"></div>
+        </div>
+      </div>
+      <div class="card" data-show="offline">
+        <div class="card-h"><svg class="ic"><use href="#i-shield"/></svg><h3>Route report</h3><span class="tag" id="report-tag"></span></div>
+        <div class="card-b"><div class="verdict" id="verdict"></div><div class="kv" id="report"></div><div class="note" id="report-note"></div></div>
+      </div>
+      <div class="card" data-show="sim robot">
+        <div class="card-h"><svg class="ic"><use href="#i-heart"/></svg><h3>Survivors</h3><span class="tag" id="surv-tag">0 found</span>
+          <button class="icon-btn small" data-cmd="export_survivors" title="Export the list as CSV"><svg class="ic"><use href="#i-download"/></svg></button>
+          <button class="icon-btn small" data-cmd="clear_survivors" title="Clear the list"><svg class="ic"><use href="#i-x"/></svg></button></div>
+        <div class="card-b flush"><div class="list" id="survivors"><div class="empty">No survivors found yet.</div></div></div>
+      </div>
+      <div class="card grow">
+        <div class="card-h"><svg class="ic"><use href="#i-list"/></svg><h3>Activity</h3></div>
+        <div class="card-b flush"><div class="log" id="log"></div></div>
+      </div>
+      <div class="card" data-show="sim robot">
+        <div class="card-h"><svg class="ic"><use href="#i-gauge"/></svg><h3>System</h3></div>
+        <div class="card-b"><div class="tiles" id="tiles"></div></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="statusbar"><span class="status-dot" id="status-dot"></span><span id="status-text">Starting…</span><span class="spacer"></span><span class="ver" id="ver"></span></footer>
+</div>
+
+<div id="modal-root"></div>
+<div id="toasts"></div>
+<div class="lost" id="lost" hidden><div><svg class="ic"><use href="#i-alert"/></svg><h2>Connection to the console program lost</h2><p>The Python program is not answering. If the robot was moving it has been stopped by its own watchdog.<br>Check the terminal, start <code>nav_main.py gui</code> again and reload this page.</p></div></div>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>

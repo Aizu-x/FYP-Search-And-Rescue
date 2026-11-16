@@ -1,0 +1,77 @@
+{
+  "ENV1": {
+    "path_found": true,
+    "planner_status": "found",
+    "path_length_m": 4.09492424049175,
+    "planning_ms": 433.854200062342,
+    "expanded_nodes": 3412,
+    "objective_cost_cells": 155.98660893772694,
+    "turns": 13,
+    "detour_ratio": 1.2616500453014854,
+    "minimum_gt_clearance_cm": 19.499999999999996,
+    "minimum_footprint_clearance_cm": 19.499999999999996,
+    "gt_center_collision": false,
+    "gt_footprint_collision": false,
+    "unsafe_segments": [],
+    "validation": "Safety undetermined: footprint not verified",
+    "explanation": "No detected collision for configured geometry; measured bounding radius and assumptions must be verified.",
+    "dispatch_allowed": true,
+    "dispatch_message": "Offline route checks passed for configured geometry; physical safety is not established.",
+    "simulation_state": "arrived",
+    "simulation_final_position_m": [
+      2.655,
+      2.5949999999999998
+    ],
+    "simulation_only_edits": false
+  },
+  "ENV2": {
+    "path_found": true,
+    "planner_status": "found",
+    "path_length_m": 8.673746750430835,
+    "planning_ms": 510.72149991523474,
+    "expanded_nodes": 4395,
+    "objective_cost_cells": 449.3616384627847,
+    "turns": 51,
+    "detour_ratio": 2.8198249628705025,
+    "minimum_gt_clearance_cm": 16.500000000000004,
+    "minimum_footprint_clearance_cm": 16.500000000000004,
+    "gt_center_collision": false,
+    "gt_footprint_collision": false,
+    "unsafe_segments": [],
+    "validation": "Safety undetermined: footprint not verified",
+    "explanation": "No detected collision for configured geometry; measured bounding radius and assumptions must be verified.",
+    "dispatch_allowed": true,
+    "dispatch_message": "Offline route checks passed for configured geometry; physical safety is not established.",
+    "simulation_state": "arrived",
+    "simulation_final_position_m": [
+      2.505,
+      2.505
+    ],
+    "simulation_only_edits": false
+  },
+  "ENV3": {
+    "path_found": true,
+    "planner_status": "found",
+    "path_length_m": 6.9719090885901,
+    "planning_ms": 424.3411000352353,
+    "expanded_nodes": 3629,
+    "objective_cost_cells": 369.14017896893097,
+    "turns": 34,
+    "detour_ratio": 3.0150928062441533,
+    "minimum_gt_clearance_cm": 13.500000000000023,
+    "minimum_footprint_clearance_cm": 13.500000000000023,
+    "gt_center_collision": false,
+    "gt_footprint_collision": false,
+    "unsafe_segments": [],
+    "validation": "Safety undetermined: footprint not verified",
+    "explanation": "No detected collision for configured geometry; measured bounding radius and assumptions must be verified.",
+    "dispatch_allowed": true,
+    "dispatch_message": "Offline route checks passed for configured geometry; physical safety is not established.",
+    "simulation_state": "arrived",
+    "simulation_final_position_m": [
+      1.9649999999999999,
+      1.9649999999999999
+    ],
+    "simulation_only_edits": false
+  }
+}

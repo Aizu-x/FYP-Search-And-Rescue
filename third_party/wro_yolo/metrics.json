@@ -1,0 +1,43 @@
+{
+  "model": "YOLOv5n, 2 classes: green_obstacle=0, red_obstacle=1",
+  "baseline_50_epochs": true,
+  "finetuning_20_epochs": true,
+  "original_test": {
+    "images": 753,
+    "objects": 591,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mAP50": 0.995,
+    "mAP50_95": 0.917,
+    "green_mAP50_95": 0.905,
+    "red_mAP50_95": 0.93
+  },
+  "real_holdout_pytorch": {
+    "images": 9,
+    "objects": 11,
+    "precision": 0.99,
+    "recall": 1.0,
+    "mAP50": 0.995,
+    "mAP50_95": 0.945,
+    "green_recall": 1.0,
+    "red_recall": 1.0
+  },
+  "real_holdout_onnx_cpu": {
+    "images": 9,
+    "objects": 11,
+    "precision": 0.991,
+    "recall": 1.0,
+    "mAP50": 0.995,
+    "mAP50_95": 0.957,
+    "green_recall": 1.0,
+    "red_recall": 1.0,
+    "observed_inference_ms_per_image_on_asus_cpu_batch_1": 30.6
+  },
+  "deployment_tested_on_mentorpi": false,
+  "warnings": [
+    "Small, same-session real-photo holdout",
+    "Possible original dataset near-duplicate frames",
+    "Image-coordinate boxes are not metric positions",
+    "No Raspberry Pi inference benchmark"
+  ]
+}

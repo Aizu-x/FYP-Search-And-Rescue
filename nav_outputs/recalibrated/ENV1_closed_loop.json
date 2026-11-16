@@ -1,0 +1,25 @@
+{
+  "environment": "ENV1",
+  "final_state": "ARRIVED",
+  "message": "Goal reached (within 0.049 m of goal).",
+  "goal": [
+    2.655,
+    2.5949999999999998
+  ],
+  "estimated_final": [
+    2.61804471640883,
+    2.5630258655743643,
+    0.7257351007924413
+  ],
+  "true_final": [
+    2.6344623148830313,
+    2.5268326163003745,
+    0.7093027585884943
+  ],
+  "true_error_to_goal_m": 0.07119402159181407,
+  "elapsed_s": 38.912708573000145,
+  "collided_with_gt": false,
+  "recalibrations": 1,
+  "odom_scale_error": 0.02,
+  "note": "Simulation only; not a physical result."
+}

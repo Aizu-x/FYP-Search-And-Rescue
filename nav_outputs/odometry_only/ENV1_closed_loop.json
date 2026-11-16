@@ -1,0 +1,25 @@
+{
+  "environment": "ENV1",
+  "final_state": "STOPPED",
+  "message": "Stopped: localization LOW_CONFIDENCE (estimated drift 0.15 m > 0.15 m; recalibrate).",
+  "goal": [
+    2.655,
+    2.5949999999999998
+  ],
+  "estimated_final": [
+    2.347702780649585,
+    0.9312393943967221,
+    0.3683135895385208
+  ],
+  "true_final": [
+    2.3143044075768295,
+    0.9215106973890955,
+    0.39724119034262806
+  ],
+  "true_error_to_goal_m": 1.707817300723267,
+  "elapsed_s": 20.21992020300013,
+  "collided_with_gt": false,
+  "recalibrations": 0,
+  "odom_scale_error": 0.02,
+  "note": "Simulation only; not a physical result."
+}

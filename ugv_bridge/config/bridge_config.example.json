@@ -1,0 +1,50 @@
+{
+  "_comment": "Copy to bridge_config.json on the Pi. Values marked VERIFY/MEASURE are NOT known yet. The bridge refuses to start until half_length_m/half_width_m are filled in.",
+  "bind_host": "0.0.0.0",
+  "port": 8765,
+  "key_file": "mentorpi.key",
+
+  "topics": {
+    "_comment": "Seen on the user's MentorPi_Mecanum (ROS 2 Humble, container 'MentorPi'). cmd_vel subscriber still to be confirmed with: ros2 topic info /controller/cmd_vel",
+    "cmd_vel": "/controller/cmd_vel",
+    "odom": "/odom",
+    "imu": "/imu",
+    "scan": "/scan_raw",
+    "camera": "/ascamera/camera_publisher/rgb0/image",
+    "camera_info": "/ascamera/camera_publisher/rgb0/camera_info"
+  },
+
+  "max_vx": 0.15,
+  "max_vy": 0.0,
+  "max_wz": 0.6,
+  "reject_factor": 1.5,
+  "max_accel_v": 0.3,
+  "max_accel_w": 1.5,
+
+  "cmd_max_ttl": 0.5,
+  "cmd_hold": 0.3,
+  "disarm_after_no_cmd": 1.0,
+  "heartbeat_timeout": 1.0,
+  "publish_rate_hz": 20.0,
+  "telemetry_rate_hz": 10.0,
+  "zero_burst_s": 0.5,
+
+  "odom_timeout": 0.5,
+  "scan_timeout": 0.5,
+  "require_lidar": true,
+
+  "_dims": "From user-reported 22 cm x 18 cm. Re-measure including wheels, bumpers and the LiDAR before Test C.",
+  "half_length_m": 0.11,
+  "half_width_m": 0.09,
+  "_stop": "LiDAR stop zone ahead of the body = stop_distance_m + v*reaction_time_s + v^2/(2*brake_decel). Sees ALL LiDAR points.",
+  "stop_distance_m": 0.08,
+  "reaction_time_s": 0.3,
+  "brake_decel": 0.3,
+  "rotate_clearance_m": 0.02,
+
+  "_mount": "VERIFY: LiDAR position/yaw in the robot base frame (x forward, y left). Check with a box placed directly in front of the robot.",
+  "lidar_mount": [0.0, 0.0, 0.0],
+  "lidar_min_valid_m": 0.05,
+  "telemetry_scan_points": 180,
+  "telemetry_scan_range_m": 3.0
+}

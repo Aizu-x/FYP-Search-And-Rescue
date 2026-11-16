@@ -1,0 +1,36 @@
+test_actual_examples_reach_goals_with_clearance_preference (test_clearance.ClearanceTests.test_actual_examples_reach_goals_with_clearance_preference) ... ok
+test_field_matches_exact_geometry (test_clearance.ClearanceTests.test_field_matches_exact_geometry) ... ok
+test_invalid_preferences (test_clearance.ClearanceTests.test_invalid_preferences) ... ok
+test_known_unsafe_route_cannot_dispatch (test_clearance.ClearanceTests.test_known_unsafe_route_cannot_dispatch) ... ok
+test_preference_leaves_wall_without_changing_hard_constraints (test_clearance.ClearanceTests.test_preference_leaves_wall_without_changing_hard_constraints) ... ok
+test_weighted_optimum_against_independent_dijkstra (test_clearance.ClearanceTests.test_weighted_optimum_against_independent_dijkstra) ... ok
+test_interactive_workflow (test_gui.GUIIntegrationTests.test_interactive_workflow) ... ok
+test_unsafe_start_disabled (test_gui.GUIIntegrationTests.test_unsafe_start_disabled) ... ok
+test_all_files_alignment_and_source_integrity (test_system.ActualDatasetTests.test_all_files_alignment_and_source_integrity) ... ok
+test_examples_and_export (test_system.ActualDatasetTests.test_examples_and_export) ... ok
+test_loader_rejects_malformed_maps (test_system.ActualDatasetTests.test_loader_rejects_malformed_maps) ... ok
+test_config_validation (test_system.AlgorithmTests.test_config_validation) ... ok
+test_identical_endpoints (test_system.AlgorithmTests.test_identical_endpoints) ... ok
+test_inflation_closes_passage (test_system.AlgorithmTests.test_inflation_closes_passage) ... ok
+test_invalid_and_occupied (test_system.AlgorithmTests.test_invalid_and_occupied) ... ok
+test_known_optimal_costs (test_system.AlgorithmTests.test_known_optimal_costs) ... ok
+test_no_corner_cutting (test_system.AlgorithmTests.test_no_corner_cutting) ... ok
+test_random_optimality_against_independent_dijkstra (test_system.AlgorithmTests.test_random_optimality_against_independent_dijkstra) ... ok
+test_unreachable (test_system.AlgorithmTests.test_unreachable) ... ok
+test_continuous_crossing_between_free_endpoints (test_system.GeometryTests.test_continuous_crossing_between_free_endpoints) ... ok
+test_corner_and_disk_tangency (test_system.GeometryTests.test_corner_and_disk_tangency) ... ok
+test_gt_detects_center_and_footprint_separately (test_system.GeometryTests.test_gt_detects_center_and_footprint_separately) ... ok
+test_inflation_matches_point_geometry (test_system.GeometryTests.test_inflation_matches_point_geometry) ... ok
+test_map_boundary (test_system.GeometryTests.test_map_boundary) ... ok
+test_safety_requires_verified_geometry (test_system.GeometryTests.test_safety_requires_verified_geometry) ... ok
+test_swept_disk_rejects_edge_with_clear_endpoints (test_system.GeometryTests.test_swept_disk_rejects_edge_with_clear_endpoints) ... ok
+test_motion_checks_each_turn_with_large_timestep (test_system.MotionAndIntegrationTests.test_motion_checks_each_turn_with_large_timestep) ... ok
+test_motion_pause_resume_reset_and_completion (test_system.MotionAndIntegrationTests.test_motion_pause_resume_reset_and_completion) ... ok
+test_replan_from_exact_current_pose (test_system.MotionAndIntegrationTests.test_replan_from_exact_current_pose) ... ok
+test_replan_rejects_unsafe_connector (test_system.MotionAndIntegrationTests.test_replan_rejects_unsafe_connector) ... ok
+test_ros_adapter_unknown_blocked_and_origin (test_system.MotionAndIntegrationTests.test_ros_adapter_unknown_blocked_and_origin) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 15.104s
+
+OK

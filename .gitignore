@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+exports/
+
+# yours only: never uploaded, never changed by updates
+config/mentorpi.key
+config/*.key
+config/navigation.local.toml
+config/navigation.before_import.toml
+config/console_settings.json
+config/gui_settings.json
+data/edited/
