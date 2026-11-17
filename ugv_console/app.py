@@ -207,6 +207,7 @@ class ConsoleApp(Views):
             self.opts.update(host=net.ugv_host, port=int(net.ugv_port),
                              auto_continue=bool(nav.auto_continue_after_replan), smooth_path=bool(nav.smooth_path),
                              lidar_correction=bool(nav.lidar_correction), auto_find=bool(nav.auto_find),
+                             ignore_drift=bool(nav.localization.ignore_drift),
                              lidar_sees='room' if nav.lidar_reference == 'room' else 'walls',
                              scale_x=float(nav.localization.scale_x), scale_y=float(nav.localization.scale_y))
             if first_run:                          # start from the robot values in config/navigation.toml
@@ -258,6 +259,15 @@ class ConsoleApp(Views):
                               'the spot%s. The robot will not crash because of this: the UGV refuses any turn with '
                               'a wall inside its turning circle, so it STOPS at such places instead. Allow it?'
                               % turn, 'warn', need_confirm='allow_tight')
+            if clean.get('ignore_drift') and not self.opts['ignore_drift'] and not args.get('confirm'):
+                limit = (self.nav.estimator.cfg.max_sigma_m if self.nav else
+                         self.edge_cfg.navigator.localization.max_sigma_m if self.edge_cfg else 0.15)
+                return result(False, 'The robot normally stops when its estimated position error passes %.0f cm. '
+                              'Without that limit it keeps driving on its own estimate however far it is from '
+                              'reality, so it can end up where the picture says it is not, for example next to a '
+                              'wall. STOP, the LiDAR stop zone, link loss and stale odometry still work. Watch the '
+                              'robot and keep a hand on STOP. Ignore drift alerts?' % (100 * limit),
+                              'warn', need_confirm='ignore_drift')
             before = dict(self.opts)
             self.opts.update(clean)
             try:
@@ -290,6 +300,12 @@ class ConsoleApp(Views):
             if self.nav:
                 self.nav.cfg.allow_tight_radius = o['allow_tight']
             message = 'Radius below turning circle %s.' % ('ALLOWED' if o['allow_tight'] else 'not allowed')
+        if 'ignore_drift' in keys:
+            if self.nav:
+                self.nav.set_ignore_drift(o['ignore_drift'])
+            message = ('Drift alerts IGNORED: the robot no longer stops for "drift too high". STOP, the LiDAR stop '
+                       'zone and link loss still work.' if o['ignore_drift'] else
+                       'Drift alerts ON again: the robot stops when the estimated drift passes its limit.')
         if 'lidar_correction' in keys:
             if self.nav:
                 self.nav.cfg.lidar_correction = o['lidar_correction']
@@ -637,7 +653,9 @@ class ConsoleApp(Views):
             try:
                 base = self.edge_cfg.navigator if self.edge_cfg else NavigatorConfig()
                 room_mode = o['lidar_sees'] == 'room'
-                nav_cfg = dataclasses.replace(base, safety=self._safety_config(),
+                # own copy of the localization settings: the live switch must never change the loaded config
+                localization = dataclasses.replace(base.localization, ignore_drift=o['ignore_drift'])
+                nav_cfg = dataclasses.replace(base, safety=self._safety_config(), localization=localization,
                                               auto_continue_after_replan=o['auto_continue'],
                                               allow_tight_radius=o['allow_tight'], smooth_path=o['smooth_path'],
                                               lidar_correction=o['lidar_correction'], auto_find=o['auto_find'],

@@ -76,6 +76,28 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         if body and self.command != 'HEAD':
             self.wfile.write(body)
+        if code >= 400:
+            self._drain_unread_body()
+
+    def _drain_unread_body(self):
+        """A refused POST may still be sending its body. Closing a socket that holds unread data makes Windows
+        reset the connection, which can throw our answer away before the client has read it. So the rest of the
+        body is read and discarded first (at most 2 MiB, and only while the client keeps sending)."""
+        if self.command != 'POST' or getattr(self, '_body_consumed', False):
+            return
+        try:
+            left = min(int(self.headers.get('Content-Length', '0') or 0), 4 * MAX_BODY)
+        except ValueError:
+            return
+        try:
+            self.connection.settimeout(1.0)
+            while left > 0:
+                chunk = self.rfile.read(min(65536, left))
+                if not chunk:
+                    break
+                left -= len(chunk)
+        except (OSError, ValueError):
+            pass
 
     def _json(self, code, obj):
         self._send(code, json.dumps(obj, separators=(',', ':')).encode('utf-8'), 'application/json')
@@ -153,6 +175,7 @@ class _Handler(BaseHTTPRequestHandler):
 
     # ------------------------------------------------------------------ POST
     def do_POST(self):
+        self._body_consumed = False
         url = urlsplit(self.path)
         if not self._trusted(parse_qs(url.query)):
             return
@@ -168,7 +191,9 @@ class _Handler(BaseHTTPRequestHandler):
             self.close_connection = True
             return self._send(413, b'Request too large.')
         try:
-            body = json.loads(self.rfile.read(length).decode('utf-8'))
+            raw = self.rfile.read(length)
+            self._body_consumed = True
+            body = json.loads(raw.decode('utf-8'))
             name, args = body['cmd'], body.get('args') or {}
             if not isinstance(name, str) or not isinstance(args, dict):
                 raise ValueError

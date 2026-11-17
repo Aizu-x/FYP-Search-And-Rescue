@@ -695,7 +695,7 @@ export class MapView {
     const running = this.navState === 'RUNNING' || this.navState === 'running';
     const ring = {RUNNING: pal.path, running: pal.path, STOPPED: pal.red, collision: pal.red, ARRIVED: pal.green, arrived: pal.green}[this.navState];
     if (this.sigma >= 0.035 && this.mode !== 'offline') {     // position uncertainty (drift estimate)
-      ctx.beginPath(); ctx.arc(pose.x, pose.y, this.sigma + Math.hypot(hl, hw), 0, TAU);
+      ctx.beginPath(); ctx.arc(pose.x, pose.y, this.shownSigma() + Math.hypot(hl, hw), 0, TAU);
       ctx.setLineDash([4 * px, 4 * px]);
       ctx.strokeStyle = this.sigma > this.maxSigma * 0.8 ? pal.red : pal.truth; ctx.lineWidth = px; ctx.stroke(); ctx.setLineDash([]);
     }
@@ -736,10 +736,14 @@ export class MapView {
     ctx.restore();
   }
 
+  shownSigma() {                    // with drift alerts switched off the estimate can grow without limit: draw at most 2x the limit
+    return Math.min(this.sigma, this.maxSigma * 2);
+  }
+
   drawRobotLabel(ctx) {
     if (this.mode === 'offline' || this.sigma < 0.06) return;
     const p = this.toScreen(this.pose.x, this.pose.y);
-    this.chip(ctx, `±${Math.round(this.sigma * 100)} cm`, p.x, p.y - (this.robot.half_length + this.sigma) * this.view.scale - 16,
+    this.chip(ctx, `±${Math.round(this.sigma * 100)} cm`, p.x, p.y - (this.robot.half_length + this.shownSigma()) * this.view.scale - 16,
       this.sigma > this.maxSigma * 0.8 ? this.pal.red : this.pal.label);
   }
 

@@ -155,6 +155,7 @@
               <div class="meter-row" title="Estimated drift since the position was last confirmed or corrected. Driving stops at the limit.">
                 <span>Drift</span><div class="meter"><i id="sigma-bar"></i></div><span class="val" id="sigma-val">—</span>
               </div>
+              <label class="switch-row" title="Never stop for 'drift too high'. The drift estimate keeps being counted and shown, but it no longer stops the robot, planning or a mission. STOP, the LiDAR stop zone, link loss and stale odometry still work."><input type="checkbox" data-opt="ignore_drift"><i class="switch"></i><span>Ignore drift alerts</span></label>
               <div class="meter-row" title="Share of the LiDAR points that lie where they should at the shown position. Low = the position is off.">
                 <span id="match-label">LiDAR fit</span><div class="meter good"><i id="match-bar"></i></div><span class="val" id="match-val">—</span>
               </div>

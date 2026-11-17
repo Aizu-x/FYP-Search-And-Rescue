@@ -371,6 +371,21 @@ class Navigator:
             self.estimator.set_scale(scale_x, scale_y)
             self._note('Scale calibration applied: X %.3f, Y %.3f.' % (scale_x, scale_y))
 
+    def set_ignore_drift(self, ignore):
+        """Operator switch: stop raising the "drift too high" alert (the estimate is still counted and shown).
+        Allowed at any time. Switching it OFF while the estimate is over the limit stops a running robot at
+        the next control cycle, like the alert always did."""
+        with self._lock:
+            ignore = bool(ignore)
+            if ignore == self.estimator.cfg.ignore_drift:
+                return
+            self.estimator.cfg.ignore_drift = ignore
+            if ignore:
+                self._note('Drift alerts are IGNORED: the robot keeps going on its own position estimate however '
+                           'far it has drifted. STOP, the LiDAR stop zone, link loss and stale odometry still stop it.')
+            else:
+                self._note('Drift alerts are ON again (limit %.0f cm).' % (100 * self.estimator.cfg.max_sigma_m))
+
     def set_initial_pose(self, map_pose, source='manual'):
         """Calibration: the robot is physically at ``map_pose`` (x, y, yaw) right now. ``source``: 'manual'
         (pin / typed), 'dock' (a corner start: a physical reference, so the room drawing made from it is
@@ -605,7 +620,8 @@ class Navigator:
                     self._halt(STOPPED, 'Stopped: remaining route is no longer valid on the current map.', 'obstacle')
                     return cmd
                 self._path_checked_grid = self.grid
-            reasons = self.safety.check(True, tel, loc, (cmd.vx, cmd.vy, cmd.wz), pose, self.grid, self.estimator.sigma)
+            reasons = self.safety.check(True, tel, loc, (cmd.vx, cmd.vy, cmd.wz), pose, self.grid,
+                                        self.estimator.check_sigma)
             self.last_reasons = reasons
             if reasons:
                 obstacle = any(r.startswith('LiDAR:') or 'obstacle' in r for r in reasons)
@@ -956,7 +972,7 @@ class Navigator:
 
     def _replan_around_obstacle(self, pose, telemetry):
         points = self.safety.unknown_points(self.safety.lidar_points(telemetry) or [], pose, self.grid,
-                                            self.estimator.sigma)
+                                            self.estimator.check_sigma)
         grid, added = mark_scan_obstacles(self.grid, pose, points, self.cfg.obstacle_map_range_m,
                                           protect_radius_m=self.radius)
         if added:

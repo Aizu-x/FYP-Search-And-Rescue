@@ -242,6 +242,7 @@ class Views:
         return self.clean(dict(
             connected=True, state=snap['state'], message=snap['message'], notice=self.notice,
             loc=list(snap['localization']), sigma=snap['sigma'], max_sigma=snap['max_sigma'],
+            ignore_drift=bool(nav.estimator.cfg.ignore_drift),
             estop=snap['estop'], auto=dict(on=nav.cfg.auto_continue_after_replan, used=snap['auto_replans'],
                                            max=nav.cfg.max_auto_replans, pending=snap['auto_pending']),
             motion=snap['motion'], stop_kind=snap['stop_kind'], reasons=snap['reasons'],

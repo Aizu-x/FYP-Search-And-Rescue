@@ -9,7 +9,7 @@
 ![Vision](https://img.shields.io/badge/Vision-YOLOv5n%20ONNX-22c55e)
 ![Robot](https://img.shields.io/badge/Robot-HiWonder%20MentorPi--M1-3b82f6)
 ![ROS 2](https://img.shields.io/badge/Robot%20side-ROS%202%20Humble-22314E?logo=ros&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-218%20passing-16a34a)
+![Tests](https://img.shields.io/badge/Tests-221%20passing-16a34a)
 
 <img src="docs/images/demo.gif" alt="The robot drives to the goal, spots a green object, approaches it, holds 3 seconds and marks the survivor secured" width="860">
 
@@ -128,7 +128,7 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Real robot: **[Robot 
 | `third_party/wro_yolo/` | laptop | YOLOv5n model (ONNX) for green / red blocks |
 | `data/` | laptop | Three arena maps (ENV1-3): occupancy grid + ground truth |
 | `config/` | laptop | `navigation.toml`: robot size, speeds, limits |
-| `tests/` | laptop | 218 automated tests |
+| `tests/` | laptop | 221 automated tests |
 | `docs/` | | Guides and technical notes |
 
 ## Safety design
@@ -139,6 +139,8 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Real robot: **[Robot 
 - **Watchdog**: commands expire after 0.3 s. Wi-Fi loss, a closed laptop or a closed console page stops the robot.
 - **Authenticated link**: every message is signed (HMAC-SHA256) with a shared key that never leaves your devices.
 - **Position confidence**: if the estimated drift exceeds 15 cm, the robot stops and asks to be re-localized.
+  You can switch this one alert off in the console (*Ignore drift alerts*, with a confirmation); STOP, the LiDAR
+  stop zone, link loss and broken odometry keep stopping the robot either way.
 - **No guessing**: the LiDAR may place the robot by itself only on a strong, unambiguous fit; otherwise you choose.
   Its corrections start only after it has verified, from the robot's own motion, how the LiDAR is mounted.
 
@@ -146,7 +148,7 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Real robot: **[Robot 
 
 | Area | Status |
 |---|---|
-| A\* planning, smoothing, mission logic, vision filters, console | ✅ 218 automated tests + browser end-to-end runs |
+| A\* planning, smoothing, mission logic, vision filters, console | ✅ 221 automated tests + browser end-to-end runs |
 | Full loop in the built-in simulator (real bridge code, simulated robot, LiDAR and camera) | ✅ working |
 | Room-based LiDAR tracking, Find robot, real field size | ✅ in a simulated room · 🔧 not yet tried in a real one |
 | Link to the real MentorPi (authentication, odometry, IMU, LiDAR received) | ✅ verified |

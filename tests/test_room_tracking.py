@@ -13,7 +13,7 @@ from ugv_planner import Footprint, PlannerConfig
 from ugv_nav.controller import ControllerConfig
 from ugv_nav.localization import LocalizationConfig, PoseEstimator, wrap
 from ugv_nav.map_store import corner_pose, load_env
-from ugv_nav.navigator import ARRIVED, RUNNING, SURE, Navigator, NavigatorConfig
+from ugv_nav.navigator import ARRIVED, RUNNING, STOPPED, SURE, Navigator, NavigatorConfig
 from ugv_nav.room_map import RoomMap, RoomTracker, apply_mount, capped_distance
 from ugv_nav.safety_monitor import SafetyConfig
 from ugv_nav.scan_match import ScanMatcher
@@ -309,14 +309,16 @@ class ClosedLoopRoomTests(unittest.TestCase):
         self.start = (x, y, math.radians(heading))
         self.session = None
 
-    def connect(self, lidar_correction=True, verified=True, mount=(0.0, 0.0, 0.0)):
+    def connect(self, lidar_correction=True, verified=True, mount=(0.0, 0.0, 0.0), odom_error=0.08,
+                ignore_drift=False):
         self.session = SimulatedUGVSession(self.gt, self.start, 0.11, 0.09, sim_kwargs=dict(
-            odom_scale_error=0.08, yaw_drift_rad_per_s=0.002, lidar_world=simulated_room(self.gt),
+            odom_scale_error=odom_error, yaw_drift_rad_per_s=0.002, lidar_world=simulated_room(self.gt),
             lidar_mount=mount, scan_noise_m=0.01))
         cfg = PlannerConfig(8, Footprint(0.143, 0.02, True), True, clearance_weight=4.0)
         self.nav = Navigator(self.session.client, self.occ, cfg, NavigatorConfig(
             controller=ControllerConfig(max_v=0.15, max_w=0.6), lidar_correction=lidar_correction,
-            lidar_reference='room', localization=LocalizationConfig(), safety=SafetyConfig(0.11, 0.09)))
+            lidar_reference='room', localization=LocalizationConfig(ignore_drift=ignore_drift),
+            safety=SafetyConfig(0.11, 0.09)))
         self.nav.set_lidar_mount((0.0, 0.0, 0.0), verified)
         self.assertTrue(wait_for(self.session.client.link_ok, timeout=5))
         time.sleep(0.3)
@@ -363,6 +365,29 @@ class ClosedLoopRoomTests(unittest.TestCase):
         self.assertNotEqual(self.nav.state, ARRIVED)
         self.assertIn('localization', self.nav.message)
         self.assertGreater(self.error(), 0.08)                                    # what the tracking above prevents
+
+    def test_switching_the_drift_alert_off_after_a_drift_stop_lets_the_robot_carry_on(self):
+        """The real situation: no live tracking, the estimate passes the 15 cm limit and the robot stops. With the
+        alert switched off the same route can be planned and driven; switched on again it stops as before."""
+        self.connect(lidar_correction=False, odom_error=0.025)
+        limit = self.nav.estimator.cfg.max_sigma_m
+        self.nav.set_initial_pose(self.start, source='dock')
+        self.drive((2.4, 0.42))
+        self.drive((2.6, 2.5))
+        self.assertEqual(self.nav.state, STOPPED)                                 # the usual "drift too high" stop
+        self.assertEqual(self.nav.estimator.status(time.monotonic())[0], 'LOW_CONFIDENCE')
+        self.nav.set_goal((2.6, 2.5))
+        self.assertIn('Cannot plan', self.nav.message)                            # planning is refused as well
+        self.nav.set_ignore_drift(True)
+        self.assertEqual(self.nav.estimator.status(time.monotonic())[0], 'OK')
+        self.assertIn('IGNORED', ' '.join(text for _, text in self.nav.log))
+        for goal in [(2.6, 2.5), (1.2, 2.55)]:
+            self.drive(goal)
+            self.assertEqual(self.nav.state, ARRIVED, self.nav.message)           # carries on to every goal
+        self.assertGreater(self.nav.estimator.sigma, limit)                       # the estimate was still counted
+        self.assertFalse(self.session.backend.collided)
+        self.nav.set_ignore_drift(False)                                          # off again: the alert is back at once
+        self.assertEqual(self.nav.estimator.status(time.monotonic())[0], 'LOW_CONFIDENCE')
 
     def test_carried_robot_is_found_again_and_a_new_session_needs_no_pin(self):
         self.connect()

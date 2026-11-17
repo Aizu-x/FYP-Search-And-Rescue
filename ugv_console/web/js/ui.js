@@ -9,7 +9,7 @@ const esc = (text) => String(text === null || text === undefined ? '' : text).re
   (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const icon = (name) => `<svg class="ic"><use href="#i-${name}"/></svg>`;
 const fmt = (v, digits = 2, unit = '') => (v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits) + unit);
-const CONFIRM_TITLES = {discard_edits: 'Unsaved map edits', revert_map: 'Back to the original map', allow_tight: 'Allow radius below turning circle',
+const CONFIRM_TITLES = {discard_edits: 'Unsaved map edits', revert_map: 'Back to the original map', allow_tight: 'Allow radius below turning circle', ignore_drift: 'Ignore drift alerts',
   clear_survivors: 'Clear survivors'};
 
 // ------------------------------------------------------------------ toasts, dialogs, sound
@@ -450,12 +450,13 @@ export class UI {
     }
     if (n.connected && n.loc) {
       const ok = n.loc[0] === 'OK', cm = Math.round((n.sigma || 0) * 100);
-      chip('#chip-loc', ok ? ((n.sigma || 0) > 0.7 * n.max_sigma ? 'run' : 'ok') : 'bad',
-        ok ? `±${cm} cm` : ({UNCALIBRATED: 'Pose not set', STALE: 'No odometry', LOST: 'Position lost', LOW_CONFIDENCE: `Drift ±${cm} cm`}[n.loc[0]] || n.loc[0]));
+      const over = ok && !!n.ignore_drift && (n.sigma || 0) > n.max_sigma;      // past the limit, alert switched off
+      chip('#chip-loc', ok ? (over || (n.sigma || 0) > 0.7 * n.max_sigma ? 'run' : 'ok') : 'bad',
+        ok ? `±${cm} cm${over ? ' · alerts off' : ''}` : ({UNCALIBRATED: 'Pose not set', STALE: 'No odometry', LOST: 'Position lost', LOW_CONFIDENCE: `Drift ±${cm} cm`}[n.loc[0]] || n.loc[0]));
       const bar = $('#sigma-bar'), frac = Math.min(1, (n.sigma || 0) / (n.max_sigma || 0.15));
       bar.style.width = (ok || n.loc[0] === 'LOW_CONFIDENCE' ? frac * 100 : 0) + '%';
-      bar.style.background = frac > 0.8 ? 'var(--danger)' : frac > 0.55 ? 'var(--warn)' : 'var(--go)';
-      $('#sigma-val').textContent = ok || n.loc[0] === 'LOW_CONFIDENCE' ? `${cm} / ${Math.round(n.max_sigma * 100)} cm` : '—';
+      bar.style.background = over ? 'var(--warn)' : frac > 0.8 ? 'var(--danger)' : frac > 0.55 ? 'var(--warn)' : 'var(--go)';
+      $('#sigma-val').textContent = ok || n.loc[0] === 'LOW_CONFIDENCE' ? `${cm} / ${Math.round(n.max_sigma * 100)} cm${over ? ' · ignored' : ''}` : '—';
     } else { chip('#chip-loc', '', '—'); $('#sigma-bar').style.width = '0'; $('#sigma-val').textContent = '—'; }
 
     // live tracking (LiDAR) + places offered by "Find robot"
@@ -519,7 +520,8 @@ export class UI {
     else if (n.loc && n.loc[0] === 'LOW_CONFIDENCE') {
       const tip = this.settings && !this.settings.opts.lidar_correction ? ' Tip: "Live LiDAR tracking" in the Robot tab avoids these stops.'
         : n.room && !n.room.calibrated ? ' The LiDAR is still learning how it is mounted; once that is verified these stops go away.' : '';
-      show('', (m && m.active && m.paused ? 'Mission paused: the' : 'The') + ` drift limit was reached (about ${Math.round((n.sigma || 0) * 100)} cm).` + tip,
+      const skip = ' Or switch on "Ignore drift alerts" under Robot position.';
+      show('', (m && m.active && m.paused ? 'Mission paused: the' : 'The') + ` drift limit was reached (about ${Math.round((n.sigma || 0) * 100)} cm).` + tip + skip,
         'Re-localize with LiDAR', () => run('relocalize'));
     }
     else if (m && m.active && m.paused) show('', 'Mission paused: ' + m.pause_reason, 'Resume', () => this.authorize('resume'));

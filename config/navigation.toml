@@ -55,6 +55,7 @@ sigma0_m = 0.02
 drift_per_m = 0.05           # MEASURE in Test D and adjust
 drift_per_rad_m = 0.01
 max_sigma_m = 0.15
+ignore_drift = false         # true = never stop for "drift too high" (normally switched in the console: Robot position > Ignore drift alerts)
 max_jump_m = 0.15
 scale_x = 1.0                # map-axis scale corrections; normally set from the console's Calibration row
 scale_y = 1.0                # (the console's saved values take priority when you connect)

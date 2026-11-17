@@ -63,6 +63,27 @@ class LocalizationTests(unittest.TestCase):
         est.update(tel(5.0, 0, 0), 3.1)  # odometry jump / reset
         self.assertEqual(est.status(3.1)[0], 'LOST')
 
+    def test_drift_alert_can_be_ignored_but_broken_data_still_stops(self):
+        cfg = LocalizationConfig(max_sigma_m=0.1, drift_per_m=0.05, sigma0_m=0.02, ignore_drift=True)
+        est = PoseEstimator(cfg)
+        est.update(tel(0, 0, 0), 1.0)
+        self.assertEqual(est.status(1.0)[0], 'UNCALIBRATED')                  # "pose not set" is not drift: still refused
+        est.calibrate((1, 1, 0))
+        for i in range(1, 41):                                                # 4 m travelled -> sigma 0.22, limit is 0.1
+            est.update(tel(i * 0.1, 0, 0), 1.0 + i * 0.1)
+        self.assertGreater(est.sigma, 0.2)                                    # the estimate is still counted ...
+        status = est.status(5.0)
+        self.assertEqual(status[0], 'OK')                                     # ... but raises no alert
+        self.assertIn('ignored', status[1])
+        self.assertAlmostEqual(est.check_sigma, 0.1)                          # the LiDAR obstacle filter never widens past the limit
+        cfg.ignore_drift = False                                              # switched back on: the alert is there at once
+        self.assertEqual(est.status(5.0)[0], 'LOW_CONFIDENCE')
+        self.assertAlmostEqual(est.check_sigma, est.sigma)
+        cfg.ignore_drift = True
+        self.assertEqual(est.status(9.0)[0], 'STALE')                         # odometry stopped arriving: still stops
+        est.update(tel(50.0, 0, 0), 5.1)                                      # odometry jumped: still stops
+        self.assertEqual(est.status(5.1)[0], 'LOST')
+
     def test_rejects_non_finite_and_uses_imu_heading(self):
         est = PoseEstimator(LocalizationConfig(heading_source='imu'))
         est.update({'odom': dict(x=0, y=0, yaw=0.0), 'imu': dict(yaw=1.0)}, 1.0)

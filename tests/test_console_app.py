@@ -557,6 +557,39 @@ class OrientationTests(ConsoleCase):
         self.assertTrue(np.array_equal(load_edited('ENV3', app.edit_dir).cells, app.grid.cells))
 
 
+class DriftAlertOptionTests(ConsoleCase):
+    def connect_simulator(self, app):
+        self.ok('set_mode', app, mode='sim')
+        self.options(app, **ROBOT)
+        self.ok('connect', app)
+        self.assertTrue(wait_for(lambda: app.client.link_ok(), timeout=6))
+
+    def test_ignoring_drift_alerts_needs_a_confirmation_is_applied_live_and_remembered(self):
+        app = self.make(settings=True)
+        self.assertFalse(app.opts['ignore_drift'])                              # off unless the operator says so
+        r = self.cmd('set_options', app, values=dict(ignore_drift=True))
+        self.assertFalse(r['ok'])
+        self.assertEqual(r.get('need_confirm'), 'ignore_drift')                 # the console asks first ...
+        self.assertIn('STOP', r['message'])                                     # ... and says what still protects
+        self.assertFalse(app.opts['ignore_drift'])
+        self.connect_simulator(app)
+        self.assertFalse(app.nav.estimator.cfg.ignore_drift)
+        self.ok('set_options', app, values=dict(ignore_drift=True), confirm=True)
+        self.assertTrue(app.nav.estimator.cfg.ignore_drift)                     # applied at once, no reconnect
+        self.assertTrue(app.view('nav')['ignore_drift'])                        # the page shows "alerts off"
+        self.assertFalse(app.edge_cfg.navigator.localization.ignore_drift)      # the loaded config file values stay as they are
+        self.ok('set_options', app, values=dict(ignore_drift=False))            # switching it off needs no question
+        self.assertFalse(app.nav.estimator.cfg.ignore_drift)
+        self.assertFalse(app.view('nav')['ignore_drift'])
+        self.ok('set_options', app, values=dict(ignore_drift=True), confirm=True)
+        app.close()
+        again = self.make(settings=True)                                        # next session
+        self.assertTrue(again.opts['ignore_drift'])
+        self.connect_simulator(again)
+        self.assertTrue(again.nav.estimator.cfg.ignore_drift)
+        self.assertTrue(again.view('nav')['ignore_drift'])
+
+
 class WhereIsTheRobotTests(ConsoleCase):
     """Corner start, Find robot, nudge, real field size (simulator: the LiDAR looks over the arena into a room)."""
 

@@ -118,6 +118,12 @@ why it was not used. The camera tilt is measured automatically from the known bl
 ## Position and calibration
 * **Drift limit:** without live tracking the robot stops when its estimated position error passes 15 cm.
   Press **Re-localize** or **Find robot**, or do a corner start again. With live tracking this does not build up.
+* **Ignore drift alerts** (Drive tab, *Robot position* card): when it is on, "drift too high" no longer stops the
+  robot, refuses to plan a route or pauses a mission. The estimate is still counted and shown (the Drift bar turns
+  amber and says *ignored*, the map keeps the uncertainty ring). Everything else still stops the robot: **STOP**,
+  the LiDAR stop zone, link loss, odometry that stops arriving or jumps, and a missing start pose. The console asks
+  you to confirm before it switches on and remembers the choice. Use it only when you have checked that the shown
+  position is right (the *Room fit* bar is the quick check), because nothing warns you any more if it is not.
 * **Scale calibration** (Robot tab) is only needed without live tracking: Confirm pose, **Start X run**, drive,
   enter the real end position, **Finish run**. **Reset to 1.000** removes old values.
 * **Forget room / Forget mounting** (Robot tab): start learning again, for example in another room.
@@ -139,7 +145,7 @@ Coming from the older project folder? This copies your key, values and edited ma
 |---|---|
 | "The shared key file ... is missing" | Copy `mentorpi.key` into `config/`, or run `import-old` |
 | "YOLO is not available" | `pip install -r requirements-yolo.txt` (Python 3.11-3.13) |
-| Drift limit stops the robot | **Find robot** or a corner start. Check that *Live LiDAR tracking* is on (Robot tab) |
+| Drift limit stops the robot | **Find robot** or a corner start. Check that *Live LiDAR tracking* is on (Robot tab). Or switch on **Ignore drift alerts** (Drive tab, *Robot position*) |
 | "Robot not found" | The LiDAR has not drawn that part of the room: corner start, then one drive through the arena |
 | The robot is somewhere else than the picture shows | Corner start again; check **Real field size**; **Forget room** if furniture was moved a lot |
 | "the robot is NOT really moving" | Commands arrive but the LiDAR view does not change: check battery and motor power |

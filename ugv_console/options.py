@@ -46,6 +46,7 @@ SCHEMA = {
     'heading': Opt('float', 0.0, -360.0, 360.0, label='Heading (deg)'),
     'auto_continue': Opt('bool', False, label='Auto-continue after replan'),
     'allow_tight': Opt('bool', False, label='Allow radius below turning circle'),
+    'ignore_drift': Opt('bool', False, label='Ignore drift alerts'),
     'lidar_correction': Opt('bool', True, label='Live LiDAR tracking'),
     'lidar_sees': Opt('choice', 'room', choices=('room', 'walls'), label='The LiDAR sees'),
     'auto_find': Opt('bool', True, label='Find the robot automatically'),

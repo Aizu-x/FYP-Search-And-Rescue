@@ -59,6 +59,7 @@ class LocalizationConfig:
     drift_per_m: float = 0.05         # +5 cm uncertainty per metre travelled (conservative wheel-odom guess -- MEASURE in Test D)
     drift_per_rad_m: float = 0.01     # +1 cm per radian turned
     max_sigma_m: float = 0.15         # stop navigation above this
+    ignore_drift: bool = False        # operator override: never raise the "drift too high" alert (see status)
     max_jump_m: float = 0.15          # odometry step between samples larger than this -> lost
     heading_source: str = 'odom'      # 'odom' or 'imu'
     scale_x: float = 1.0              # map-axis scale correction (from the X calibration run)
@@ -186,8 +187,19 @@ class PoseEstimator:
             yaw = wrap(self.imu_yaw + self.imu_offset)
         return (x, y, yaw)
 
+    @property
+    def check_sigma(self):
+        """The uncertainty to use where it WIDENS a safety check (the edge's LiDAR obstacle filter treats returns
+        near mapped walls as "known" within this distance). Equal to ``sigma`` normally; with the drift alert
+        switched off it stops at the limit, so an ever-growing estimate can never make that filter blind."""
+        return min(self.sigma, self.cfg.max_sigma_m) if self.cfg.ignore_drift else self.sigma
+
     def status(self, now):
-        """('OK' | 'UNCALIBRATED' | 'STALE' | 'LOST' | 'LOW_CONFIDENCE', message)."""
+        """('OK' | 'UNCALIBRATED' | 'STALE' | 'LOST' | 'LOW_CONFIDENCE', message).
+
+        ``cfg.ignore_drift`` removes only the LOW_CONFIDENCE alert (the estimate is still counted and shown).
+        Stale or missing odometry, an odometry jump and "pose not set" always stop the robot: they mean the
+        data itself is broken, not that it has drifted."""
         if self.odom is None:
             return 'STALE', 'no odometry received'
         if now - self.odom_time > self.cfg.stale_after_s:
@@ -197,5 +209,7 @@ class PoseEstimator:
         if self.map_T_odom is None:
             return 'UNCALIBRATED', 'initial pose not set'
         if self.sigma > self.cfg.max_sigma_m:
+            if self.cfg.ignore_drift:
+                return 'OK', 'drift estimate %.3f m (drift alerts ignored)' % self.sigma
             return 'LOW_CONFIDENCE', 'estimated drift %.2f m > %.2f m; recalibrate' % (self.sigma, self.cfg.max_sigma_m)
         return 'OK', 'drift estimate %.3f m' % self.sigma
