@@ -21,7 +21,7 @@ from . import options as O
 from .options import OFFLINE, SIM
 
 SECTIONS = ('static', 'settings', 'map', 'plan', 'nav', 'scan', 'vision', 'mission', 'seen', 'trail', 'log',
-            'offline', 'diag', 'room', 'recording', 'uav')
+            'offline', 'diag', 'room', 'recording', 'uav', 'uavplan')
 
 
 def pack_mask(mask):

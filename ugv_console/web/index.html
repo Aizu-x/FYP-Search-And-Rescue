@@ -114,6 +114,44 @@
           </div>
 
           <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-sliders"/></svg><h3>Flight mode</h3><span class="tag" id="uav-mode-tag"></span></div>
+            <div class="card-b">
+              <div class="seg small wide" data-opt="uav_mode"><button data-value="manual" title="You fly with the keys">Manual control</button><button data-value="plan" title="The drone flies a plan you wrote, or a flight you flew before">Planned flight</button></div>
+              <div class="note" id="uav-mode-note"></div>
+            </div>
+          </div>
+
+          <div class="card" id="uav-plan-card" hidden>
+            <div class="card-h"><svg class="ic"><use href="#i-list"/></svg><h3>Flight plan</h3><span class="tag" id="plan-tag"></span></div>
+            <div class="card-b">
+              <div class="row"><label for="plan-select">Saved plans</label><select id="plan-select" class="plan-select"></select></div>
+              <ol class="plan-steps" id="plan-steps"></ol>
+              <div class="plan-add">
+                <select id="plan-kind" aria-label="Step to add">
+                  <option value="forward">Forward</option><option value="back">Back</option><option value="left">Left</option><option value="right">Right</option>
+                  <option value="up">Up</option><option value="down">Down</option>
+                  <option value="cw">Turn right</option><option value="ccw">Turn left</option>
+                  <option value="wait">Hover</option><option value="photo">Photo</option><option value="speed">Speed</option><option value="land">Land</option>
+                </select>
+                <input id="plan-value" type="number" aria-label="How much"><span class="unit" id="plan-unit">cm</span>
+                <button class="btn" id="plan-add"><svg class="ic"><use href="#i-plus"/></svg>Add</button>
+              </div>
+              <div class="row"><label title="How fast the distance moves (forward, up ...) are flown">Speed of the moves</label><input type="number" id="plan-speed" min="10" max="100" step="5"><span class="unit">cm/s</span></div>
+              <div class="note" id="plan-info"></div>
+              <button class="btn go block big" id="btn-plan-run" disabled><svg class="ic"><use href="#i-play"/></svg><span>RUN PLAN</span></button>
+              <button class="btn block big resume" id="btn-plan-stop" hidden><svg class="ic"><use href="#i-pause"/></svg><span>STOP PLAN (hover)</span></button>
+              <div class="note" id="plan-hint"></div>
+              <div class="pt-row"><input type="text" id="plan-name" placeholder="name for this plan" maxlength="40" spellcheck="false" autocomplete="off"><button class="btn" id="plan-save"><svg class="ic"><use href="#i-save"/></svg>Save</button></div>
+              <div class="btn-row three">
+                <button class="btn" id="plan-new" title="Start an empty plan">New</button>
+                <button class="btn" id="plan-copy">My last flight</button>
+                <button class="btn" id="plan-delete" title="Delete the saved plan chosen above">Delete</button>
+              </div>
+              <div class="note">Distances and turns are measured by the drone itself (20 to 500 cm, 1 to 360°). <b>My last flight</b> repeats the key presses of your last manual flight with the same timing. <b>Esc</b> lands; <b>STOP PLAN</b> or any flight key makes it hover and gives you control.</div>
+            </div>
+          </div>
+
+          <div class="card">
             <div class="card-h"><svg class="ic"><use href="#i-takeoff"/></svg><h3>Fly</h3><span class="tag" id="uav-fly-tag"></span></div>
             <div class="card-b">
               <button class="btn go block big" id="btn-uav-takeoff" disabled><svg class="ic"><use href="#i-takeoff"/></svg><span>TAKE OFF</span></button>

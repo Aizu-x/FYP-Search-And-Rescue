@@ -10,7 +10,8 @@ const esc = (text) => String(text === null || text === undefined ? '' : text).re
 const icon = (name) => `<svg class="ic"><use href="#i-${name}"/></svg>`;
 const fmt = (v, digits = 2, unit = '') => (v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits) + unit);
 const CONFIRM_TITLES = {discard_edits: 'Unsaved map edits', revert_map: 'Back to the original map', allow_tight: 'Allow radius below turning circle', ignore_drift: 'Ignore drift alerts',
-  clear_survivors: 'Clear survivors', uav_emergency: 'Cut the motors'};
+  clear_survivors: 'Clear survivors', uav_emergency: 'Cut the motors', uav_plan_discard: 'Plan not saved',
+  uav_plan_overwrite: 'Replace the saved plan', uav_plan_delete: 'Delete the saved plan'};
 
 // ------------------------------------------------------------------ toasts, dialogs, sound
 export function toast(message, level = 'info', ms = 4500) {
@@ -531,6 +532,7 @@ export class UI {
   }
 
   on_uav(u) { if (this.uav) this.uav.update(u); }
+  on_uavplan(p) { if (this.uav) this.uav.updatePlan(p); }
 
   banner(n) {
     const el = $('#banner'), btn = $('#banner-btn');

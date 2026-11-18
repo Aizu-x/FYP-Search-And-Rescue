@@ -34,6 +34,9 @@ CHUNK = 1460                       # the real drone sends its video in datagrams
 ROOM = 4.0                         # the drawn room: 8 x 8 m, the drone starts in the middle facing +x
 CEILING = 3.0
 ARENA = (0.9, -1.38, 3.66, 1.38)   # the UGV arena on the floor (x0, y0, x1, y1): 2.76 m square
+# movement commands "forward 50" ...: how far along (forward, right, up) one unit of the command goes
+LINES = {'forward': (1, 0, 0), 'back': (-1, 0, 0), 'right': (0, 1, 0), 'left': (0, -1, 0), 'up': (0, 0, 1),
+         'down': (0, 0, -1)}
 HFOV_DEG, PITCH_DOWN_DEG = 70.0, 10.0
 
 
@@ -173,11 +176,15 @@ class FakeTello:
         self.lose = collections.Counter()  # command -> how many of them get lost before they arrive
         self.mute_status = False           # no status datagrams (as if the port were blocked)
         self.refuse_takeoff = False
+        self.busy_refuses = True           # while a movement command runs, "land" and the like get "error"
+        self.fail_moves = []               # answers given (instead of flying) to the next movement commands
         # state
         self.x = self.y = self.z = 0.0
         self.yaw = 0.0                     # radians, counter-clockwise seen from above; 0 = facing +x
         self.v = [0.0, 0.0, 0.0, 0.0]      # forward, right, up (m/s), turn (deg/s, clockwise)
         self.rc = (0, 0, 0, 0)
+        self.move_speed = 50.0             # cm/s of "forward 50" and the like (set with "speed x")
+        self._move = None                  # the movement command being flown: dict(word, left)
         self.phase = 'ground'              # ground | takeoff | air | landing
         self.sdk = self.streaming = False
         self.client = None                 # who said "command": (address, port)
@@ -263,8 +270,16 @@ class FakeTello:
         self._last_command = now
         if address != self.client:                         # another program on this computer: only "land" is taken
             if text == 'land' and self.phase == 'air':     # (the video worker, when the console has died)
-                self.phase, self._land_asked = 'landing', False
+                self.phase, self._land_asked, self._move = 'landing', False, None
             return None
+        word, _, rest = text.partition(' ')
+        if self._move is not None:                         # busy flying a movement command
+            if word == 'rc':
+                return None
+            if text == 'land' and not self.busy_refuses:
+                self._move = None
+            elif text != 'emergency' and not text.endswith('?'):
+                return self._reply('error', word)
         if text == 'takeoff':
             if self.phase != 'ground' or self.refuse_takeoff or self.battery < 10:
                 return self._reply('error', 'takeoff')
@@ -274,8 +289,30 @@ class FakeTello:
                 return self._reply('error', 'land')
             self.phase, self._land_asked = 'landing', True
         elif text == 'emergency':
-            self.phase, self.z, self.v, self.rc = 'ground', 0.0, [0.0] * 4, (0, 0, 0, 0)
+            self.phase, self.z, self.v, self.rc, self._move = 'ground', 0.0, [0.0] * 4, (0, 0, 0, 0), None
             self._reply('ok', 'emergency')
+        elif word in LINES or word in ('cw', 'ccw'):
+            low, high = (20, 500) if word in LINES else (1, 3600)
+            try:
+                value = int(rest)
+            except ValueError:
+                value = None
+            if value is None or not low <= value <= high:
+                return self._reply('out of range', word)
+            if self.phase != 'air':
+                return self._reply('error', word)
+            if self.fail_moves:
+                return self._reply(self.fail_moves.pop(0), word)
+            self.rc, self._move = (0, 0, 0, 0), dict(word=word, left=float(value))
+        elif word == 'speed':
+            try:
+                value = int(rest)
+            except ValueError:
+                value = None
+            if value is None or not 10 <= value <= 100:
+                return self._reply('out of range', word)
+            self.move_speed = float(value)
+            self._reply('ok', word)
         elif text in ('streamon', 'streamoff'):
             self.streaming = text == 'streamon'
             self._reply('ok', text)
@@ -316,20 +353,37 @@ class FakeTello:
                 self._reply('ok', 'takeoff')
         elif phase == 'air':
             self.motor_s += dt
-            a, b, c, d = self.rc
-            target = (b / 100.0 * self.max_speed, a / 100.0 * self.max_speed, c / 100.0 * self.max_climb,
-                      d / 100.0 * self.max_turn_deg)
-            blend = 1.0 - math.exp(-dt / 0.25)
-            self.v = [v + (t - v) * blend for v, t in zip(self.v, target)]
-            forward, right, up, turn = self.v
-            self.yaw -= math.radians(turn) * dt            # clockwise = towards the right
-            c_yaw, s_yaw = math.cos(self.yaw), math.sin(self.yaw)
-            limit = ROOM - 0.35
-            self.x = min(limit, max(-limit, self.x + (forward * c_yaw + right * s_yaw) * dt))
-            self.y = min(limit, max(-limit, self.y + (forward * s_yaw - right * c_yaw) * dt))
-            self.z = min(CEILING - 0.25, max(0.2, self.z + up * dt))
+            limit, move = ROOM - 0.35, self._move
+            if move is not None:                           # a movement command: flown at the set speed, then "ok"
+                self.v = [0.0] * 4
+                if move['word'] in LINES:
+                    done = min(move['left'], self.move_speed * dt)             # cm
+                    along, side, up = (k * done / 100.0 for k in LINES[move['word']])
+                    c_yaw, s_yaw = math.cos(self.yaw), math.sin(self.yaw)
+                    self.x = min(limit, max(-limit, self.x + along * c_yaw + side * s_yaw))
+                    self.y = min(limit, max(-limit, self.y + along * s_yaw - side * c_yaw))
+                    self.z = min(CEILING - 0.25, max(0.2, self.z + up))
+                else:
+                    done = min(move['left'], self.max_turn_deg * dt)           # degrees
+                    self.yaw -= math.radians(done) * (1.0 if move['word'] == 'cw' else -1.0)
+                move['left'] -= done
+                if move['left'] <= 1e-9:
+                    self._move = None
+                    self._reply('ok', move['word'])
+            else:
+                a, b, c, d = self.rc
+                target = (b / 100.0 * self.max_speed, a / 100.0 * self.max_speed, c / 100.0 * self.max_climb,
+                          d / 100.0 * self.max_turn_deg)
+                blend = 1.0 - math.exp(-dt / 0.25)
+                self.v = [v + (t - v) * blend for v, t in zip(self.v, target)]
+                forward, right, up, turn = self.v
+                self.yaw -= math.radians(turn) * dt        # clockwise = towards the right
+                c_yaw, s_yaw = math.cos(self.yaw), math.sin(self.yaw)
+                self.x = min(limit, max(-limit, self.x + (forward * c_yaw + right * s_yaw) * dt))
+                self.y = min(limit, max(-limit, self.y + (forward * s_yaw - right * c_yaw) * dt))
+                self.z = min(CEILING - 0.25, max(0.2, self.z + up * dt))
             if now - self._last_command > self.failsafe_s:              # the Tello safety feature
-                self.phase, self._land_asked, self.landed_by_itself = 'landing', False, True
+                self.phase, self._land_asked, self.landed_by_itself, self._move = 'landing', False, True, None
         elif phase == 'landing':
             self.motor_s += dt
             self.v = [0.0] * 4

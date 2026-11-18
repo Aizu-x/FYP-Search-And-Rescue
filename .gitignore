@@ -12,6 +12,7 @@ config/console_settings.json
 config/gui_settings.json
 data/edited/
 data/rooms/
+data/uav_plans/
 
 # generated when you run the batch / demo commands
 example_outputs/

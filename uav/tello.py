@@ -23,6 +23,12 @@ Safety rules of this link:
   * nothing heard from the drone for ``lost_land_s`` while flying: "land" is sent;
   * datagrams that do not come from the drone's address are dropped, and the drone's address has to be one of a
     local network.
+
+Two pilots can steer a flying drone, never both at once: the operator's keys (``set_keys``), or a flight plan
+(uav/plan.py) through ``plan_begin`` / ``plan_command`` / ``plan_sticks`` / ``plan_end``. A plan uses the SDK's
+movement commands ("up 20", "cw 90" ...), which the drone answers when it has done them; no stick values are sent
+while one runs. A key pressed while a plan flies is not steering: it sets ``takeover`` so the plan stops. Every
+flight flown with the keys alone is remembered (which stick values for how long) so it can be flown again.
 """
 from __future__ import annotations
 
@@ -40,6 +46,7 @@ DISCONNECTED, CONNECTING, READY, TAKING_OFF, FLYING, LANDING = (
 AIRBORNE = (TAKING_OFF, FLYING, LANDING)
 KEYS = ('w', 'a', 's', 'd', 'up', 'down', 'left', 'right')
 ZERO = (0, 0, 0, 0)
+PILOT_KEYS, PILOT_PLAN = 'keys', 'plan'
 _VALUE = re.compile(r'^(-?\d+(?:\.\d+)?)\s*([a-z%~]*)')
 _UNIT_TO_CM = {'': 1.0, 'cm': 1.0, 'dm': 10.0, 'mm': 0.1, 'm': 100.0}
 
@@ -67,6 +74,7 @@ class TelloConfig:
     ask_period_s: float = 1.0
     silent_s: float = 2.5             # nothing at all heard for this long: the sticks go to zero
     lost_land_s: float = 5.0          # ... and for this long while flying: "land" is sent
+    plan_settle_s: float = 0.3        # sticks centred this long before a plan's movement command is sent
 
 
 # ---------------------------------------------------------------------------------------------- small helpers
@@ -169,6 +177,14 @@ class TelloLink:
         self._quiet_until = -1e9
         self._hovering_said = False
         self._silent_said = False
+        self.pilot = PILOT_KEYS            # who steers while flying: the operator's keys, or a flight plan
+        self.takeover = False              # the operator pressed a flight key while a plan was flying
+        self.last_flight = None            # the last finished flight as it was steered, see take_flight()
+        self._land_soon_until = -1e9
+        self._rc_hold = False              # a plan's movement command is running: no stick values meanwhile
+        self._no_silence_until = -1e9
+        self._log = None                   # the flight being remembered: [(time, stick values or action name)]
+        self._log_plan = False             # a plan steered during this flight: it was not flown by hand
         self._sock = self._status_sock = None
         self._stop = threading.Event()
         self._threads = []
@@ -304,8 +320,12 @@ class TelloLink:
             elif state == READY and height is not None and height < 20:
                 self._quiet_until = now + self.cfg.stale_reply_s        # on the ground: "land" is sent anyway
             else:
-                if state == TAKING_OFF:                # the "ok" of the take-off is still on its way: it must not
-                    self._skip_ok_until = now + self.cfg.takeoff_timeout_s      # be taken for "landed"
+                moving = self._pending is not None and self._pending.get('move')
+                if state == TAKING_OFF or moving:      # the "ok" of the take-off (or of the plan's movement) is
+                    self._skip_ok_until = now + self.cfg.takeoff_timeout_s      # still on its way: it is not "landed"
+                if moving:                             # a refused "land" is tried again soon, see _on_reply
+                    self._land_soon_until = now + 10.0
+                self._close_log(now)
                 self._set_state(LANDING)
                 self._land_errors, self._ground_since = 0, None
                 self._quiet_until = now + self.cfg.stale_reply_s
@@ -320,6 +340,7 @@ class TelloLink:
             if self.state in (DISCONNECTED, CONNECTING):
                 return False
             self.sticks, self.keys = ZERO, ()
+            self._close_log(self.clock())
             self._set_state(READY)
             self._quiet_until = self.clock() + 2 * self.cfg.stale_reply_s
         for _ in range(3):
@@ -332,16 +353,122 @@ class TelloLink:
         keys = tuple(k for k in KEYS if k in set(keys))
         sticks = sticks_from_keys(keys, percent)
         with self._lock:
-            self._keys_time = self.clock()
+            now = self._keys_time = self.clock()
             self.keys = keys
+            if self.pilot == PILOT_PLAN:               # a plan is flying: a key does not steer, it takes over
+                if keys and self.state == FLYING:
+                    self.takeover = True
+                return
             flying = self.state == FLYING
-            lost = self._heard is not None and self._keys_time - self._heard > self.cfg.silent_s
+            lost = self._heard is not None and now - self._heard > self.cfg.silent_s
             changed = flying and not lost and sticks != self.sticks
+            if flying and sticks != self.sticks and self._log is not None:
+                self._log.append((now, sticks))
             self.sticks = sticks if flying else ZERO
             if keys:
                 self._hovering_said = False
         if changed:
             self._send('rc %d %d %d %d' % sticks)          # at once, not at the next 50 ms tick
+
+    # ------------------------------------------------------------------ a flight plan as the pilot (uav/plan.py)
+    def plan_begin(self):
+        """A flight plan takes over the steering (on the ground before its take-off, or in the air)."""
+        with self._lock:
+            self.pilot, self.takeover, self._rc_hold = PILOT_PLAN, False, False
+            self.sticks, self.keys = ZERO, ()
+            self._log_plan = True                      # this flight is not one "flown by hand" any more
+
+    def plan_end(self):
+        """The plan is over (finished, stopped or failed): the keys steer again, the drone hovers."""
+        with self._lock:
+            self.pilot, self._rc_hold, self.takeover = PILOT_KEYS, False, False
+            self.sticks, self.keys = ZERO, ()
+            self._keys_time, self._hovering_said = self.clock(), True
+            flying = self.state == FLYING
+        if flying:
+            self._send('rc 0 0 0 0')
+
+    def plan_sticks(self, sticks):
+        """Stick values chosen by the plan: a remembered flight, or zeros to hover. False: the plan is not (or no
+        longer) steering a flying drone."""
+        sticks = tuple(int(max(-100, min(100, round(v)))) for v in sticks)
+        with self._lock:
+            if self.pilot != PILOT_PLAN or self.state != FLYING or len(sticks) != 4:
+                return False
+            changed = sticks != self.sticks or self._rc_hold
+            self.sticks, self._rc_hold = sticks, False
+        if changed:
+            self._send('rc %d %d %d %d' % sticks)
+        return True
+
+    def plan_command(self, text, timeout):
+        """One command of a flight plan that the drone answers when it has done it ("up 20", "cw 90", "speed 30").
+        No stick values are sent while it runs. Returns the drone's answer; None when none came in time, or when the
+        plan is not (or no longer) steering a flying drone."""
+        cfg = self.cfg
+        with self._lock:
+            if self.pilot != PILOT_PLAN or self.state != FLYING or self._sock is None:
+                return None
+            centre = not self._rc_hold
+            self.sticks, self._rc_hold = ZERO, True
+        if centre:                                     # the sticks were in use: centre them, give the drone a moment
+            self._send('rc 0 0 0 0')
+            self._stop.wait(0.05)
+            self._send('rc 0 0 0 0')
+            self._stop.wait(cfg.plan_settle_s)
+        for _ in range(60):                            # another question (about the video) may still be open
+            if self._pending is None and self.clock() >= self._quiet_until:
+                break
+            self._stop.wait(0.05)
+        pending = dict(text=text, done=threading.Event(), answer=None, move=True)
+        with self._lock:
+            now = self.clock()
+            if self.pilot != PILOT_PLAN or self.state != FLYING or self._pending is not None:
+                return None
+            self._pending, self._query = pending, None
+            if self._status_time is None or now - self._status_time > cfg.status_stale_s:
+                self._no_silence_until = now + timeout          # no status messages: the drone is quiet while it moves
+        deadline = self.clock() + timeout
+        if self._send(text):
+            while not pending['done'].wait(0.05):
+                if self.clock() >= deadline or self.state != FLYING or self._stop.is_set():
+                    break
+        with self._lock:
+            if self._pending is pending:
+                self._pending = None
+            self._no_silence_until = -1e9
+            if pending['answer'] is None and self.state == FLYING:      # a late answer is not the next command's
+                self._quiet_until = max(self._quiet_until, self.clock() + cfg.stale_reply_s)
+        return pending['answer']
+
+    # ------------------------------------------------------------------ remembering a flight flown by hand
+    def log_action(self, name):
+        """Something the operator did during a flight by hand (a photo): remembered at this moment of the flight."""
+        with self._lock:
+            if self._log is not None and self.state == FLYING and self.pilot == PILOT_KEYS:
+                now = self.clock()
+                self._log.append((now, str(name)))
+                self._log.append((now, self.sticks))
+
+    def take_flight(self):
+        """The last finished flight, once: dict(segments=[(stick values or action name, seconds)], seconds=...,
+        by_hand=True when only the keys steered). None when there is none."""
+        with self._lock:
+            flight, self.last_flight = self.last_flight, None
+        return flight
+
+    def _close_log(self, now):
+        log, self._log = self._log, None
+        if not log:
+            return
+        segments = [(what, max(0.0, later - t)) for (t, what), (later, _) in zip(log, log[1:] + [(now, None)])]
+        self.last_flight = dict(segments=segments, seconds=now - log[0][0], by_hand=not self._log_plan)
+
+    def _in_the_air(self, now):
+        """The take-off is complete: the pilot steers from here on, and the flight is remembered from here on."""
+        self._set_state(FLYING)
+        self._keys_time, self._hovering_said = now, True
+        self._log, self._log_plan = [(now, ZERO)], self.pilot == PILOT_PLAN
 
     def stream(self, on=True):
         """"streamon" / "streamoff". True when the drone answered "ok"."""
@@ -370,6 +497,10 @@ class TelloLink:
         return pending['answer']
 
     # ------------------------------------------------------------------ what the console shows
+    def quiet_s(self):
+        """Seconds until the next command may be sent (answers to earlier ones are still being ignored)."""
+        return max(0.0, self._quiet_until - self.clock())
+
     def battery(self):
         return self._fresh('bat', self.clock(), 15.0)
 
@@ -398,7 +529,7 @@ class TelloLink:
                 status_blocked=connected and waited and not status_ok and not self.status_port_error
                 and heard is not None and heard <= cfg.silent_s,
                 sticks=list(self.sticks), keys=list(self.keys), status_port_error=self.status_port_error,
-                rejected=self.rejected, send_error=self.send_error)
+                rejected=self.rejected, send_error=self.send_error, pilot=self.pilot)
 
     def take_events(self):
         """(level, text) messages for the operator's log since the last call."""
@@ -489,12 +620,15 @@ class TelloLink:
                     self._landed('The drone has landed.')
                 else:
                     self._land_errors += 1
+                    if now < self._land_soon_until:    # refused because a plan's movement is still running:
+                        self._land_sent = min(self._land_sent, now - self.cfg.land_resend_s + 0.5)   # again in 0.5 s
             elif self.state == TAKING_OFF:
                 if ok:
-                    self._set_state(FLYING)
-                    self._keys_time, self._hovering_said = now, True
-                    self._event('success', 'The drone is in the air. W A S D move it, the arrow keys change '
-                                           'height and turn it. LAND = Esc.')
+                    self._in_the_air(now)
+                    self._event('success', 'The drone is in the air: the flight plan starts. LAND = Esc.'
+                                if self.pilot == PILOT_PLAN else
+                                'The drone is in the air. W A S D move it, the arrow keys change height and turn '
+                                'it. LAND = Esc.')
                 else:
                     self._set_state(READY)
                     self._event('warn', 'The drone refused to take off (it answered "%s"). Usual reasons: battery '
@@ -543,9 +677,13 @@ class TelloLink:
             state = self.state
             silent = None if self._heard is None else now - self._heard
             height = self._fresh('h', now)
+            if silent is not None and now < self._no_silence_until:
+                silent = 0.0                           # a plan's movement runs and no status is expected meanwhile
             if state == FLYING:
-                if self.sticks != ZERO and now - self._keys_time > cfg.key_timeout_s:
+                if self.pilot == PILOT_KEYS and self.sticks != ZERO and now - self._keys_time > cfg.key_timeout_s:
                     self.sticks, self.keys = ZERO, ()
+                    if self._log is not None:
+                        self._log.append((now, ZERO))
                     if not self._hovering_said:
                         self._hovering_said = True
                         self._event('warn', 'The console page stopped reporting its keys: hovering.')
@@ -557,13 +695,14 @@ class TelloLink:
                 elif not lost:
                     self._silent_said = False
                 if silent is not None and silent > cfg.lost_land_s:
+                    self._close_log(now)
                     self._set_state(LANDING)
                     self._land_errors, self._ground_since, self._land_sent = 0, None, now
                     self._quiet_until = now + cfg.stale_reply_s
                     self.sticks, self.keys = ZERO, ()
                     self._event('warn', 'Landing (nothing heard from the drone for %.0f s).' % silent)
                     send.append('land')
-                else:
+                elif not self._rc_hold:                # (nothing while a plan's movement command runs)
                     send.append('rc %d %d %d %d' % (ZERO if lost else self.sticks))
             elif state == LANDING:
                 elapsed = now - self._since
@@ -588,8 +727,7 @@ class TelloLink:
                     send.append('land')
             elif state == TAKING_OFF and now - self._since > cfg.takeoff_timeout_s:
                 if height is not None and height >= 20:
-                    self._set_state(FLYING)
-                    self._keys_time = now
+                    self._in_the_air(now)
                     self._event('success', 'The drone is in the air (%d cm).' % height)
                 else:
                     self._set_state(READY)

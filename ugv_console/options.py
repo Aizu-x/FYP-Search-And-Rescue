@@ -85,6 +85,7 @@ SCHEMA = {
     'uav_sim': Opt('bool', False, label='Simulated drone'),
     'uav_ip': Opt('str', '192.168.10.1', label='Drone IP'),
     'uav_speed': Opt('int', 35, 10, 100, label='Stick strength (%)'),
+    'uav_mode': Opt('choice', 'manual', choices=('manual', 'plan'), label='Flight mode'),
     'uav_record': Opt('bool', True, label='Record every flight on video'),
     'uav_dir': Opt('str', '', label='Footage folder (empty = Videos\\UAV footage)'),
     # display

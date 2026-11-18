@@ -245,7 +245,7 @@ class ConsoleServer:
         self.verbose = verbose
         self.token = token or secrets.token_urlsafe(24)
         self.deadman_s, self.idle_exit_s, self.uav_deadman_s = deadman_s, idle_exit_s, uav_deadman_s
-        self._uav_deadman_fired = False
+        self._uav_deadman_fired = self._plan_deadman_fired = False
         self.httpd = _Server(('127.0.0.1', port), _Handler)
         self.httpd.console = self
         self.port = self.httpd.server_address[1]
@@ -340,7 +340,7 @@ class ConsoleServer:
         with self._cond:
             self._clients += 1
             self._ever_connected = True
-            self._deadman_fired = self._uav_deadman_fired = False
+            self._deadman_fired = self._uav_deadman_fired = self._plan_deadman_fired = False
         try:
             handler.wfile.write(b'retry: 800\n\n')
             while not self._stop.is_set():
@@ -378,6 +378,11 @@ class ConsoleServer:
                 self._deadman_fired = True
                 self.app.command('stop', dict(reason='Console window closed'))
                 print('Console page closed while the robot was moving: STOP sent.')
+            # a flight plan is not flown without an operator watching: page gone = the plan stops (hover)
+            if idle > self.deadman_s and not self._plan_deadman_fired and self.app.uav_plan_running():
+                self._plan_deadman_fired = True
+                self.app.command('uav_plan_stop', dict(reason='the console page was closed'))
+                print('Console page closed while the drone was flying a plan: plan stopped.')
             # the drone hovers as soon as the page stops reporting its keys (uav/tello.py); when the page stays
             # away it is brought down. (Longer than for the robot: reloading the page must not end a flight.)
             if idle > self.uav_deadman_s and not self._uav_deadman_fired and self.app.uav_airborne():

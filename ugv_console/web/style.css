@@ -324,7 +324,7 @@ input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius
 .hud.uav-state { position: static; font-weight: 650; color: #e9eff7; background: rgba(8, 13, 20, .78); border-color: rgba(255, 255, 255, .12); }
 .hud.uav-state.run { color: var(--warn); } .hud.uav-state.ok { color: var(--go); } .hud.uav-state.info { color: var(--accent); }
 .uav-top .tag.rec { font-size: 11.5px; padding: 4px 10px; background: rgba(255, 89, 100, .2); }
-.uav-stage .banner { top: 56px; }
+.uav-stage .banner { top: 80px; }
 .uav-pad { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 22px; padding: 10px 16px 8px; border-radius: 14px; background: rgba(8, 13, 20, .72); border: 1px solid rgba(255, 255, 255, .12); backdrop-filter: blur(8px); }
 .pad { display: grid; grid-template: 34px 34px auto / 34px 34px 34px; gap: 4px; }
 .pad .k-up { grid-column: 2; grid-row: 1; } .pad .k-left { grid-column: 1; grid-row: 2; } .pad .k-down { grid-column: 2; grid-row: 2; } .pad .k-right { grid-column: 3; grid-row: 2; }
@@ -336,3 +336,30 @@ input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius
 .pad-state { min-width: 168px; text-align: center; font-size: 11.5px; color: #92a3b8; padding-bottom: 22px; }
 .pad-state.on { color: #e9eff7; font-weight: 600; }
 .uav-panel .note, #rec-info, .log .line span { overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------------ UAV section: planned flight */
+.seg.wide { display: flex; }
+.seg.wide button { flex: 1; justify-content: center; }
+.seg button:disabled { opacity: .5; cursor: not-allowed; }
+.plan-select { flex: 1.6 !important; min-width: 0; width: 0; }
+.plan-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; max-height: 268px; overflow-y: auto; }
+.plan-steps li { display: flex; align-items: center; gap: 5px; min-height: 30px; padding: 3px 5px 3px 6px; border-radius: 8px; background: var(--card2); border: 1px solid transparent; font-size: 12px; }
+.plan-steps li .n { width: 18px; flex: none; text-align: right; color: var(--faint); font: 600 10.5px var(--mono); }
+.plan-steps li .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plan-steps li .t i { font-style: normal; color: var(--faint); font-size: 11px; }
+.plan-steps li input { width: 56px; height: 24px; padding: 0 6px; flex: none; }
+.plan-steps li .u { width: 24px; flex: none; color: var(--faint); font-size: 10.5px; }
+.plan-steps li button { width: 22px; height: 22px; flex: none; padding: 0; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--muted); font-size: 11px; cursor: pointer; }
+.plan-steps li button:hover:not(:disabled) { color: var(--text); border-color: var(--line2); }
+.plan-steps li button:disabled { opacity: .3; cursor: default; }
+.plan-steps li.fixed { background: transparent; border: 1px dashed var(--line); color: var(--faint); min-height: 26px; }
+.plan-steps li.fixed .t { white-space: normal; font-size: 11.5px; line-height: 1.35; padding: 2px 0; }
+.plan-steps li.now { border-color: var(--warn); background: var(--warn-soft); color: var(--text); }
+.plan-steps li.done .n { color: var(--go); }
+.plan-steps li.done .t { color: var(--go); }
+.plan-steps li.failed { border-color: var(--danger); background: var(--danger-soft); }
+.plan-add { display: flex; align-items: center; gap: 6px; }
+.plan-add select { flex: 1.5; min-width: 0; width: 0; }
+.plan-add input { width: 62px; flex: none; }
+.plan-add .unit { width: 30px; }
+.plan-add .btn { flex: none; }

@@ -167,6 +167,20 @@ Tello -> port 11111: H.264 video -> uav/video.py (own process): decode -> previe
   FFmpeg decoder over a local port with low-delay settings and one decoder thread (measured with the simulated
   camera: about one picture of delay instead of one second), and writes the footage with the same file writer as
   the mission video (real-time length, MP4 or AVI, `_recording` until complete, disk guards).
+* **Planned flight** (`uav/plan.py`): a plan is a list of steps. Distances and turns are sent as the SDK's own
+  movement commands ("up 20", "cw 360", "forward 40"); the drone measures them itself and answers "ok" when one is
+  done, and only then is the next step sent. No stick values are sent while a movement runs. A distance longer
+  than 1 m is sent in pieces of at most 1 m (and about 3 s), because a movement cannot be cut short from the
+  laptop: this bounds how long LAND or STOP PLAN can have to wait. "Hover" and the "keys" steps of a copied
+  flight send stick values exactly like the keyboard does.
+* **Copying a flight**: while the keys alone steer, the link notes every change of the stick values with its
+  time. After the landing that list becomes the plan "Last manual flight" (stick values for so many seconds,
+  hovers in between, photos where they were taken). Flying it again repeats the commands, not the path: there is
+  no position feedback, so the result is close, not identical.
+* **Who steers**: either the keys or a plan, never both. While a plan flies, a key report does not steer; it
+  marks "take over", the plan stops, and from the next report on the keys steer again. Starting a plan is two
+  requests like a take-off; the confirmation shows the whole plan, and the plan that is flown is the copy that
+  was shown.
 * **Simulated drone** (`uav/sim.py`): same protocol on 127.0.0.1, status ten times a second, the 15 s safety
   landing, and a camera that draws a room and sends it as real H.264 (uncompressed macroblocks, so no encoder
   is needed). The link and the video worker cannot tell it from the real drone; how it flies is made up.
@@ -179,8 +193,10 @@ Tello -> port 11111: H.264 video -> uav/video.py (own process): decode -> previe
 * The map's registration to the real arena (origin, scale) must be checked: corner start and real field size.
 * A small object placed against a mapped wall is only caught by the bridge's short stop zone.
 * The YOLO model was trained on phone photos; its accuracy from the robot's low camera is not yet measured.
-* The UAV section has only been run with the simulated drone. With a real Tello still open: which sign of each
-  stick value is which direction (the SDK document does not say; the common convention is used), what the drone
-  does with its last stick values when the Wi-Fi drops, and how its real video stream behaves in the decoder.
+* UAV: manual control has been flown once with a real Tello; planned flight only with the simulated drone. Not
+  known yet for the real drone: whether it accepts "land" in the middle of a movement command (it is sent at
+  once and repeated either way), how exactly it flies the movement commands, and what it does with its last
+  stick values when the Wi-Fi drops.
+* A copied manual flight is repeated by time, not by position: it drifts. Only written steps are measured.
 * The drone has its own Wi-Fi network. With one Wi-Fi adapter the laptop is either on the drone's network or on
   the robot's, not both.

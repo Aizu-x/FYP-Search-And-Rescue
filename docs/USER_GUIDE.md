@@ -16,6 +16,8 @@ The first button in the top bar, **UAV**, is for the Tello drone. Short version:
 2. **TAKE OFF**, confirm.
 3. **W A S D** move, **↑ ↓** height, **← →** turn. Let go: it hovers. **Esc** lands.
 4. Battery, altitude and the live picture are on the screen; the flight video is saved in `Videos\UAV footage`.
+5. **Planned flight** (Flight mode): add steps such as *Up 20 cm*, *Turn right 360°*, *Forward 40 cm*, *Land*, or press
+   **My last flight** to copy the flight you just flew by hand. **RUN PLAN** shows the plan, asks, then flies it.
 
 Everything else (readings, footage, first real flight, problems): **[UAV guide](UAV.md)**.
 Planner, Simulator and Robot in the top bar bring you back to the UGV. The drone must be on the ground for that.

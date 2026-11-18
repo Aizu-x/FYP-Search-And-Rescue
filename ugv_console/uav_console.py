@@ -63,6 +63,7 @@ class UavConsole:
         self._uav_was = DISCONNECTED
         self._uav_key_t = None
         self._uav_stream = dict(since=None, restarts=0, busy=False)
+        self._plan_init()                    # planned flight (uav_plans.py)
 
     # ------------------------------------------------------------------ small helpers
     def _uav_say(self, text, level='info', log=True):
@@ -193,6 +194,7 @@ class UavConsole:
         self.uav = self.uav_video = self.uav_sim = None
         self._uav_code = None
         self._uav_was = DISCONNECTED
+        self._plan_drop()                      # a plan that is being flown ends here
         self._uav_release(link, video, process)
         if video is not None:
             self._uav_video_events(video)      # "footage saved: ..."
@@ -217,6 +219,8 @@ class UavConsole:
             return 'Switch to the UAV section first.'
         if self.is_moving():
             return 'The robot is moving: stop it before the drone takes off.'
+        if self.uav_plan_running():
+            return 'A flight plan is being flown.'
         if link.state != READY:
             return {FLYING: 'The drone is already flying.', TAKING_OFF: 'The drone is already taking off.',
                     LANDING: 'The drone is landing: wait until it is down.'}.get(link.state, 'The drone is not ready.')
@@ -393,6 +397,8 @@ class UavConsole:
             except RecorderError as exc:
                 return self._fail('Cannot save a photo: %s.' % exc)
             video.photo(folder)
+            if self.uav is not None:
+                self.uav.log_action('photo')           # part of a flight by hand that is being remembered
             return _result(True)
 
     def cmd_uav_open_folder(self, args):
@@ -444,16 +450,19 @@ class UavConsole:
             return
         for level, text in link.take_events():
             self._uav_say(text, level)
-        state = link.state
-        if state != self._uav_was:
-            was, self._uav_was = self._uav_was, state
+        state, was = link.state, self._uav_was
+        if state != was:
+            self._uav_was = state
             if state == READY and was in AIRBORNE:                 # down again: save the footage of this flight
                 rec = self.uav_rec
                 if rec is not None and rec['auto']:
                     self._uav_record_stop('landed', tail=RECORD_TAIL_S)
+            if state in (TAKING_OFF, FLYING) and was == READY and self.opts['uav_record'] and self.uav_rec is None:
+                self._uav_record_start(auto=True)                  # (a take-off that a flight plan started)
             if self.uav_video is not None:
                 self.uav_video.set_airborne(state in AIRBORNE)
             self._bump('uav')
+        self._plan_tick(link, state, was)
         video, rec = self.uav_video, self.uav_rec
         if video is None:
             return
@@ -488,6 +497,7 @@ class UavConsole:
         link, video = self.uav, self.uav_video
         state = 'connecting' if self.uav_connecting else DISCONNECTED
         data = dict(section=o['section'], sim=bool(o['uav_sim']), ip=o['uav_ip'], speed=int(o['uav_speed']),
+                    mode=o['uav_mode'], run=self._plan_run_view(), plan_hint=self._plan_problem(), pilot='keys',
                     state=state, connected=False, airborne=False, simulated=self.uav_sim is not None,
                     battery=None, height_cm=None, tof_cm=None, flight_s=None, temp_c=None, yaw=None,
                     source='none', keys=[], sticks=[0, 0, 0, 0], warnings=[], note=self.uav_note,
@@ -536,7 +546,7 @@ class UavConsole:
             state=state, state_text=STATE_TEXT.get(state, state), connected=True, airborne=state in AIRBORNE,
             battery=battery, height_cm=height, tof_cm=whole(snap['tof_cm']), flight_s=whole(snap['flight_s']),
             temp_c=whole(snap['temp_c']), yaw=whole(snap['yaw']), source=snap['source'], keys=snap['keys'],
-            sticks=snap['sticks'], warnings=warnings, takeoff_hint=problem,
+            sticks=snap['sticks'], warnings=warnings, takeoff_hint=problem, pilot=snap['pilot'],
             video=dict(on=video is not None and not video.dead, live=live, w=status.get('width', 0),
                        h=status.get('height', 0), fps=status.get('fps', 0.0), kbps=status.get('kbps', 0),
                        note=video_note),

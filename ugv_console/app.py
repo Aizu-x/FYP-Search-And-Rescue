@@ -60,6 +60,7 @@ from uav.tello import check_host
 from . import options as O
 from .options import OFFLINE, SIM, arg_bool, arg_choice, arg_number, arg_points
 from .uav_console import UavConsole
+from .uav_plans import UavPlans
 from .views import Views
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,7 +76,7 @@ def result(ok, message='', level=None, **extra):
     return dict(ok=bool(ok), message=message, level=level or ('info' if ok else 'error'), **extra)
 
 
-class ConsoleApp(UavConsole, Views):
+class ConsoleApp(UavPlans, UavConsole, Views):
     VERSION = VERSION
 
     def __init__(self, config_path=DEFAULT_CONFIG, settings_path=DEFAULT_SETTINGS, edit_dir=EDIT_DIR,
@@ -350,6 +351,13 @@ class ConsoleApp(UavConsole, Views):
         if 'uav_speed' in keys:
             message = 'Stick strength %d %%: how hard a held key pushes the drone.' % o['uav_speed']
             self._bump('uav')
+        if 'uav_mode' in keys:
+            if self.uav_plan_running():
+                raise ValueError('a flight plan is being flown: stop it first')
+            message = ('Planned flight: write a plan (or copy your last flight), then RUN PLAN. The keys still work '
+                       'whenever no plan is flying.' if o['uav_mode'] == 'plan' else
+                       'Manual control: you fly with the keys.')
+            self._bump('uav', 'uavplan')
         if 'ignore_drift' in keys:
             if self.nav:
                 self.nav.set_ignore_drift(o['ignore_drift'])

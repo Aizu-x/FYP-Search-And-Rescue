@@ -10,7 +10,7 @@
 ![Robot](https://img.shields.io/badge/Robot-HiWonder%20MentorPi--M1-3b82f6)
 ![ROS 2](https://img.shields.io/badge/Robot%20side-ROS%202%20Humble-22314E?logo=ros&logoColor=white)
 ![UAV](https://img.shields.io/badge/UAV-Tello%20drone-ef4444)
-![Tests](https://img.shields.io/badge/Tests-301%20passing-16a34a)
+![Tests](https://img.shields.io/badge/Tests-339%20passing-16a34a)
 
 <img src="docs/images/demo.gif" alt="The robot drives to the goal, spots a green object, approaches it, holds 3 seconds and marks the survivor secured" width="860">
 
@@ -25,6 +25,7 @@
 | | |
 |---|---|
 | 🚁 **UAV first (Tello drone)** | Before the robot drives, fly a Tello from the same console: live camera picture, **battery and altitude**, **W A S D** to move, **arrow keys** for height and turning, two-step take-off, **Esc = land**. Every flight is filmed and saved as an MP4. A simulated drone is built in for practice. |
+| 🧭 **Planned flight** | Write a flight plan step by step (*Up 20 cm, Turn right 360°, Forward 40 cm, Land*) or let the console **copy a flight you flew by hand**, then the drone flies it by itself after you confirm. Plans can be saved, and any key takes the controls back. |
 | 🗺️ **A\* path planning** | Shortest safe route on the arena's occupancy map (3 cm cells, stretched to the real size of your field). The robot's real size is respected, routes prefer open space and are straightened without ever getting closer to walls. A plan takes about 15 ms. |
 | 👁️ **YOLOv5 vision** | A YOLOv5n model finds **green** (survivor) and **red** (obstacle) blocks in the robot's camera. Each box is projected onto the floor and pinned on the map; red blocks are avoided by A\*. |
 | 🚑 **Search mission** | The robot drives to your goal, looks around, goes to the **first green object it sees**, stops at the distance you chose, holds 3 s and marks it **secured**. No other green in sight: mission complete. |
@@ -94,8 +95,11 @@ stateDiagram-v2
 | <img src="docs/images/console_tracking.png" alt="The room outline drawn by the LiDAR around the arena" width="430"> | <img src="docs/images/console_complete.png" alt="Mission complete, survivor secured" width="430"> |
 
 **UAV section**: the drone's camera (here the built-in simulated drone above the arena), battery, altitude and the flight keys.
+Left: manual control. Right: a planned flight under way (step 2 of *Up 20 cm, Turn right 360°, Forward 40 cm, Land*).
 
-<img src="docs/images/console_uav.png" alt="UAV section: live drone camera, battery, altitude, flight keys" width="866">
+| Manual control | Planned flight |
+|---|---|
+| <img src="docs/images/console_uav.png" alt="UAV section: live drone camera, battery, altitude, flight keys" width="430"> | <img src="docs/images/console_uav_plan.png" alt="Planned flight: the plan's steps, the one being flown is highlighted" width="430"> |
 
 ## Quick start
 
@@ -135,6 +139,7 @@ On Windows you can also double-click **`START_CONSOLE.bat`**. To get the newest 
 2. **TAKE OFF**, confirm.
 3. Hold **W A S D** to move, **↑ ↓** for height, **← →** to turn. Let go: it hovers.
 4. **Esc** lands. The flight video is in `Videos\UAV footage`.
+5. Planned flight: switch **Flight mode** to **Planned flight**, add *Up 20*, *Turn right 360*, *Forward 40*, *Land*, press **RUN PLAN**.
 
 Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](docs/UAV.md)** · Real robot: **[Robot setup](docs/ROBOT_SETUP.md)**
 
@@ -145,12 +150,12 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](
 | `ugv_planner/` | laptop | The A\* planner, occupancy grid, collision and clearance checks |
 | `ugv_nav/` | laptop | Localization, room-based LiDAR tracking, path following, safety, YOLO mapping, search mission |
 | `ugv_console/` | laptop | The console: Python backend and the web page (`web/`) |
-| `uav/` | laptop | The UAV section: link to the Tello, video receiver and recorder, simulated drone |
+| `uav/` | laptop | The UAV section: link to the Tello, flight plans, video receiver and recorder, simulated drone |
 | `ugv_bridge/` | robot | The only program on the MentorPi: authenticated link, watchdog, ROS 2 topics |
 | `third_party/wro_yolo/` | laptop | YOLOv5n model (ONNX) for green / red blocks |
 | `data/` | laptop | Three arena maps (ENV1-3): occupancy grid + ground truth |
 | `config/` | laptop | `navigation.toml`: robot size, speeds, limits |
-| `tests/` | laptop | 301 automated tests |
+| `tests/` | laptop | 339 automated tests |
 | `docs/` | | Guides and technical notes |
 
 ## Safety design
@@ -167,16 +172,18 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](
   Its corrections start only after it has verified, from the robot's own motion, how the LiDAR is mounted.
 - **The drone**: take-off needs a confirmation, **Esc lands**, letting go of the keys means hover, and the drone is
   brought down when the page, the console program or the radio link goes away. One machine moves at a time.
+  A flight plan is shown in full before it may start, and any flight key stops it and gives the controls back.
 
 ## Project status
 
 | Area | Status |
 |---|---|
-| A\* planning, smoothing, mission logic, vision filters, console | ✅ 301 automated tests + browser end-to-end runs |
+| A\* planning, smoothing, mission logic, vision filters, console | ✅ 339 automated tests + browser end-to-end runs |
 | Full loop in the built-in simulator (real bridge code, simulated robot, LiDAR and camera) | ✅ working |
 | Room-based LiDAR tracking, Find robot, real field size | ✅ in a simulated room · 🔧 not yet tried in a real one |
 | Mission video | ✅ recorded and played back from simulated missions · 🔧 not yet tried with the real robot's camera stream |
-| UAV section: flying with the keys, live picture, battery / altitude, footage | ✅ with the built-in simulated drone (same protocol, real H.264 video) · 🔧 **not yet flown with a real Tello** |
+| UAV section, manual control: flying with the keys, live picture, battery / altitude, footage | ✅ with the built-in simulated drone (same protocol, real H.264 video) · ✅ flown once with a real Tello (connect, take-off, keys, landing, footage) |
+| UAV section, planned flight: written plans and copied manual flights | ✅ with the simulated drone · 🔧 **not yet flown with a real Tello** |
 | Link to the real MentorPi (authentication, odometry, IMU, LiDAR received) | ✅ verified |
 | Autonomous driving and YOLO on the real robot | 🔧 in progress, **not yet verified** |
 
@@ -187,7 +194,7 @@ Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works]
 | Guide | For |
 |---|---|
 | [User guide](docs/USER_GUIDE.md) | Using the console: planner, simulator, real robot, search mission, settings |
-| [UAV guide](docs/UAV.md) | The drone section: keys, readings, footage, first real flight, troubleshooting |
+| [UAV guide](docs/UAV.md) | The drone section: keys, planned flight, readings, footage, troubleshooting |
 | [Robot setup](docs/ROBOT_SETUP.md) | Putting the bridge on the MentorPi and connecting, step by step |
 | [How it works](docs/HOW_IT_WORKS.md) | Architecture, A\*, vision, mission, protocol, safety rules |
 | [Testing](docs/TESTING.md) | What was tested, how, and what is still open |
