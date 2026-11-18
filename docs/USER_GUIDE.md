@@ -9,10 +9,21 @@ Keep the terminal open. If no window opens, click the link the terminal prints.
 
 **Esc = STOP** at any time. Closing the window while the robot moves also stops it.
 
+## UAV section (the drone comes first)
+The first button in the top bar, **UAV**, is for the Tello drone. Short version:
+
+1. **UAV**, then **Connect** (join the Tello's Wi-Fi first), or switch **Simulated drone** on to practise.
+2. **TAKE OFF**, confirm.
+3. **W A S D** move, **↑ ↓** height, **← →** turn. Let go: it hovers. **Esc** lands.
+4. Battery, altitude and the live picture are on the screen; the flight video is saved in `Videos\UAV footage`.
+
+Everything else (readings, footage, first real flight, problems): **[UAV guide](UAV.md)**.
+Planner, Simulator and Robot in the top bar bring you back to the UGV. The drone must be on the ground for that.
+
 ## The console at a glance
 | Area | What is there |
 |---|---|
-| **Top bar** | Mode (Planner / Simulator / Robot), status chips (link, state, drift, mission), **STOP** |
+| **Top bar** | **UAV** (the drone), then the UGV modes (Planner / Simulator / Robot), status chips (link, state, drift, mission), **STOP** (in the UAV section: **LAND**) |
 | **Left tabs** | **Drive** (connect, start, goal, authorize, speed) · **Map** (paint, save, layers) · **Robot** (size, calibration) · **Camera** · **Search** |
 | **Middle** | The map. Wheel = zoom, drag = move. x runs left to right 0-3 m, y bottom to top |
 | **Right** | Live camera with YOLO boxes, survivor list, activity log, system health |

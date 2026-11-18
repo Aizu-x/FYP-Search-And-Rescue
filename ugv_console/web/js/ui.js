@@ -10,7 +10,7 @@ const esc = (text) => String(text === null || text === undefined ? '' : text).re
 const icon = (name) => `<svg class="ic"><use href="#i-${name}"/></svg>`;
 const fmt = (v, digits = 2, unit = '') => (v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(digits) + unit);
 const CONFIRM_TITLES = {discard_edits: 'Unsaved map edits', revert_map: 'Back to the original map', allow_tight: 'Allow radius below turning circle', ignore_drift: 'Ignore drift alerts',
-  clear_survivors: 'Clear survivors'};
+  clear_survivors: 'Clear survivors', uav_emergency: 'Cut the motors'};
 
 // ------------------------------------------------------------------ toasts, dialogs, sound
 export function toast(message, level = 'info', ms = 4500) {
@@ -31,6 +31,7 @@ export function showResult(r) {
 }
 
 let modalClose = null;
+export const modalOpen = () => !!modalClose;
 export function modal({title, text = '', html = '', confirmLabel = 'OK', cancelLabel = 'Cancel', kind = '', wide = false, iconName = 'info'}) {
   return new Promise((resolve) => {
     const back = document.createElement('div');
@@ -82,13 +83,21 @@ export class UI {
     this.settings = null; this.nav = {connected: false}; this.mapInfo = null; this.mission = null; this.plan = null;
     this.dirty = new Set(); this.timers = {}; this.lastLog = 0; this.knownSurvivors = null; this.knownRecordings = null; this.theme = null;
     this.logPinned = true;
+    this.uav = null;                               // the UAV section (uav.js), set by main.js
     this.bind();
+  }
+
+  // 'uav' while the UAV section is on screen, otherwise the UGV mode (offline / sim / robot)
+  shown() {
+    const o = this.settings ? this.settings.opts : null;
+    return !o ? 'offline' : o.section === 'uav' ? 'uav' : o.mode;
   }
 
   // ---------------------------------------------------------------- wiring
   bind() {
     $$('#tabs button').forEach((b) => b.addEventListener('click', () => this.showTab(b.dataset.tab)));
-    $$('#mode-seg button').forEach((b) => b.addEventListener('click', () => run('set_mode', {mode: b.dataset.mode})));
+    $$('#mode-seg button').forEach((b) => b.addEventListener('click', () => (b.dataset.mode === 'uav'
+      ? run('set_section', {section: 'uav'}) : run('set_mode', {mode: b.dataset.mode}))));
     $('#btn-connect').addEventListener('click', () => run(this.nav.connected ? 'disconnect' : 'connect'));
     $('#btn-stop').addEventListener('click', () => this.stop());
     $('#btn-theme').addEventListener('click', () => this.setOpt('theme', this.settings && this.settings.opts.theme === 'dark' ? 'light' : 'dark'));
@@ -189,6 +198,7 @@ export class UI {
     }
     const typing = ['INPUT', 'SELECT', 'TEXTAREA'].includes((e.target.tagName || '')) || modalClose;
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (this.shown() === 'uav') return;            // the map is not on screen; the flight keys are handled in uav.js
     const tools = {1: 'pan', 2: 'start', 3: 'goal', 4: 'paint', 5: 'erase', 6: 'block', 7: 'measure'};
     if (tools[e.key]) { if (e.key !== '6' || (this.settings && this.settings.opts.mode === 'sim')) this.map.setTool(tools[e.key]); }
     else if (e.key === 'f' || e.key === 'F') this.map.fit();
@@ -293,17 +303,27 @@ export class UI {
   on_settings(s) {
     const first = !this.settings;
     const modeChanged = first || this.settings.opts.mode !== s.opts.mode || this.settings.opts.lidar_sees !== s.opts.lidar_sees;
+    const sectionChanged = first || this.settings.opts.section !== s.opts.section;
     this.settings = s;
     const o = s.opts;
+    const shown = this.shown(), uav = shown === 'uav';
     if (this.theme !== o.theme) {
       this.theme = o.theme;
       document.documentElement.dataset.theme = o.theme;
       this.map.readPalette();
     }
     this.map.setSettings(s);
-    $$('#mode-seg button').forEach((b) => b.classList.toggle('active', b.dataset.mode === o.mode));
-    $$('[data-show]').forEach((el) => { el.hidden = !el.dataset.show.split(' ').includes(o.mode); });
-    if (modeChanged) {
+    $$('#mode-seg button').forEach((b) => b.classList.toggle('active', b.dataset.mode === shown));
+    $$('[data-show]').forEach((el) => { el.hidden = !el.dataset.show.split(' ').includes(shown); });
+    if (sectionChanged) {                          // the red button: STOP for the robot, LAND for the drone
+      const stop = $('#btn-stop');
+      $('span', stop).textContent = uav ? 'LAND' : 'STOP';
+      stop.title = uav ? 'Land the drone now (Esc)' : 'Stop the robot now (Esc)';
+      document.title = uav ? 'UAV · Search & Rescue' : 'UGV Search & Rescue';
+      if (!uav && !first) { this.map.resize(); if (this.nav) this.on_nav(this.nav); }
+    }
+    if (this.uav) this.uav.setActive(uav);
+    if (modeChanged && !uav) {
       const active = $('#tabs button.active');
       if (!active || active.hidden) this.showTab('drive');
       if (['block'].includes(this.map.tool) && o.mode !== 'sim') this.map.setTool('pan');
@@ -379,6 +399,7 @@ export class UI {
     if (o.brush !== undefined) $('#brush-val').textContent = `${o.brush} cell${Number(o.brush) === 1 ? '' : 's'}`;
     if (o.sim_speed !== undefined) $('#sim-speed-val').textContent = `${Number(o.sim_speed).toFixed(2)} m/s`;
     if (o.robot_speed !== undefined) $('#speed-tag').textContent = `${o.robot_speed} %`;
+    if (o.uav_speed !== undefined) $('#uav-speed-val').textContent = `${o.uav_speed} %`;
   }
 
   title() {
@@ -502,11 +523,14 @@ export class UI {
     $$('#steps li').forEach((li, k) => { li.className = done[k] && k !== current ? 'done' : k === current ? 'now' : ''; });
 
     this.banner(n);
+    if (this.shown() === 'uav') return;            // the line at the bottom belongs to the drone there
     const text = n.connected ? n.message : n.notice;
     $('#status-text').textContent = text || '';
     $('#status-text').title = text || '';
     $('#status-dot').className = 'status-dot ' + (n.connected ? ({RUNNING: 'warn', STOPPED: 'error', ARRIVED: 'success', PLANNED: 'info'}[n.state] || '') : '');
   }
+
+  on_uav(u) { if (this.uav) this.uav.update(u); }
 
   banner(n) {
     const el = $('#banner'), btn = $('#banner-btn');
@@ -630,7 +654,7 @@ export class UI {
     tag.textContent = o.active ? ({ready: 'ready', running: 'playing', paused: 'paused', arrived: 'arrived', collision: 'stopped', idle: 'no route'}[o.sim_state] || o.sim_state) : '';
     tag.className = 'tag ' + ({running: 'info', arrived: 'ok', collision: 'bad'}[o.sim_state] || '');
     if (!o.active) return;
-    if (this.settings && this.settings.opts.mode === 'offline') {
+    if (this.settings && this.shown() === 'offline') {
       const chip = $('#chip-nav');
       chip.className = 'chip ' + ({running: 'run', arrived: 'ok', collision: 'bad'}[o.sim_state] || 'info');
       $('span', chip).textContent = 'Planner · ' + (tag.textContent || 'idle');

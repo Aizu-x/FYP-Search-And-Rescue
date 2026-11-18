@@ -139,7 +139,39 @@ saves. The file is called `..._recording.mp4` until it is complete.
 * Authorization is two requests (question with a one-time code bound to the route, then confirmation).
 * The open page is the dead-man switch: no page for 1.5 s while the robot moves means STOP.
 
-## 11. Known limits
+## 11. UAV section (`uav/`, `ugv_console/uav_console.py`)
+The drone is a Tello, controlled with the text commands of the official Tello SDK 1.3 over UDP. Nothing of this
+runs on the robot, and the drone and the robot never talk to each other: the operator scouts with the drone,
+then works with the robot.
+
+```
+page: which keys are held (on change, and every 150 ms while one is down)
+  -> console: keys -> four stick values (W S forward/back, A D left/right, arrows up/down and turn) x strength
+  -> uav/tello.py: "rc a b c d" 20 times a second while flying; zeros when no key is held
+Tello -> port 8890: status text (battery, height ...)  -> readings on the page
+Tello -> port 11111: H.264 video -> uav/video.py (own process): decode -> preview JPEGs, MP4 footage, photos
+```
+
+* **States**: disconnected, connecting, ready, taking off, flying, landing. Take-off is two requests (question
+  with a one-time code, then confirmation), like the robot's AUTHORIZE. "land" is accepted in every state, sent at
+  once and repeated every 2 s until the drone answers "ok" (or its reported height stays 0).
+* **Hover by default**: stick values exist only while the page keeps reporting keys. No report for 0.5 s:
+  zeros. Page gone for 5 s: land. Nothing heard from the drone for 2.5 s: zeros; for 5 s: land. If the console
+  process itself dies during a flight, the video worker (which notices that its input closed) sends "land".
+* **Answers without numbers**: the drone's answers carry no reference to the command. The link therefore keeps
+  at most one question open, ignores answers that arrive right after "land" (they belong to something sent
+  before it) and does not take the late "ok" of a take-off for a landing.
+* **Status blocked** (a firewall, or the port in use): battery and height are asked for once a second instead
+  ("battery?", "height?"), and the page says what to fix.
+* **Video**: the worker receives the datagrams itself (only from the drone's address), passes them to OpenCV's
+  FFmpeg decoder over a local port with low-delay settings and one decoder thread (measured with the simulated
+  camera: about one picture of delay instead of one second), and writes the footage with the same file writer as
+  the mission video (real-time length, MP4 or AVI, `_recording` until complete, disk guards).
+* **Simulated drone** (`uav/sim.py`): same protocol on 127.0.0.1, status ten times a second, the 15 s safety
+  landing, and a camera that draws a room and sends it as real H.264 (uncompressed macroblocks, so no encoder
+  is needed). The link and the video worker cannot tell it from the real drone; how it flies is made up.
+
+## 12. Known limits
 * Wheel odometry alone drifts past the 15 cm limit after a few metres: long routes need live LiDAR tracking.
 * Room tracking needs a room: enough walls or furniture within the LiDAR's reported range (3 m by default,
   see Robot setup), and a room that mostly stays as it is. Tested in a simulated room only.
@@ -147,3 +179,8 @@ saves. The file is called `..._recording.mp4` until it is complete.
 * The map's registration to the real arena (origin, scale) must be checked: corner start and real field size.
 * A small object placed against a mapped wall is only caught by the bridge's short stop zone.
 * The YOLO model was trained on phone photos; its accuracy from the robot's low camera is not yet measured.
+* The UAV section has only been run with the simulated drone. With a real Tello still open: which sign of each
+  stick value is which direction (the SDK document does not say; the common convention is used), what the drone
+  does with its last stick values when the Wi-Fi drops, and how its real video stream behaves in the decoder.
+* The drone has its own Wi-Fi network. With one Wi-Fi adapter the laptop is either on the drone's network or on
+  the robot's, not both.

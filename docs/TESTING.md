@@ -3,11 +3,12 @@
 ```bash
 python -m unittest discover -s tests
 ```
-**249 tests** (about 13 minutes: many of them drive real routes in the simulator). Last full run, Windows with Python 3.14: all 247 pass; the 2 window tests of the original Tk planner (`test_gui`) were not part of that run because they open windows (their code is unchanged, they passed in the earlier Linux runs).
+**301 tests** (about 15 minutes: many of them drive real routes in the simulator). Last full run, Windows with Python 3.14: all 299 pass; the 2 window tests of the original Tk planner (`test_gui`) were not part of that run because they open windows (their code is unchanged, they passed in the earlier Linux runs).
 
 > **Scope.** Everything below ran in software: automated tests, the built-in simulator and a headless
 > browser. On the real MentorPi only the communication link has been verified. **Autonomous driving and
-> YOLO on the real robot are not yet verified.**
+> YOLO on the real robot are not yet verified.** The UAV section was tested with the simulated drone only:
+> **no real Tello has been flown with it yet.**
 
 ## What the tests cover
 | File | Verifies |
@@ -26,6 +27,9 @@ python -m unittest discover -s tests
 | `test_recorder` | The video file, driven by explicit times (fast, deterministic): as long as the mission whatever the camera rate (8, 3 and 25 pictures a second), starts with the first picture, tail after the end, no file when no picture came, undecodable picture ignored, MP4 → AVI fallback, disk and length guards, clock jump, overlay text / strips / events / "frame is N s old" / wall clock, long text never runs into the clock, boxes in the live-view colours, plain footage. The worker process (real process, real time): length of the video, progress, tail, no pictures, a broken source, a worker that is killed is reported and nothing hangs, the video is saved when the console goes away, lower priority, start refused (disk, OpenCV, folder, no worker) |
 | `test_console_app` | Console commands, settings, map editing, orientation of ENV2 / ENV3, no preset goal, two-step authorization; corner start, Find robot, nudge, room remembered for the next session, real field size typed or measured with the robot in two corners; *Ignore drift alerts* asks first, applies live, is remembered and never changes the loaded config; *Mission video*: a simulated mission is filmed and the file plays back (640 × 480, length = mission + tail), Stop mission saves it, STOP does not end it, Disconnect saves it at once, the switches and the folder setting (a file is refused) work |
 | `test_console_server` | Local-only server, token / host / origin checks, static files, robot stopped when the page disappears |
+| `test_uav_link` | The link to the drone against the simulated drone: status text and answers are read (also malformed ones), keys → stick values, only local addresses; "command" first, nothing sent before take-off, each key moves the drone the expected way, released keys and a silent page mean hover; "land" is repeated until it gets through, a landing is noticed when the answer is lost, LAND during take-off, answers to stick commands do not end a landing early; no take-off with a low or unknown battery, a refused or unanswered take-off; emergency; blocked status port → battery and height are asked for; silence → zeros, then land; forged datagrams are dropped; closing the link lands; the simulated drone's own 15 s safety landing |
+| `test_uav_video` | The simulated camera's H.264 is read by a normal decoder; the drawn view follows the drone. The real worker process: preview pictures arrive, the picture comes back after the video stopped, footage is as long as the recording and plays back in full size, photo, nothing saved without pictures, unusable folder refused, video from another address dropped, footage saved and **the drone landed when the console dies**, a dead worker is reported, port in use explained |
+| `test_uav_console` | Sections (UAV / UGV), remembered settings, settings checks; a whole flight through the console's commands with the simulated drone process: two-step take-off (a wrong code uses up the question), keys, stale key reports ignored, STOP lands, footage and photo in the chosen folder; one machine at a time (no take-off while the robot moves, no robot authorization and no leaving while the drone flies); emergency asks first; recording by hand and switched off; closing the console lands the drone and keeps the footage; the page gets the picture over `/api/uav_frame`; the drone lands when the page stays away |
 
 ## Browser end-to-end (headless Chromium)
 Simulator run through the real page: place the robot, connect, confirm, camera, blocks, goal,
@@ -35,6 +39,11 @@ Rendering: 16.7 ms per frame (median) while the robot drives.
 Second run for the position features: corner start (click, click again to turn), room tracking locks,
 two drives, Find robot, nudge, real field size applied and reset, and a second session in which the robot
 is found by itself without a pin.
+
+Third run for the UAV section, with the simulated drone: real clicks and real key presses. UAV button,
+connect, live picture (640 × 480, 14 pictures a second), take-off question, W / S / A / D and the four arrow keys
+each give the expected stick values, keys released when the window loses focus, no flying while typing in a text
+field, the on-screen keys, leaving refused in flight, Esc lands, footage saved, back to the Planner, no page errors.
 
 ## What the room-tracking numbers mean
 All from the simulated room (4.5 × 4.1 m with furniture, LiDAR range 3 m, 1 cm range noise, at most 180 points):
@@ -67,6 +76,12 @@ No contact with ground-truth obstacles in any run.
 | Communication: authenticated link, 1-7 ms round trip, real odometry / IMU / LiDAR received, robot stays disarmed | ✅ passed |
 | Wheels off the ground, floor moves, waypoint, arena route, physical safety tests | ⏳ not yet completed |
 
+## Real Tello
+| Stage | Status |
+|---|---|
+| Everything in the UAV section with the simulated drone (same UDP protocol, real H.264 video) | ✅ passed |
+| Connecting to a real Tello, its status and video, flying it | ⏳ not yet done |
+
 ## YOLO model (from `third_party/wro_yolo/metrics.json`)
 YOLOv5n, 2 classes. Held-out real photos (9 images, 11 objects), ONNX on CPU: precision 0.99,
 recall 1.00, mAP50 0.995, about 31 ms per image. Small test set; not yet measured on the robot's camera.
@@ -76,3 +91,5 @@ recall 1.00, mAP50 0.995, about 31 ms per image. Small test set; not yet measure
 2. Odometry accuracy and the LiDAR mounting pose.
 3. Map ↔ arena registration (origin corner, axis directions, 3 cm scale).
 4. YOLO accuracy and block position accuracy from the robot's camera.
+5. Tello: key directions, its behaviour when the Wi-Fi drops with a key held, its real video in the decoder
+   (see *First real flight* in the [UAV guide](UAV.md)).

@@ -80,6 +80,13 @@ SCHEMA = {
     'mission_dwell_s': Opt('float', 1.5, 0.3, 5.0, label='Hold still at each step (s)'),
     'mission_turn_rate': Opt('float', 0.30, 0.15, 0.6, label='Look-around turn speed (rad/s)'),
     'mission_range_m': Opt('float', 1.2, 0.4, 3.0, label='Camera search range (m)'),
+    # UAV section (Tello drone)
+    'section': Opt('choice', 'ugv', choices=('ugv', 'uav'), label='Section'),
+    'uav_sim': Opt('bool', False, label='Simulated drone'),
+    'uav_ip': Opt('str', '192.168.10.1', label='Drone IP'),
+    'uav_speed': Opt('int', 35, 10, 100, label='Stick strength (%)'),
+    'uav_record': Opt('bool', True, label='Record every flight on video'),
+    'uav_dir': Opt('str', '', label='Footage folder (empty = Videos\\UAV footage)'),
     # display
     'show_path': Opt('bool', True), 'show_gt': Opt('bool', False), 'show_search': Opt('bool', False),
     'show_seen': Opt('bool', True), 'show_inflation': Opt('bool', True), 'show_scan': Opt('bool', True),

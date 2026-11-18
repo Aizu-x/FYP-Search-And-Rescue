@@ -295,3 +295,44 @@ input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius
 #found-list .q { color: var(--warn); font-size: 11.5px; font-weight: 600; }
 #found-list button { justify-content: flex-start; }
 .corner-row .note { flex: 1; min-width: 0; }
+
+/* ------------------------------------------------------------------ UAV section (drone camera, flight keys) */
+.seg-sep { width: 1px; align-self: stretch; margin: 5px 3px; background: var(--line2); }
+.uav-panel { display: flex; flex-direction: column; gap: 10px; }
+.btn.land { color: #fff; border-color: transparent; background: linear-gradient(180deg, var(--danger), var(--danger-2)); }
+.btn.land:not(:disabled) { box-shadow: 0 6px 18px rgba(255, 89, 100, .28); }
+.btn.land:hover:not(:disabled) { filter: brightness(1.08); background: linear-gradient(180deg, var(--danger), var(--danger-2)); }
+.btn.land:disabled { background: var(--card2); color: var(--faint); border-color: var(--line); box-shadow: none; }
+.btn.recording { color: var(--danger); border-color: var(--danger); background: var(--danger-soft); }
+.switch-row:has(input:disabled) { opacity: .5; cursor: not-allowed; }
+.keys-help { width: 100%; border-collapse: collapse; font-size: 11.5px; color: var(--muted); }
+.keys-help td { padding: 2px 0; }
+.keys-help td:first-child { width: 78px; white-space: nowrap; }
+.keys-help kbd { display: inline-block; min-width: 20px; text-align: center; background: var(--card2); border: 1px solid var(--line2); color: var(--text); }
+.uav-stage { background: #05080c; outline: none; }
+#uav-cam { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.uav-stage .cam-empty { background: rgba(5, 8, 12, .62); color: #8fa0b5; font-size: 13px; text-align: center; padding: 0 18%; line-height: 1.5; }
+.uav-stage .cam-empty .ic { width: 46px; height: 46px; }
+.uav-gauges { position: absolute; left: 12px; top: 12px; right: 250px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px; pointer-events: none; }
+.gauge { min-width: 104px; padding: 6px 10px 7px; border-radius: 11px; background: rgba(8, 13, 20, .78); border: 1px solid rgba(255, 255, 255, .12); backdrop-filter: blur(8px); color: #e9eff7; }
+.gauge span { display: block; font-size: 10.5px; color: #92a3b8; letter-spacing: .05em; text-transform: uppercase; }
+.gauge b { font: 700 18px var(--font); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gauge em { font-style: normal; font-size: 11px; color: #92a3b8; margin-left: 6px; white-space: nowrap; }
+.gauge .meter { margin-top: 5px; height: 5px; background: rgba(255, 255, 255, .1); border: 0; }
+.gauge.warn b { color: var(--warn); } .gauge.bad b { color: var(--danger); }
+.uav-top { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.hud.uav-state { position: static; font-weight: 650; color: #e9eff7; background: rgba(8, 13, 20, .78); border-color: rgba(255, 255, 255, .12); }
+.hud.uav-state.run { color: var(--warn); } .hud.uav-state.ok { color: var(--go); } .hud.uav-state.info { color: var(--accent); }
+.uav-top .tag.rec { font-size: 11.5px; padding: 4px 10px; background: rgba(255, 89, 100, .2); }
+.uav-stage .banner { top: 56px; }
+.uav-pad { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: flex-end; gap: 22px; padding: 10px 16px 8px; border-radius: 14px; background: rgba(8, 13, 20, .72); border: 1px solid rgba(255, 255, 255, .12); backdrop-filter: blur(8px); }
+.pad { display: grid; grid-template: 34px 34px auto / 34px 34px 34px; gap: 4px; }
+.pad .k-up { grid-column: 2; grid-row: 1; } .pad .k-left { grid-column: 1; grid-row: 2; } .pad .k-down { grid-column: 2; grid-row: 2; } .pad .k-right { grid-column: 3; grid-row: 2; }
+.pad span { grid-column: 1 / 4; grid-row: 3; text-align: center; font-size: 10.5px; color: #92a3b8; white-space: nowrap; }
+.pad button { padding: 0; border-radius: 8px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .07); color: #e9eff7; font: 700 13px var(--font); cursor: pointer; touch-action: none; user-select: none; }
+.pad button:hover { border-color: rgba(255, 255, 255, .4); }
+.pad button.on { background: var(--accent); border-color: var(--accent); color: #fff; transform: translateY(1px); }
+.uav-pad.off .pad button { opacity: .45; }
+.pad-state { min-width: 168px; text-align: center; font-size: 11.5px; color: #92a3b8; padding-bottom: 22px; }
+.pad-state.on { color: #e9eff7; font-weight: 600; }
+.uav-panel .note, #rec-info, .log .line span { overflow-wrap: anywhere; }

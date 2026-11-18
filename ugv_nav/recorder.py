@@ -119,11 +119,13 @@ class VideoCore:
 
     ``feed(t, frame, info)``: at time ``t`` (seconds) the newest camera frame was ``frame`` = (id, JPEG bytes,
     boxes) -- or None when there is nothing newer -- and the mission said ``info``. ``finish(t_end, reason)`` ends
-    the video at time ``t_end``."""
+    the video at time ``t_end``. The picture may also be given already decoded (a BGR array), and ``prefix`` is
+    the first word of the file name: the drone's footage (uav/video.py) is written by this same class."""
 
-    def __init__(self, folder, label='', fps=FPS, overlay=True, stamp=None, started_text=None):
+    def __init__(self, folder, label='', fps=FPS, overlay=True, stamp=None, started_text=None, prefix='mission'):
         self.folder = Path(folder)
         self.label = ''.join(ch if ch.isalnum() or ch in '-_' else '_' for ch in str(label))
+        self.prefix = ''.join(ch for ch in str(prefix) if ch.isalnum() or ch in '-_') or 'mission'
         self.fps = min(60.0, max(1.0, float(fps)))
         self.overlay = bool(overlay)
         self.stamp = stamp or time.strftime('%Y-%m-%d_%H-%M-%S')
@@ -203,7 +205,11 @@ class VideoCore:
     # ------------------------------------------------------------------ internals
     def _take(self, frame, t):
         import cv2
-        decoded = cv2.imdecode(np.frombuffer(frame[1], np.uint8), cv2.IMREAD_COLOR)
+        data = frame[1]
+        if isinstance(data, np.ndarray):                       # already a picture
+            decoded = data if data.dtype == np.uint8 and data.ndim == 3 and data.shape[2] == 3 else None
+        else:
+            decoded = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR)
         if decoded is None:
             return False
         self.image, self.boxes, self.last_new = decoded, (frame[2] if len(frame) > 2 else []), t
@@ -248,7 +254,8 @@ class VideoCore:
     def _open_writer(self, width, height):
         import cv2
         for extension, code in CODECS:
-            path = self.folder / ('mission_%s%s_recording.%s' % (self.stamp, '_' + self.label if self.label else '', extension))
+            path = self.folder / ('%s_%s%s_recording.%s' % (self.prefix, self.stamp,
+                                                            '_' + self.label if self.label else '', extension))
             writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*code), self.fps, (width, height))
             if writer.isOpened():
                 self._writer, self._size, self._temp, self._codec = writer, (width, height), path, code

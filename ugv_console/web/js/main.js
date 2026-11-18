@@ -4,6 +4,7 @@ import {TOKEN, openEvents} from './api.js';
 import {MapView} from './map.js';
 import {CameraView} from './camera.js';
 import {UI, showResult, toast} from './ui.js';
+import {UavView} from './uav.js';
 
 const $ = (sel) => document.querySelector(sel);
 const tip = $('#tip');
@@ -32,8 +33,10 @@ const hooks = {
 const map = new MapView($('#map'), hooks);
 const camera = new CameraView($('#cam'), $('#cam-empty'));
 const ui = new UI(map, camera);
+const uav = new UavView();                        // the UAV section: drone camera, readings, flight keys
+ui.uav = uav;
 map.setTool('pan');
-window.__ugv = {map, ui, camera};                 // handy for checks from the browser console
+window.__ugv = {map, ui, camera, uav};            // handy for checks from the browser console
 
 if (!TOKEN) {
   const lost = $('#lost');

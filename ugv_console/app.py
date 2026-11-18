@@ -55,9 +55,11 @@ from ugv_nav.settings_store import load_settings, save_settings
 from ugv_nav.sim_backend import simulated_room
 from ugv_nav.sim_session import SimulatedUGVSession
 from ugv_nav.smoothing import smooth_route
+from uav.tello import check_host
 
 from . import options as O
 from .options import OFFLINE, SIM, arg_bool, arg_choice, arg_number, arg_points
+from .uav_console import UavConsole
 from .views import Views
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,7 +75,7 @@ def result(ok, message='', level=None, **extra):
     return dict(ok=bool(ok), message=message, level=level or ('info' if ok else 'error'), **extra)
 
 
-class ConsoleApp(Views):
+class ConsoleApp(UavConsole, Views):
     VERSION = VERSION
 
     def __init__(self, config_path=DEFAULT_CONFIG, settings_path=DEFAULT_SETTINGS, edit_dir=EDIT_DIR,
@@ -126,6 +128,7 @@ class ConsoleApp(Views):
         self.dispatch_allowed, self.dispatch_message = False, ''
         self._gt_guard = None
         self._stroke_dirty = False
+        self._uav_init()                           # the UAV section (uav_console.py)
         self._restore_settings()
         self._ticker = None
         if start_ticker:
@@ -254,7 +257,7 @@ class ConsoleApp(Views):
             raise ValueError('No settings given.')
         clean = {}
         for key, value in values.items():
-            if key in ('mode', 'env', 'scale_x', 'scale_y'):
+            if key in ('mode', 'env', 'scale_x', 'scale_y', 'section'):
                 raise ValueError('"%s" has its own command.' % key)
             clean[key] = O.coerce(key, value)
         with self._lock:
@@ -326,6 +329,27 @@ class ConsoleApp(Views):
                 self._record_stop('video switched off', wait=True)           # what was filmed so far is saved
                 message = 'Missions are no longer filmed.'
             self._bump('recording')
+        if keys & {'uav_sim', 'uav_ip'}:
+            if self.uav is not None or self.uav_connecting:
+                raise ValueError('disconnect the drone first')
+            o['uav_ip'] = check_host(o['uav_ip'])                            # ValueError: the setting goes back
+            message = ('Simulated drone: a practice drone on this laptop, nothing real moves.' if o['uav_sim'] else
+                       'Real drone at %s. Join its Wi-Fi (TELLO-...) before you connect.' % o['uav_ip'])
+            self._bump('uav')
+        if 'uav_dir' in keys:
+            try:
+                folder = check_folder(self._uav_folder())
+            except RecorderError as exc:
+                raise ValueError('the footage folder: %s' % exc)
+            message = 'Drone footage is saved in %s.' % folder
+            self._bump('uav')
+        if 'uav_record' in keys:
+            message = ('Every flight is filmed from take-off to landing.' if o['uav_record'] else
+                       'Flights are no longer filmed by themselves (the Record button still works).')
+            self._bump('uav')
+        if 'uav_speed' in keys:
+            message = 'Stick strength %d %%: how hard a held key pushes the drone.' % o['uav_speed']
+            self._bump('uav')
         if 'ignore_drift' in keys:
             if self.nav:
                 self.nav.set_ignore_drift(o['ignore_drift'])
@@ -403,6 +427,14 @@ class ConsoleApp(Views):
     def cmd_set_mode(self, args):
         mode = arg_choice(args, 'mode', O.MODES)
         with self._lock:
+            if self.opts['section'] == 'uav':          # a mode button in the top bar also leaves the UAV section
+                if self.uav_airborne():
+                    return self._fail('The drone is in the air: land it before you leave the UAV section.')
+                self.opts['section'] = 'ugv'
+                self._bump('settings', 'uav')
+                self._settings_dirty = True
+                if mode == self.opts['mode']:          # back to where the UGV was: nothing is disconnected
+                    return self._ok('%s mode.' % O.MODE_LABELS[mode])
             self._disconnect()
             self.sim.pause()
             self.opts['mode'] = mode
@@ -772,6 +804,7 @@ class ConsoleApp(Views):
         """Program exit: stop everything, keep unsaved map edits as a backup file, save settings."""
         self._closing.set()
         with self._lock:
+            self._uav_close()                      # a drone in the air is told to land
             self._disconnect()
             if self.map_unsaved:
                 try:
@@ -786,15 +819,22 @@ class ConsoleApp(Views):
 
     # ------------------------------------------------------------------ operator actions
     def cmd_stop(self, args):
-        """STOP: never waits for a lock, a plan or a slow operation."""
+        """STOP: never waits for a lock, a plan or a slow operation. A drone in the air is told to land."""
+        reason = str(args.get('reason') or 'Operator STOP')[:80]
+        landing = self._uav_stop(reason)
         nav, client = self.nav, self.client
         if nav is not None:
-            nav.emergency_stop(str(args.get('reason') or 'Operator STOP')[:80])
+            nav.emergency_stop(reason)
         elif client is not None:
             client.stop()
         self.sim.pause()
         self._auth = None
-        self._say('STOP pressed: robot stopped and disarmed. Re-plan / authorize to continue.', 'warn')
+        if landing:
+            self._say('STOP pressed: the drone is landing.', 'warn')
+        elif self.opts['section'] == 'uav':
+            self._say('STOP pressed. The drone is not in the air.', 'warn', log=False)
+        else:
+            self._say('STOP pressed: robot stopped and disarmed. Re-plan / authorize to continue.', 'warn')
         self._bump('offline')
         return result(True, self.notice, 'warn')
 
@@ -1210,6 +1250,8 @@ class ConsoleApp(Views):
             nav, mission = self.nav, self.mission
             if not nav:
                 return self._fail('Connect first.')
+            if self.uav_airborne():
+                return self._fail('The drone is in the air: land it before the robot drives.')
             snap = nav.snapshot()
             search = False
             safety = 'Confirm the area is physically clear and you can reach STOP.'
@@ -1264,6 +1306,8 @@ class ConsoleApp(Views):
             nav, mission = self.nav, self.mission
             if not nav:
                 return self._fail('Not connected.')
+            if self.uav_airborne():
+                return self._fail('The drone is in the air: land it before the robot drives.')
             if auth['action'] == 'resume':
                 ok, message = mission.resume()
                 return self._ok(message, 'success') if ok else self._fail(message)
@@ -1684,6 +1728,11 @@ class ConsoleApp(Views):
     def tick_once(self, dt=0.04):
         self._offline_step(dt)
         self._collect_nav_log()
+        if (self.uav is not None or self.uav_video is not None) and self._lock.acquire(blocking=False):
+            try:
+                self._uav_tick()
+            finally:
+                self._lock.release()
         if self.recorder is not None and self._lock.acquire(blocking=False):
             try:
                 self._record_housekeeping()

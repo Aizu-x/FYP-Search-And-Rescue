@@ -59,8 +59,9 @@ export function openEvents(onData, onAlive) {
   return () => source && source.close();
 }
 
-export async function fetchFrame(after) {
-  const response = await fetch('/api/frame?after=' + after, {cache: 'no-store', headers: {'X-Console-Token': token}});
+// The newest camera picture: the robot's ('/api/frame') or the drone's ('/api/uav_frame').
+export async function fetchFrame(after, path = '/api/frame') {
+  const response = await fetch(path + '?after=' + after, {cache: 'no-store', headers: {'X-Console-Token': token}});
   if (response.status !== 200) return null;
   const meta = JSON.parse(response.headers.get('X-Frame') || '{}');
   const bitmap = await createImageBitmap(await response.blob());

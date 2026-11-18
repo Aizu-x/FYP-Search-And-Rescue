@@ -2,6 +2,7 @@
 
     browser page  <--  GET  /api/events   live state (Server-Sent Events, ~20 Hz)
                   <--  GET  /api/frame    newest camera frame + YOLO boxes (long poll)
+                  <--  GET  /api/uav_frame  newest picture of the drone's camera (long poll)
                   -->  POST /api/cmd      one validated command  {"cmd": ..., "args": {...}}
 
 Security (the page can start robot motion, so every request is treated as untrusted):
@@ -11,7 +12,8 @@ Security (the page can start robot motion, so every request is treated as untrus
 * ``Host`` must be this server (stops DNS-rebinding), a foreign ``Origin`` is refused (stops other
   web pages from posting commands), no CORS headers are ever sent;
 * commands are size-limited JSON, dispatched through ``ConsoleApp.command`` (whitelist + validation);
-* if the last console page disappears while the robot is moving, the robot is STOPPED.
+* if the last console page disappears while the robot is moving, the robot is STOPPED; a drone in the air
+  is told to LAND when the page stays away for a few seconds.
 """
 from __future__ import annotations
 
@@ -131,6 +133,9 @@ class _Handler(BaseHTTPRequestHandler):
             elif path == '/api/frame':
                 if self._trusted(query):
                     self._frame(query)
+            elif path == '/api/uav_frame':
+                if self._trusted(query):
+                    self._uav_frame(query)
             elif path == '/api/state':
                 if self._trusted(query):
                     self._json(200, console.full_state())
@@ -172,6 +177,22 @@ class _Handler(BaseHTTPRequestHandler):
                                 r=None if box['range'] is None else round(box['range'], 3), u=bool(box['used']),
                                 n=box['note']) for box in boxes[:40]])
         self._send(200, jpeg, 'image/jpeg', extra=(('X-Frame', json.dumps(meta, separators=(',', ':'))),))
+
+    def _uav_frame(self, query):
+        """The newest picture of the drone's camera (long poll, like /api/frame)."""
+        try:
+            after = int((query.get('after') or ['-1'])[0])
+        except ValueError:
+            after = -1
+        video = self.server.console.app.uav_video
+        frame = video.wait_frame(after, timeout=1.5) if video is not None else None
+        if frame is None:
+            if video is None or video.dead:
+                time.sleep(0.4)                   # no drone video: do not spin
+            return self._send(204)
+        frame_id, jpeg, width, height = frame
+        self._send(200, jpeg, 'image/jpeg',
+                   extra=(('X-Frame', json.dumps(dict(id=frame_id, w=width, h=height), separators=(',', ':'))),))
 
     # ------------------------------------------------------------------ POST
     def do_POST(self):
@@ -216,13 +237,15 @@ class _Server(ThreadingHTTPServer):
 
 
 class ConsoleServer:
-    def __init__(self, app, host='127.0.0.1', port=0, token=None, deadman_s=1.5, idle_exit_s=0.0, verbose=False):
+    def __init__(self, app, host='127.0.0.1', port=0, token=None, deadman_s=1.5, idle_exit_s=0.0, verbose=False,
+                 uav_deadman_s=5.0):
         if host not in ('127.0.0.1', 'localhost'):
             raise ValueError('The console only listens on this computer (127.0.0.1).')
         self.app = app
         self.verbose = verbose
         self.token = token or secrets.token_urlsafe(24)
-        self.deadman_s, self.idle_exit_s = deadman_s, idle_exit_s
+        self.deadman_s, self.idle_exit_s, self.uav_deadman_s = deadman_s, idle_exit_s, uav_deadman_s
+        self._uav_deadman_fired = False
         self.httpd = _Server(('127.0.0.1', port), _Handler)
         self.httpd.console = self
         self.port = self.httpd.server_address[1]
@@ -317,7 +340,7 @@ class ConsoleServer:
         with self._cond:
             self._clients += 1
             self._ever_connected = True
-            self._deadman_fired = False
+            self._deadman_fired = self._uav_deadman_fired = False
         try:
             handler.wfile.write(b'retry: 800\n\n')
             while not self._stop.is_set():
@@ -355,6 +378,12 @@ class ConsoleServer:
                 self._deadman_fired = True
                 self.app.command('stop', dict(reason='Console window closed'))
                 print('Console page closed while the robot was moving: STOP sent.')
+            # the drone hovers as soon as the page stops reporting its keys (uav/tello.py); when the page stays
+            # away it is brought down. (Longer than for the robot: reloading the page must not end a flight.)
+            if idle > self.uav_deadman_s and not self._uav_deadman_fired and self.app.uav_airborne():
+                self._uav_deadman_fired = True
+                self.app.command('uav_land', dict(reason='the console page was closed'))
+                print('Console page closed while the drone was in the air: LAND sent.')
             if self.idle_exit_s and idle > self.idle_exit_s:
                 self.exit_requested.set()
 
