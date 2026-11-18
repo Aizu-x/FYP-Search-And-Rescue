@@ -401,6 +401,17 @@
             </div>
           </div>
           <div class="card">
+            <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Mission video</h3><span class="tag" id="rec-tag"></span></div>
+            <div class="card-b">
+              <label class="switch-row"><input type="checkbox" data-opt="record_mission"><i class="switch"></i><span>Record every mission on video</span></label>
+              <label class="switch-row"><input type="checkbox" data-opt="record_overlay"><i class="switch"></i><span>Draw detections and mission info on the video</span></label>
+              <div class="row"><label>Folder</label><input type="text" data-opt="record_dir" placeholder="empty = Videos\UGV missions" spellcheck="false" autocomplete="off"></div>
+              <button class="btn block" data-cmd="open_recordings" title="Open the folder with the saved videos in the file explorer"><svg class="ic"><use href="#i-download"/></svg>Open video folder</button>
+              <div class="note" id="rec-info"></div>
+              <div class="note">The laptop films what the robot's camera sends during the mission (it starts with AUTHORIZE + SEARCH or Search from here) and saves the video when the mission is complete or stopped. Camera + YOLO must be on.</div>
+            </div>
+          </div>
+          <div class="card">
             <div class="card-h"><svg class="ic"><use href="#i-info"/></svg><h3>How the search works</h3></div>
             <div class="card-b">
               <ol class="how">
@@ -450,7 +461,7 @@
     <!-- ============================================================ right: live data -->
     <aside class="side right">
       <div class="card" data-show="sim robot">
-        <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Live camera</h3><span class="tag" id="cam-fps"></span></div>
+        <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Live camera</h3><span class="tag rec" id="cam-rec" hidden></span><span class="tag" id="cam-fps"></span></div>
         <div class="card-b flush">
           <div class="cam-wrap"><canvas id="cam"></canvas><div class="cam-empty" id="cam-empty"><svg class="ic"><use href="#i-camera"/></svg><span>Camera off</span></div></div>
           <div class="cam-status" id="cam-status"></div>

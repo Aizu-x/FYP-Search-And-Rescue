@@ -96,6 +96,30 @@ Camera on, tick **Search for survivors at the goal**, then **AUTHORIZE + SEARCH*
 STOP, link loss and position loss **pause** the mission. Fix the cause, then **RESUME MISSION**.
 **Export** in the Survivors card saves the list as CSV.
 
+## Mission video
+Every search mission is filmed with the robot's camera and the video is saved on this laptop when the mission
+ends. Nothing is stored on the robot.
+
+| | |
+|---|---|
+| **Starts** | with **AUTHORIZE + SEARCH** or **Search from here**, so the drive to the goal is in it too (a plain drive without *Search* is not filmed) |
+| **Ends** | when the mission is complete or you press **Stop mission** (2 more seconds are filmed). **STOP** only pauses the mission, so the film keeps running. **Disconnect** saves it at once |
+| **Where** | `Videos\UGV missions` in your user folder, for example `mission_2026-11-17_14-03-22_ENV3.mp4`. **Search tab > Mission video > Open video folder**; the folder can be changed there |
+| **Picture** | Top: time since the mission started, what the robot is doing, survivors found / secured. Bottom: the latest mission event for a few seconds, date and time. The YOLO boxes: green / red, grey = ignored (with the reason). Switch *Draw detections and mission info* off for the plain camera picture |
+
+Good to know:
+* A red **REC** tag with the running time shows on the *Live camera* card while the video is recorded.
+* The laptop films what the camera sends (about 8 pictures a second) and saves 10 frames a second, so the video is
+  exactly as long as the mission. If no new picture arrives, the last one is repeated and the picture says how old it is.
+* The video is made by a separate low-priority program that starts and ends with the mission, so filming cannot slow
+  down the robot's control. (You may see a second `python.exe` in the Task Manager while a mission is recorded.)
+* Camera + YOLO must be on (the search needs them anyway). Any player works (VLC, Windows Movies & TV). If this computer
+  cannot write MP4 it writes AVI instead.
+* It will not start with less than 1 GB free on the disk, it stops and keeps the video if less than 300 MB are left, and
+  one video is at most 60 minutes. Why a video was not saved is written in the Activity log and under the switch.
+* The videos can be large (about 5-15 MB a minute with a real camera) and may show people in the room: they stay on
+  this laptop and are not part of the Git repository.
+
 ## Camera and YOLO
 A detection becomes a pin on the map only if it can really be a block (all on by default, Camera tab):
 
@@ -145,6 +169,7 @@ Coming from the older project folder? This copies your key, values and edited ma
 |---|---|
 | "The shared key file ... is missing" | Copy `mentorpi.key` into `config/`, or run `import-old` |
 | "YOLO is not available" | `pip install -r requirements-yolo.txt` (Python 3.11-3.13) |
+| The mission was not filmed / no video was saved | Read the note under *Mission video* (Search tab) or the Activity log: camera off, disk almost full, folder not writable, or no camera pictures arrived |
 | Drift limit stops the robot | **Find robot** or a corner start. Check that *Live LiDAR tracking* is on (Robot tab). Or switch on **Ignore drift alerts** (Drive tab, *Robot position*) |
 | "Robot not found" | The LiDAR has not drawn that part of the room: corner start, then one drive through the arena |
 | The robot is somewhere else than the picture shows | Corner start again; check **Real field size**; **Forget room** if furniture was moved a lot |

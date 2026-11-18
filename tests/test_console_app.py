@@ -6,6 +6,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import numpy as np
 
@@ -32,6 +33,7 @@ class ConsoleCase(unittest.TestCase):
     def make(self, settings=False):
         app = ConsoleApp(settings_path=self.dir / 'console_settings.json' if settings else None,
                          edit_dir=self.dir / 'edited', export_dir=self.dir / 'exports')
+        app.opts['record_dir'] = str(self.dir / 'mission videos')       # a mission in any test films into the temp folder
         self.apps.append(app)
         return app
 
@@ -588,6 +590,124 @@ class DriftAlertOptionTests(ConsoleCase):
         self.connect_simulator(again)
         self.assertTrue(again.nav.estimator.cfg.ignore_drift)
         self.assertTrue(again.view('nav')['ignore_drift'])
+
+
+@unittest.skipUnless(HAVE_CV2, 'OpenCV not installed (pip install -r requirements-yolo.txt)')
+class MissionVideoTests(ConsoleCase):
+    """The mission is filmed with the robot's camera and the video is saved on this computer."""
+
+    def setUp(self):
+        super().setUp()
+        self.videos = self.dir / 'my videos'
+        self.opened = []
+        self.app._open_folder = self.opened.append                              # (do not open a real file explorer)
+
+    def ready(self, **options):
+        """Simulator + camera, a green block 0.4 m in front of the robot, videos go to a temporary folder."""
+        self.start_simulator(camera_pitch_deg=15, camera_forward_cm=8, record_dir=str(self.videos), mission_hold_s=1.0,
+                             mission_step_deg=90, mission_dwell_s=0.8, mission_turn_rate=0.5, robot_speed=100,
+                             **options)
+        self.options(camera_on=True, sim_block_colour='green')
+        self.ok('sim_block', x=1.60, y=0.47)
+
+    def begin(self):
+        self.assertTrue(self.authorize('search_here')['ok'])
+        return self.app
+
+    def videos_in_folder(self):
+        return sorted(p.name for p in self.videos.iterdir()) if self.videos.exists() else []
+
+    @staticmethod
+    def video(path):
+        import cv2
+        cap = cv2.VideoCapture(str(path))
+        info = dict(frames=int(cap.get(cv2.CAP_PROP_FRAME_COUNT)), size=(int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                                                                         int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+        ok, info['first'] = cap.read()
+        cap.release()
+        return info
+
+    def test_a_mission_is_filmed_from_start_to_the_end_and_saved(self):
+        self.ready()
+        app = self.begin()
+        self.assertIsNotNone(app.recorder)                                      # filming starts with the mission
+        rec = app.view('recording')
+        self.assertTrue(rec['on'] and rec['active'])
+        self.assertEqual(rec['folder'], str(self.videos))
+        self.assertTrue(wait_for(lambda: app.view('recording')['seconds'] >= 1, timeout=10))
+        self.assertRegex(self.videos_in_folder()[0], r'_recording\.(mp4|avi)$')    # while filming: an unfinished file
+        self.assertTrue(wait_for(lambda: app.mission.complete, timeout=120), app.nav.message)
+        self.assertTrue(wait_for(lambda: app.last_recording is not None, timeout=20))     # saved after a short tail
+        saved = app.last_recording
+        path = Path(saved['path'])
+        self.assertEqual(path.parent, self.videos)
+        self.assertEqual(self.videos_in_folder(), [path.name])                  # one finished file, nothing half-written
+        self.assertRegex(path.name, r'^mission_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_ENV1\.(mp4|avi)$')
+        self.assertEqual(saved['reason'], 'mission complete')
+        info = self.video(path)
+        self.assertEqual(info['size'], (640, 480))
+        self.assertAlmostEqual(info['frames'], saved['seconds'] * 10, delta=3)
+        self.assertGreater(saved['seconds'], app.mission._final_elapsed - 3)    # the whole mission is in the video ...
+        self.assertLess(saved['seconds'], app.mission._final_elapsed + 8)       # ... plus the short tail, nothing more
+        self.assertLess(float(info['first'][:20].mean()), 120)                  # the info strip is on the picture
+        view = app.view('recording')
+        self.assertFalse(view['active'])
+        self.assertEqual((view['made'], view['last']['name']), (1, path.name))
+        self.assertIn('Mission video saved', ' '.join(line['text'] for line in app.view('log')['lines']))
+        self.assertIsNone(app.recorder)
+
+    def test_stopping_the_mission_saves_what_was_filmed(self):
+        self.ready()
+        app = self.begin()
+        self.assertTrue(wait_for(lambda: app.view('recording')['seconds'] >= 2, timeout=10))
+        self.ok('stop_mission')
+        self.assertTrue(wait_for(lambda: app.last_recording is not None, timeout=15))
+        self.assertEqual(app.last_recording['reason'], 'mission stopped')
+        self.assertGreaterEqual(app.last_recording['seconds'], 3)
+        self.assertGreaterEqual(self.video(app.last_recording['path'])['frames'], 25)
+
+    def test_pressing_stop_does_not_end_the_video_but_disconnecting_saves_it_at_once(self):
+        self.ready()
+        app = self.begin()
+        self.assertTrue(wait_for(lambda: app.view('recording')['seconds'] >= 1, timeout=10))
+        self.ok('stop')                                                         # the mission is only paused ...
+        time.sleep(1.2)
+        self.assertTrue(app.mission.active and app.mission.paused)
+        self.assertTrue(app.view('recording')['active'])                        # ... so the film keeps running
+        self.ok('disconnect')                                                   # the robot goes away: saved right now
+        self.assertIsNone(app.recorder)
+        self.assertEqual(app.last_recording['reason'], 'the robot was disconnected')
+        self.assertEqual(len(self.videos_in_folder()), 1)
+        self.assertGreaterEqual(self.video(app.last_recording['path'])['frames'], 15)
+
+    def test_switches_and_the_folder_setting(self):
+        self.ready(record_mission=False)
+        app = self.begin()
+        self.assertIsNone(app.recorder)                                         # switched off: nothing is filmed
+        self.assertFalse(app.view('recording')['on'])
+        self.assertTrue(app.mission.active)
+        self.assertEqual(self.videos_in_folder(), [])
+        self.options(record_mission=True)                                       # switched on during the mission: film from now
+        self.assertTrue(app.view('recording')['active'])
+        self.assertTrue(wait_for(lambda: app.view('recording')['seconds'] >= 1, timeout=10))
+        self.options(record_mission=False)                                      # switched off again: what was filmed is saved
+        self.assertIsNone(app.recorder)
+        self.assertEqual(len(self.videos_in_folder()), 1)
+        self.assertTrue(app.mission.active)                                     # (the mission itself is not affected)
+        self.ok('stop_mission')
+        blocker = self.dir / 'a file'
+        blocker.write_text('x')
+        r = self.cmd('set_options', values=dict(record_dir=str(blocker)))       # a file is no folder: refused, old value kept
+        self.assertFalse(r['ok'])
+        self.assertEqual(app.opts['record_dir'], str(self.videos))
+        self.ok('open_recordings')
+        self.assertEqual(self.opened, [self.videos])
+        default = self.dir / 'default videos'                                   # (never touch the real Videos folder in a test)
+        with mock.patch('ugv_console.app.default_folder', return_value=default):
+            self.assertTrue(self.cmd('set_options', values=dict(record_dir=''))['ok'])   # empty = the default folder
+            self.assertEqual(app.view('recording')['folder'], str(default))
+            self.assertTrue(default.is_dir())
+        self.options(record_dir=str(self.videos))
 
 
 class WhereIsTheRobotTests(ConsoleCase):

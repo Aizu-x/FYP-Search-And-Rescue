@@ -21,7 +21,7 @@ from . import options as O
 from .options import OFFLINE, SIM
 
 SECTIONS = ('static', 'settings', 'map', 'plan', 'nav', 'scan', 'vision', 'mission', 'seen', 'trail', 'log',
-            'offline', 'diag', 'room')
+            'offline', 'diag', 'room', 'recording')
 
 
 def pack_mask(mask):
@@ -356,6 +356,18 @@ class Views:
         data = dict(pts=[] if room.empty else room.wall_points(), res=room.res)
         self._view_cache['room'] = (key, data)
         return data
+
+    def _view_recording(self):
+        """Mission video: is one being recorded, where videos go, and the newest saved one."""
+        recorder = self.recorder
+        active = recorder is not None and not recorder.done
+        status = recorder.status() if recorder is not None else {}
+        return self.clean(dict(
+            on=bool(self.opts['record_mission']), overlay=bool(self.opts['record_overlay']),
+            folder=str(self._recording_folder()), active=active, stopping=bool(status.get('stopping')) and active,
+            seconds=int(status.get('seconds', 0.0)), mb=status.get('mb', 0.0),
+            waiting=bool(status.get('waiting')) and active, last=self.last_recording, note=self.recording_note,
+            made=self.recordings_made))
 
     def _view_diag(self):
         nav, v = self.nav, self.vision

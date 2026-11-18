@@ -69,6 +69,9 @@ SCHEMA = {
     'sim_block_colour': Opt('choice', 'green', choices=('green', 'red'), label='Test block colour'),
     # survivor search
     'search_at_goal': Opt('bool', False, label='Search for survivors at the goal'),
+    'record_mission': Opt('bool', True, label='Record every mission on video'),
+    'record_overlay': Opt('bool', True, label='Draw detections and mission info on the video'),
+    'record_dir': Opt('str', '', label='Video folder (empty = Videos\\UGV missions)'),
     'mission_gap_cm': Opt('float', 25.0, 5.0, 80.0, label='Stop in front of survivor (cm)'),
     'mission_hold_s': Opt('float', 3.0, 0.5, 30.0, label='Stand in front before "secured" (s)'),
     'mission_end': Opt('bool', True, label='End the mission when the survivor is secured'),

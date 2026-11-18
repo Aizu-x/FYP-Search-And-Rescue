@@ -80,7 +80,7 @@ export class UI {
   constructor(map, camera) {
     this.map = map; this.camera = camera;
     this.settings = null; this.nav = {connected: false}; this.mapInfo = null; this.mission = null; this.plan = null;
-    this.dirty = new Set(); this.timers = {}; this.lastLog = 0; this.knownSurvivors = null; this.theme = null;
+    this.dirty = new Set(); this.timers = {}; this.lastLog = 0; this.knownSurvivors = null; this.knownRecordings = null; this.theme = null;
     this.logPinned = true;
     this.bind();
   }
@@ -584,6 +584,24 @@ export class UI {
     if (m.complete && !this.wasComplete) { toast('Mission complete: survivor secured.', 'success', 8000); ping(); }
     this.wasComplete = !!m.complete;
     if (this.nav) this.banner(this.nav);
+  }
+
+  on_recording(r) {
+    const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.round(s) % 60).padStart(2, '0')}`;
+    const cam = $('#cam-rec'), tag = $('#rec-tag'), info = $('#rec-info');
+    cam.hidden = !r.active;
+    cam.textContent = !r.active ? '' : r.waiting ? 'REC · waiting for camera' : r.stopping ? 'REC · saving…' : `REC ${mmss(r.seconds)}`;
+    tag.textContent = r.active ? (r.stopping ? 'saving…' : r.waiting ? 'waiting for camera' : `recording ${mmss(r.seconds)}`) : (r.on ? 'on' : 'off');
+    tag.className = 'tag ' + (r.active ? 'bad' : r.on ? 'ok' : '');
+    info.className = 'note' + (!r.active && r.note ? ' warn' : r.last && !r.active ? ' ok' : '');
+    info.textContent = r.active ? `Recording ${mmss(r.seconds)} · ${Number(r.mb).toFixed(1)} MB so far. It is saved when the mission ends.`
+      : r.note ? r.note
+      : r.last ? `Last video: ${r.last.name} (${mmss(r.last.seconds)}, ${r.last.size_mb} MB) in ${r.folder}`
+      : `Videos are saved in ${r.folder}`;
+    if (this.knownRecordings !== null && r.made > this.knownRecordings && r.last) {
+      toast(`Mission video saved: ${r.last.name} (${mmss(r.last.seconds)}, ${r.last.size_mb} MB). Search tab > Open video folder.`, 'success', 10000);
+    }
+    this.knownRecordings = r.made;
   }
 
   on_seen(s) { this.map.setMask('seen', s.mask); }

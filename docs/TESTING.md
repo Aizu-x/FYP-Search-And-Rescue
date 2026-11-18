@@ -3,7 +3,7 @@
 ```bash
 python -m unittest discover -s tests
 ```
-**221 tests, all passing** (Python 3.12, Linux; about 12 minutes: many of them drive real routes in the simulator).
+**249 tests** (about 13 minutes: many of them drive real routes in the simulator). Last full run, Windows with Python 3.14: all 247 pass; the 2 window tests of the original Tk planner (`test_gui`) were not part of that run because they open windows (their code is unchanged, they passed in the earlier Linux runs).
 
 > **Scope.** Everything below ran in software: automated tests, the built-in simulator and a headless
 > browser. On the real MentorPi only the communication link has been verified. **Autonomous driving and
@@ -23,7 +23,8 @@ python -m unittest discover -s tests
 | `test_field_geometry` | Wall positions read from the maps (inner field 2.76 m), corner start poses, one block length from the walls is a valid A\* start, stretching the map to the real size, thin walls survive, saved edits follow the size, data files never change |
 | `test_nav_vision` | Floor projection, calibration, tracker, camera stream, tilt from block size; a door, a round object and a wrong-coloured box are rejected; one block gives one pin |
 | `test_nav_mission` | First green is approached, held 3 s, secured, mission ends; red is ignored; STOP and localization loss pause; automatic actions never clear STOP |
-| `test_console_app` | Console commands, settings, map editing, orientation of ENV2 / ENV3, no preset goal, two-step authorization; corner start, Find robot, nudge, room remembered for the next session, real field size typed or measured with the robot in two corners; *Ignore drift alerts* asks first, applies live, is remembered and never changes the loaded config |
+| `test_recorder` | The video file, driven by explicit times (fast, deterministic): as long as the mission whatever the camera rate (8, 3 and 25 pictures a second), starts with the first picture, tail after the end, no file when no picture came, undecodable picture ignored, MP4 → AVI fallback, disk and length guards, clock jump, overlay text / strips / events / "frame is N s old" / wall clock, long text never runs into the clock, boxes in the live-view colours, plain footage. The worker process (real process, real time): length of the video, progress, tail, no pictures, a broken source, a worker that is killed is reported and nothing hangs, the video is saved when the console goes away, lower priority, start refused (disk, OpenCV, folder, no worker) |
+| `test_console_app` | Console commands, settings, map editing, orientation of ENV2 / ENV3, no preset goal, two-step authorization; corner start, Find robot, nudge, room remembered for the next session, real field size typed or measured with the robot in two corners; *Ignore drift alerts* asks first, applies live, is remembered and never changes the loaded config; *Mission video*: a simulated mission is filmed and the file plays back (640 × 480, length = mission + tail), Stop mission saves it, STOP does not end it, Disconnect saves it at once, the switches and the folder setting (a file is refused) work |
 | `test_console_server` | Local-only server, token / host / origin checks, static files, robot stopped when the page disappears |
 
 ## Browser end-to-end (headless Chromium)

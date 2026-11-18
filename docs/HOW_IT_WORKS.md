@@ -99,6 +99,23 @@ A green object confirmed at any time interrupts the current drive. Every motion 
 navigator checks as a normal drive. Operator STOP, link loss and localization loss pause the mission;
 only the operator can resume it.
 
+### Mission video (`ugv_nav/recorder.py`)
+When a search mission starts, the console starts a `MissionRecorder`. Its only job in the main program is a light
+thread that, ten times a second, takes the newest camera frame the vision worker holds (the JPEG that YOLO looked at,
+with its boxes) and the mission's state, and sends them with the time to a **separate worker process**
+(`python -m ugv_nav.recorder --worker`, lower priority). The worker decodes, draws the overlay and writes the MP4
+(`mp4v`, or Motion-JPEG AVI if that is not available).
+
+Why a separate process: doing the video work inside the program that drives the robot made it stutter. In a test with
+simulated missions the odometry went stale for up to 0.97 s (the limit is 0.5 s) and missions paused. With the worker
+process the odometry age stays at 0.2-0.25 s, the same as without recording.
+
+The video is built from the times the pictures carry, on a fixed clock of 10 frames a second, instead of "one frame per
+camera frame". That keeps it exactly as long as the mission: a late picture means the previous one is repeated (and the
+frame says how old it is), an early one is skipped. The console's ticker saves the video 2 s after the mission has ended
+(complete or stopped); a disconnect saves it at once; if the console itself disappears the worker still finishes and
+saves. The file is called `..._recording.mp4` until it is complete.
+
 ## 9. Link protocol (`ugv_bridge/protocol.py`)
 * TCP, length-prefixed JSON frames, **HMAC-SHA256 on every frame**, mutual challenge-response with a
   32-byte shared key, strictly increasing sequence numbers.

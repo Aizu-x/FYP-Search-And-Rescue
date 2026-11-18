@@ -9,7 +9,7 @@
 ![Vision](https://img.shields.io/badge/Vision-YOLOv5n%20ONNX-22c55e)
 ![Robot](https://img.shields.io/badge/Robot-HiWonder%20MentorPi--M1-3b82f6)
 ![ROS 2](https://img.shields.io/badge/Robot%20side-ROS%202%20Humble-22314E?logo=ros&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-221%20passing-16a34a)
+![Tests](https://img.shields.io/badge/Tests-249%20passing-16a34a)
 
 <img src="docs/images/demo.gif" alt="The robot drives to the goal, spots a green object, approaches it, holds 3 seconds and marks the survivor secured" width="860">
 
@@ -26,6 +26,7 @@
 | 🗺️ **A\* path planning** | Shortest safe route on the arena's occupancy map (3 cm cells, stretched to the real size of your field). The robot's real size is respected, routes prefer open space and are straightened without ever getting closer to walls. A plan takes about 15 ms. |
 | 👁️ **YOLOv5 vision** | A YOLOv5n model finds **green** (survivor) and **red** (obstacle) blocks in the robot's camera. Each box is projected onto the floor and pinned on the map; red blocks are avoided by A\*. |
 | 🚑 **Search mission** | The robot drives to your goal, looks around, goes to the **first green object it sees**, stops at the distance you chose, holds 3 s and marks it **secured**. No other green in sight: mission complete. |
+| 🎥 **Mission video** | Every search mission is filmed with the robot's camera, from the start to the end, and saved on the laptop as an MP4 with the time, what the robot is doing, survivors found and the YOLO boxes on the picture (the overlay can be switched off). |
 | 📍 **Knows where it is** | No pin placed by eye: stand the robot in a corner one block length from both walls and click that corner, or press **Find robot**. You can still nudge the position by hand. |
 | 🛰️ **LiDAR tracking** | The LiDAR sits higher than the arena walls, so it sees the room instead. The console draws the room's outline and follows the robot's true movement in it: no wheel drift, and a robot that is carried elsewhere is found again. Tall unexpected objects stop the robot and are planned around. |
 | 🖥️ **Modern console** | Smooth 60 fps map, live camera with detection boxes, survivor list, activity log, dark and light theme. Runs in your browser, on your laptop only. |
@@ -128,7 +129,7 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Real robot: **[Robot 
 | `third_party/wro_yolo/` | laptop | YOLOv5n model (ONNX) for green / red blocks |
 | `data/` | laptop | Three arena maps (ENV1-3): occupancy grid + ground truth |
 | `config/` | laptop | `navigation.toml`: robot size, speeds, limits |
-| `tests/` | laptop | 221 automated tests |
+| `tests/` | laptop | 249 automated tests |
 | `docs/` | | Guides and technical notes |
 
 ## Safety design
@@ -148,9 +149,10 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Real robot: **[Robot 
 
 | Area | Status |
 |---|---|
-| A\* planning, smoothing, mission logic, vision filters, console | ✅ 221 automated tests + browser end-to-end runs |
+| A\* planning, smoothing, mission logic, vision filters, console | ✅ 249 automated tests + browser end-to-end runs |
 | Full loop in the built-in simulator (real bridge code, simulated robot, LiDAR and camera) | ✅ working |
 | Room-based LiDAR tracking, Find robot, real field size | ✅ in a simulated room · 🔧 not yet tried in a real one |
+| Mission video | ✅ recorded and played back from simulated missions · 🔧 not yet tried with the real robot's camera stream |
 | Link to the real MentorPi (authentication, odometry, IMU, LiDAR received) | ✅ verified |
 | Autonomous driving and YOLO on the real robot | 🔧 in progress, **not yet verified** |
 

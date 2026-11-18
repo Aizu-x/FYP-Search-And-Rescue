@@ -21,7 +21,10 @@ import csv
 import dataclasses
 import hmac
 import math
+import os
 import secrets
+import subprocess
+import sys
 import threading
 import time
 import traceback
@@ -46,6 +49,7 @@ from ugv_nav.map_store import (CORNER_NAMES, CORNERS, EDIT_DIR, _atomic_save_npy
 from ugv_nav.mission import MissionConfig, SearchMission
 from ugv_nav.navigator import PLANNED, RUNNING, Navigator, NavigatorConfig
 from ugv_nav.path_processing import path_length, remove_collinear, validate_path
+from ugv_nav.recorder import MissionRecorder, RecorderError, check_folder, default_folder
 from ugv_nav.safety_monitor import SafetyConfig
 from ugv_nav.settings_store import load_settings, save_settings
 from ugv_nav.sim_backend import simulated_room
@@ -101,6 +105,10 @@ class ConsoleApp(Views):
         self._room_saved = None
         self._room_check = 0.0
         self._found_seen = 0
+        self.recorder = None                       # MissionRecorder while a mission is being filmed
+        self.last_recording = None                 # dict about the newest saved video (shown on the page)
+        self.recording_note = ''                   # why the last mission was not filmed / the video stopped early
+        self.recordings_made = 0
         self.current_env = None
         self.map_source, self.map_unsaved, self.edited = 'original', False, False
         self.notice = ''
@@ -300,6 +308,24 @@ class ConsoleApp(Views):
             if self.nav:
                 self.nav.cfg.allow_tight_radius = o['allow_tight']
             message = 'Radius below turning circle %s.' % ('ALLOWED' if o['allow_tight'] else 'not allowed')
+        if 'record_dir' in keys:
+            try:
+                folder = check_folder(self._recording_folder())             # created and proven writable now
+            except RecorderError as exc:
+                raise ValueError('the video folder: %s' % exc)               # the setting goes back to what it was
+            message = 'Mission videos are saved in %s.' % folder
+        if 'record_overlay' in keys:
+            message = ('The next video shows the time, mission phase and detections on the picture.' if o['record_overlay']
+                       else 'The next video is the plain camera picture.')
+        if 'record_mission' in keys:
+            if o['record_mission']:
+                if self.mission is not None and self.mission.active and self.recorder is None:
+                    self._record_start()                                     # switched on during a mission: film from now
+                message = 'Missions are filmed: the video is saved when the mission ends.'
+            else:
+                self._record_stop('video switched off', wait=True)           # what was filmed so far is saved
+                message = 'Missions are no longer filmed.'
+            self._bump('recording')
         if 'ignore_drift' in keys:
             if self.nav:
                 self.nav.set_ignore_drift(o['ignore_drift'])
@@ -720,6 +746,7 @@ class ConsoleApp(Views):
             return self._ok('Disconnected.' if was else 'Not connected.')
 
     def _disconnect(self):
+        self._record_stop('the robot was disconnected', wait=True)      # save the video first: the camera goes away next
         if self._camera_timer is not None:
             self._camera_timer.cancel()
             self._camera_timer = None
@@ -1245,6 +1272,7 @@ class ConsoleApp(Views):
                     return self._fail('The situation changed: try again.')
                 mission.cfg = self._mission_config()
                 mission.start(transit=False)
+                self._record_start()
                 return self._ok('Search mission started from the current position.', 'success')
             if nav.snapshot()['path'] != auth['path'] or nav.state != PLANNED:
                 return self._fail('The route changed since you were asked: check it and authorize again.')
@@ -1252,6 +1280,7 @@ class ConsoleApp(Views):
             if ok and auth['search']:
                 mission.cfg = self._mission_config()
                 mission.start(transit=True)
+                self._record_start()
                 message = 'Mission started: driving to the goal, then searching for survivors.'
             return self._ok(message, 'success') if ok else self._fail('Not authorized: %s' % message)
 
@@ -1263,6 +1292,104 @@ class ConsoleApp(Views):
                 return self._ok('No search mission is running.')
             mission.stop()
             return self._ok('Search mission stopped. %d survivor(s) on the list.' % len(mission.survivors))
+
+    # ------------------------------------------------------------------ mission video
+    def _recording_folder(self):
+        custom = str(self.opts['record_dir']).strip()
+        if not custom:
+            return default_folder()
+        folder = Path(custom).expanduser()
+        return folder if folder.is_absolute() else ROOT / folder
+
+    def _record_frame(self):
+        vision = self.vision
+        return vision.wait_frame(None, 0) if vision is not None else None      # newest picture, never waits
+
+    def _record_info(self):
+        mission = self.mission
+        if mission is None:
+            return {}
+        snap = mission.snapshot(blocking=False)
+        rows, events = snap['survivors'], snap['events']
+        return dict(phase=snap['phase'], elapsed=snap['elapsed'], found=len(rows),
+                    secured=sum(1 for s in rows if s['status'] == 'secured'), event=events[-1] if events else None)
+
+    def _record_start(self):
+        """A search mission has just started: film it, unless the operator switched that off."""
+        if not self.opts['record_mission']:
+            return
+        self._record_stop('a new mission started', wait=True)
+        try:
+            recorder = MissionRecorder(self._recording_folder(), self._record_frame, self._record_info,
+                                       label=self.opts['env'], overlay=bool(self.opts['record_overlay'])).start()
+        except RecorderError as exc:
+            self.recording_note = 'The mission is NOT being filmed: %s.' % exc
+            self._say(self.recording_note, 'warn')
+            self._bump('recording')
+            return
+        self.recorder, self.recording_note = recorder, ''
+        self._say('Filming the mission. The video is saved in %s when the mission ends.' % recorder.folder)
+        self._bump('recording')
+
+    def _record_stop(self, reason, tail=0.0, wait=False):
+        recorder = self.recorder
+        if recorder is None:
+            return
+        recorder.stop(reason, tail_s=tail, wait=wait)
+        if wait:
+            self._record_collect()
+
+    def _record_collect(self):
+        """Take over a finished video: tell the operator where it is (or why there is none)."""
+        recorder = self.recorder
+        if recorder is None or not recorder.done:
+            return
+        self.recorder = None
+        result, fault = recorder.take_result()
+        if result is not None:
+            self.last_recording = result.as_dict()
+            self.recordings_made += 1
+            seconds = int(round(result.seconds))
+            self._say('Mission video saved: %s (%d:%02d, %.1f MB).' % (result.path, seconds // 60, seconds % 60,
+                                                                       result.size_bytes / 1024 ** 2), 'success')
+        elif not fault:
+            fault = 'the camera delivered no pictures, so nothing was saved'
+        self.recording_note = ('Mission video: %s.' % fault) if fault else ''
+        if fault:
+            self._say(self.recording_note, 'warn')
+        self._bump('recording')
+
+    def _record_housekeeping(self):
+        """Called by the ticker: save the video when the mission has ended (with 2 s of tail), or when the recorder
+        ended by itself (disk almost full, maximum length, error)."""
+        recorder = self.recorder
+        if recorder is None:
+            return
+        if recorder.done:
+            return self._record_collect()
+        mission = self.mission
+        if not recorder.stopping and (mission is None or not mission.active):
+            recorder.stop('mission complete' if mission is not None and mission.complete else 'mission stopped',
+                          tail_s=2.0)
+            self._bump('recording')
+
+    def _open_folder(self, folder):
+        if os.name == 'nt':
+            os.startfile(str(folder))                                             # noqa: the Windows file explorer
+        elif sys.platform == 'darwin':
+            subprocess.Popen(['open', str(folder)])
+        else:
+            subprocess.Popen(['xdg-open', str(folder)])
+
+    def cmd_open_recordings(self, args):
+        try:
+            folder = check_folder(self._recording_folder())
+            self._open_folder(folder)
+        except RecorderError as exc:
+            return self._fail('Cannot open the video folder: %s.' % exc)
+        except OSError as exc:
+            return self._fail('Could not open the folder: %s' % exc)
+        return self._ok('Opened %s.' % folder)
 
     def cmd_clear_survivors(self, args):
         with self._lock:
@@ -1557,6 +1684,11 @@ class ConsoleApp(Views):
     def tick_once(self, dt=0.04):
         self._offline_step(dt)
         self._collect_nav_log()
+        if self.recorder is not None and self._lock.acquire(blocking=False):
+            try:
+                self._record_housekeeping()
+            finally:
+                self._lock.release()
         nav = self.nav
         if nav is not None and nav.cfg.lidar_reference == 'room':
             if self._lock.acquire(blocking=False):

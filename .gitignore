@@ -16,3 +16,4 @@ data/rooms/
 # generated when you run the batch / demo commands
 example_outputs/
 nav_outputs/
+recordings/
