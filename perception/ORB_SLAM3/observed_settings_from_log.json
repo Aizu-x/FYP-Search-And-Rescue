@@ -1,0 +1,26 @@
+{
+  "source": "historical_results/video1_3D_export/run.log",
+  "complete_runtime_yaml": false,
+  "calibration_verified": false,
+  "camera_model": "Pinhole",
+  "fx": 904.266,
+  "fy": 906.429,
+  "cx": 460.152,
+  "cy": 350.483,
+  "distortion_reported_order": [
+    -0.012434,
+    0.033869,
+    -0.003006,
+    -0.002901,
+    0.0
+  ],
+  "image_width": 960,
+  "image_height": 720,
+  "fps": 20,
+  "ORB_features": 1000,
+  "ORB_scale_factor": 1.2,
+  "ORB_levels": 8,
+  "initial_FAST_threshold": 20,
+  "minimum_FAST_threshold": 7,
+  "caution": "Historical rounded log extract. The exact full provisional YAML is now included at source/ORB_SLAM3/Examples/Monocular/Tello_ENV1_provisional.yaml; use it for execution. Calibration remains unverified."
+}

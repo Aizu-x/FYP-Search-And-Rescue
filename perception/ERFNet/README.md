@@ -1,0 +1,97 @@
+# ERFNet: arena segmentation, rail refinement and occupancy export
+
+Compare the [ENV2 raw prediction](sample_output/ENV2_raw_colours_topdown.png) with the [refined result](sample_output/ENV2_refined_colours_topdown.png). The numerical masks beside these previews store pixel-level classes. Refinement uses the photograph and network probabilities; these three development scenes do not establish accuracy on unseen layouts.
+
+## CPU setup on the edge laptop
+
+Start in `perception/` on Linux. Use Python 3.12 and a fresh virtual environment. The pins come from the [recorded replay environment](evidence/tested_environment.json).
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -r ERFNet/requirements-tested.txt
+```
+
+### 4.1 Complete inference and supporting files
+
+`ERFNet/` includes `infer_erfnet.py`, `neural_inference.py`, `refine_semantics.py`, `projection.py`, `grid_export.py`, and the imported `erfnet_tools/architecture.py`, `common.py` and `__init__.py`.
+
+The default actual weight file is `models/erfnet_continuation_selected.pth`, copied from the existing rail-refinement package. SHA-256:
+
+```text
+7f24d4e0b1221fcda849636567341cb3c2fdfd5835dc323238d7df7c48f8303f
+```
+
+Its metadata identifies a 3-class, epoch-6 **matched continuation control** with an Experiment 7 parent hash. The parent hash was checked against the original uploaded `erfnet_exp7_last.pth`: `eaea13794a3e7deb0d1e73f99d854fd3ce5814f8e1cb4621a3fdc82c7f1c611c`. Do not rename the selected control as the untouched original Experiment 7 file. The adopted automatic refinement itself does not change the selected network weights.
+
+The complete saved-scene inputs are in `inputs/`: three original photographs, their 800×800 top-down photographs, ROI masks and `scene_geometry.json`. This JSON contains the original-image-to-top-down homographies and rotations. `config/refinement_settings.json` contains the exact color/model-support and morphology thresholds. Homographies and arena ROIs are annotation-assisted, not calibrated by ORB-SLAM3.
+
+Original custom training scripts and logs are included under `historical_training/` for provenance. They retain the original laptop paths and are not the portable inference entry point. Full retraining datasets and all initializers are in the original training/checkpoint archives, not this focused inference handoff.
+
+### 4.2 Class contract and preprocessing
+
+| Numerical ID | Class | Meaning |
+|---|---|---|
+| `0` | `free_space` | Arena floor, including flat markings and central mat/logo. |
+| `1` | `blocked` | Long rails, enclosing rails/walls and pink barrier panels. |
+| `2` | `obstacle` | Separate small physical objects such as blocks, balls and VEX objects. |
+| `255` | `ignore` | Outside supported/evaluated region; not a fourth learned class. |
+
+The obstacle/blocked distinction is the annotation policy for object type and structure. **Both are non-traversable** for occupancy purposes. Color alone does not define either semantic class.
+
+Raw preprocessing: EXIF-normalize the photograph, convert to RGB, optionally rotate by the saved scene's quarter-turn setting, scale to fit a 640×640 canvas preserving aspect ratio, pad with RGB 127, divide pixels by 255, and use a batch-one float32 CHW tensor. There is no ImageNet mean/std normalization. Softmax produces three class scores. Padding is removed, any inference rotation is undone, and predictions are mapped back to the source orientation. ENV3 has a saved input rotation of +1 CCW quarter-turn; ENV1 and ENV2 use 0.
+
+### 4.3 How to run
+
+From the `perception/` directory, after activating the Python environment:
+
+```bash
+# Full replay for all three supplied scenes, including refinement and 60x60 grids:
+python ERFNet/infer_erfnet.py --scene all --output runs/erfnet_replay --threads 2
+
+# One saved scene:
+python ERFNet/infer_erfnet.py --scene ENV1 --output runs/erfnet_env1 --threads 2
+
+# Raw per-pixel segmentation for a different photograph; no automatic homography is inferred:
+python ERFNet/infer_erfnet.py --image /path/to/photo.jpg --output runs/erfnet_raw --threads 2
+```
+
+`--checkpoint`, `--inputs` and `--settings` override their supplied paths. Every output directory must be new. The `--scene` option replays the configured saved scenes; changing the source image requires corresponding geometry/ROI data. The raw `--image` option does not pretend to know the arena geometry.
+
+Python building blocks: `load_model(checkpoint, device='cpu')`, `infer(model, path, size=640, quarter_turns=0)`, `project_probabilities(p, geometry, homography)`, `refine(rgb, probabilities, valid, settings)` and `aggregate_semantics(mask, shape=(60,60))`. `infer` is fixed to the supplied 640-pixel pipeline; use `size=640`. There is no network/ROS service interface.
+
+### 4.4 Actual sample outputs and alignment
+
+`ERFNet/sample_output/` was generated by the verified 7 November replay and is unchanged in the 8 November update. All three refined 800×800 numerical masks and all three planning-frame 60×60 grids match their archived references **exactly at array level**. The supplied raw-original masks are:
+
+| Scene | Original input | Original-view mask dimensions | Top-down mask |
+|---|---|---|---|
+| ENV1 | `inputs/source_photographs/ENV1__IMG_3242_result.jpg` | 3024 rows × 4032 columns | `sample_output/ENV1_refined_labels_topdown.png` |
+| ENV2 | `inputs/source_photographs/ENV2__IMG_3266_result.jpg` | 3024 × 4032 | `sample_output/ENV2_refined_labels_topdown.png` |
+| ENV3 | `inputs/source_photographs/ENV3__IMG_3290_result.jpg` | 4032 × 3024 | `sample_output/ENV3_refined_labels_topdown.png` |
+
+`ENVx_raw_labels_original.png` is a single-channel uint8 numerical mask in the EXIF-normalized original image's pixel frame. Read it without converting to RGB: `np.asarray(PIL.Image.open(path))`. Its [row,column] corresponds to source [y,x]. It contains raw predictions across the full image; the network itself does not detect an ignore region. The `_labels_topdown.png` files instead use the 800×800 rectified photograph's frame and the recorded homography/ROI; they must not be overlaid directly on the oblique source photograph. `_colours_topdown.png` is a visualization, not numerical class data.
+
+`run_metadata.json` explains each source hash, dimensions, preprocessing offsets, inference rotation, homography, output file, class mapping, measured timing and terminal state. `capture_timestamp` is null because no reliable image acquisition timestamp was supplied; processing UTC is recorded separately.
+
+### 4.5 Semantic grid preparation boundary
+
+The included semantic-to-grid step supports the teammate's proposed **60×60, nominal 0.05 m/cell** format, assuming a 3×3 m arena. Physical scale is still unmeasured. It is an image-projection/semantic-pooling result; it is **not ORB–ERFNet map fusion**.
+
+`ENVx_occupancy_photo_frame.npy` preserves the top-down photograph orientation. `ENVx_occupancy_planning_frame.npy` applies the existing rotations: ENV1 0; ENV2 −1 quarter-turn (90° clockwise); ENV3 +1 quarter-turn (90° counterclockwise). Arrays are uint8, indexed `[row,column]`, with row 0 at top and columns increasing right. Their cell meanings are 0 free, 1 occupied, 255 unknown/non-traversable. The supplied samples currently contain only 0 and 1; code preserves 255 when encountered.
+
+Pooling is conservative: any overlapping blocked/obstacle pixel makes a cell occupied; otherwise any unknown makes it unknown; only entirely known-free coverage becomes free. For optional nominal XY coordinates in the selected grid frame, origin is bottom-left, X right and Y up. Cell centers are `x=(column+0.5)*0.05`, `y=(60-row-0.5)*0.05`. This is a local convention, not a registered SLAM or robot coordinate frame.
+
+**Robot footprint and clearance are not included in these grids.** Map margin is zero. The planner/controller owner must apply a verified footprint collision policy or correct inflation before movement, without double-counting an already applied margin. Dynamic obstacle updates, depth localization, new-obstacle coordinate transforms and map fusion are not implemented by this component. A new saved-scene segmentation run produces a replacement grid; it is not a live map-update service.
+
+The earlier 100×100 Experiment 7 arrays in `FYP_Astra_Actual_Project_Data.zip` are a different artifact. Do not relabel them as 60×60 or apply the 60-cell indices to them.
+
+### 4.6 Failure, completion, stopping and timing
+
+`infer_erfnet.py` is a new portable handoff entry point around the existing model and operations. On normal completion it returns exit 0, prints `status: completed`, and writes terminal `run_metadata.json`. Missing/corrupt image, checkpoint/settings failure, incompatible weights or invalid support produce exit 1 and `status: failed` when the output directory is writable. Existing output/argument errors return exit 2. Ctrl+C/SIGTERM produce exit 130 and `status: cancelled`; handling can wait for a native operation to return. Forced termination or loss of power may leave `running` metadata or partial files. Treat those as incomplete. Missing Python dependencies can fail before metadata creation and produce nonzero exit/stderr only.
+
+Success means inference/export finished, not that all pixels or routes are correct. The documented refinement improved three-scene mIoU from 80.79% to 85.55%, but the Tello diagnostic regressed from 67.25% to 64.42%. ENV3 remains rejected in the historical independent route diagnostic. This handoff did not run A* or validate robot movement.
+
+On this verification host with two Torch threads, the three-scene replay took **4.17 s inside the CLI** including model loading (~0.11 s). Per scene: **1.59 / 1.22 / 1.23 s**, including image handling, inference, refinement and export. Forward+softmax times were **0.75 / 0.53 / 0.61 s**. These are one-run observations, exclude Python import/startup time, and are not a real-time deadline or the ASUS/MentorPi benchmark. Consult `sample_output/run_metadata.json` for exact values.
+

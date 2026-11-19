@@ -1,0 +1,3587 @@
+{
+  "upstream_repository": "https://github.com/UZ-SLAMLab/ORB_SLAM3",
+  "commit": "4452a3c4ab75b1cde34e5505a36ec3f9edcdc4c4",
+  "method": "Unchanged source restored from pinned upstream revision; supplied custom files overlaid. Every included file compared to user collection manifest.",
+  "omitted_unrelated_upstream_assets": [
+    "Calibration_Tutorial.pdf",
+    "Examples/Monocular-Inertial/EuRoC_IMU/MH01.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/MH02.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/MH03.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/MH04.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/MH05.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V101.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V102.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V103.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V201.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V202.txt",
+    "Examples/Monocular-Inertial/EuRoC_IMU/V203.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room1_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room2_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room3_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room4_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room5_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-room6_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-slides1_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-slides2_512.txt",
+    "Examples/Monocular-Inertial/TUM_IMU/dataset-slides3_512.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/MH01.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/MH02.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/MH03.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/MH04.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/MH05.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V101.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V102.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V103.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V201.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V202.txt",
+    "Examples/Stereo-Inertial/EuRoC_IMU/V203.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room1_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room2_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room3_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room4_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room5_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-room6_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-slides1_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-slides2_512.txt",
+    "Examples/Stereo-Inertial/TUM_IMU/dataset-slides3_512.txt",
+    "Examples_old/Monocular-Inertial/EuRoC.yaml",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/MH01.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/MH02.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/MH03.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/MH04.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/MH05.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V101.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V102.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V103.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V201.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V202.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_IMU/V203.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH01.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH02.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH03.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH04.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/MH05.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V101.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V102.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V103.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V201.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V202.txt",
+    "Examples_old/Monocular-Inertial/EuRoC_TimeStamps/V203.txt",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH01.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH02.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH03.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH04.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_MH05.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V101.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V102.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V103.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V201.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V202.yaml",
+    "Examples_old/Monocular-Inertial/MultiSession/EuRoC_V203.yaml",
+    "Examples_old/Monocular-Inertial/RealSense_D435i.yaml",
+    "Examples_old/Monocular-Inertial/RealSense_T265.yaml",
+    "Examples_old/Monocular-Inertial/TUM-VI.yaml",
+    "Examples_old/Monocular-Inertial/TUM-VI_far.yaml",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-room6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_IMU/dataset-slides3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+    "Examples_old/Monocular-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+    "Examples_old/Monocular/EuRoC.yaml",
+    "Examples_old/Monocular/EuRoC_TimeStamps/MH01.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/MH02.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/MH03.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/MH04.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/MH05.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V101.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V102.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V103.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V201.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V202.txt",
+    "Examples_old/Monocular/EuRoC_TimeStamps/V203.txt",
+    "Examples_old/Monocular/KITTI00-02.yaml",
+    "Examples_old/Monocular/KITTI03.yaml",
+    "Examples_old/Monocular/KITTI04-12.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_MH01.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_MH02.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_MH03.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_MH04.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_MH05.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V101.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V102.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V103.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V201.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V202.yaml",
+    "Examples_old/Monocular/MultiSession/EuRoC_V203.yaml",
+    "Examples_old/Monocular/RealSense_D435i.yaml",
+    "Examples_old/Monocular/RealSense_T265.yaml",
+    "Examples_old/Monocular/TUM-VI.yaml",
+    "Examples_old/Monocular/TUM1.yaml",
+    "Examples_old/Monocular/TUM2.yaml",
+    "Examples_old/Monocular/TUM3.yaml",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor1_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor2_1024.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor2_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor3_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor4_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-corridor5_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale1_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale2_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale3_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale4_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale5_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-magistrale6_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors1_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors2_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors3_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors4_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors5_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors6_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors7_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-outdoors8_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room1_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room2_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room3_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room4_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room5_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-room6_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-slides1_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-slides2_512.txt",
+    "Examples_old/Monocular/TUM_TimeStamps/dataset-slides3_512.txt",
+    "Examples_old/REAMDME.md",
+    "Examples_old/RGB-D-Inertial/RealSense_D435i.yaml",
+    "Examples_old/RGB-D/RealSense_D435i.yaml",
+    "Examples_old/RGB-D/TUM1.yaml",
+    "Examples_old/RGB-D/TUM2.yaml",
+    "Examples_old/RGB-D/TUM3.yaml",
+    "Examples_old/RGB-D/associations/fr1_desk.txt",
+    "Examples_old/RGB-D/associations/fr1_desk2.txt",
+    "Examples_old/RGB-D/associations/fr1_room.txt",
+    "Examples_old/RGB-D/associations/fr1_xyz.txt",
+    "Examples_old/RGB-D/associations/fr2_desk.txt",
+    "Examples_old/RGB-D/associations/fr2_xyz.txt",
+    "Examples_old/RGB-D/associations/fr3_nstr_tex_near.txt",
+    "Examples_old/RGB-D/associations/fr3_office.txt",
+    "Examples_old/RGB-D/associations/fr3_office_val.txt",
+    "Examples_old/RGB-D/associations/fr3_str_tex_far.txt",
+    "Examples_old/RGB-D/associations/fr3_str_tex_near.txt",
+    "Examples_old/ROS/ORB_SLAM3/Asus.yaml",
+    "Examples_old/ROS/ORB_SLAM3/CMakeLists.txt",
+    "Examples_old/ROS/ORB_SLAM3/manifest.xml",
+    "Examples_old/Stereo-Inertial/EuRoC.yaml",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/MH01.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/MH02.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/MH03.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/MH04.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/MH05.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V101.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V102.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V103.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V201.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V202.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_IMU/V203.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH01.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH02.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH03.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH04.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/MH05.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V101.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V102.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V103.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V201.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V202.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V203.txt",
+    "Examples_old/Stereo-Inertial/EuRoC_TimeStamps/V203_2.txt",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH01.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH02.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH03.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH04.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_MH05.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V101.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V102.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V103.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V201.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V202.yaml",
+    "Examples_old/Stereo-Inertial/MultiSession/EuRoC_V203.yaml",
+    "Examples_old/Stereo-Inertial/RealSense_D435i.yaml",
+    "Examples_old/Stereo-Inertial/RealSense_T265.yaml",
+    "Examples_old/Stereo-Inertial/TUM-VI.yaml",
+    "Examples_old/Stereo-Inertial/TUM-VI_far.yaml",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor2_1024.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-corridor5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-magistrale6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors7_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-outdoors8_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-room6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_IMU/dataset-slides3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+    "Examples_old/Stereo-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+    "Examples_old/Stereo/EuRoC.yaml",
+    "Examples_old/Stereo/EuRoC_TimeStamps/MH01.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/MH02.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/MH03.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/MH04.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/MH05.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V101.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V102.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V103.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V201.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V202.txt",
+    "Examples_old/Stereo/EuRoC_TimeStamps/V203.txt",
+    "Examples_old/Stereo/KITTI00-02.yaml",
+    "Examples_old/Stereo/KITTI03.yaml",
+    "Examples_old/Stereo/KITTI04-12.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_MH01.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_MH02.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_MH03.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_MH04.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_MH05.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V101.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V102.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V103.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V201.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V202.yaml",
+    "Examples_old/Stereo/MultiSession/EuRoC_V203.yaml",
+    "Examples_old/Stereo/RealSense_D435i.yaml",
+    "Examples_old/Stereo/RealSense_T265.yaml",
+    "Examples_old/Stereo/TUM-VI.yaml",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor1_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor2_1024.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor2_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor3_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor4_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-corridor5_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale1_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale2_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale3_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale4_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale5_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-magistrale6_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors1_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors2_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors3_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors4_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors5_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors6_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors7_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-outdoors8_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room1_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room2_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room3_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room4_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room5_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-room6_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-slides1_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-slides2_512.txt",
+    "Examples_old/Stereo/TUM_TimeStamps/dataset-slides3_512.txt",
+    "Vocabulary/ORBvoc.txt.tar.gz",
+    "evaluation/Ground_truth/EuRoC_imu/MH_GT.txt",
+    "evaluation/Ground_truth/EuRoC_imu/V1_GT.txt",
+    "evaluation/Ground_truth/EuRoC_imu/V2_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH01_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH02_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH03_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH04_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH05_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/MH_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V101_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V102_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V103_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V1_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V201_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V202_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V203_GT.txt",
+    "evaluation/Ground_truth/EuRoC_left_cam/V2_GT.txt",
+    "evaluation/associate.py",
+    "evaluation/evaluate_ate_scale.py"
+  ],
+  "files": [
+    {
+      "path": "ORB_SLAM3/.gitignore",
+      "bytes": 1935,
+      "sha256": "2735af1930b5c75b52a89cdf1d7fa5b5eb6a93e4c6152b7e981d30d076ff19d3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/CMakeLists.txt",
+      "bytes": 12511,
+      "sha256": "4ec721c72dc3304d8e0090202d7ccf0201ecd34630ffc8fe45b597d59c7e09e3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Changelog.md",
+      "bytes": 2103,
+      "sha256": "de3350358454fe68fc15ac0567ae9a8e931908a849fd2c22b3e406c58b4544fa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Dependencies.md",
+      "bytes": 2126,
+      "sha256": "8eb9ba43490fc418e62f58de6c2d33cb36401df7a43b15de173df7aaa0249a65",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Calibration/python_scripts/process_imu.py",
+      "bytes": 5951,
+      "sha256": "6ab0b105d63572df8a88ecd6825bafdeeaac6d671522564204e7f160b1e4847e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Calibration/recorder_empty/april_6x6_80x80cm_larues.yaml",
+      "bytes": 263,
+      "sha256": "c0b55905906ea8e4b34ce429e65204aa7caf3f66dc9e3b8cc7bc8d35f8e5c528",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Calibration/recorder_realsense_D435i.cc",
+      "bytes": 9574,
+      "sha256": "40ec4db86e602397c0e66df6eb35c554f54202721256ac28cc7c2987f183870e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Calibration/recorder_realsense_T265.cc",
+      "bytes": 9829,
+      "sha256": "93cf92b5b1bca0030bbd79c9396b24afd7ec81117820d14fbdd813b91c200955",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC.yaml",
+      "bytes": 2560,
+      "sha256": "e046783377b858fedd84eb286ce25ea41958fde43a7578b70f8e9b39228f40ec",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "bytes": 73640,
+      "sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "bytes": 60800,
+      "sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "bytes": 54000,
+      "sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "bytes": 40660,
+      "sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "bytes": 45460,
+      "sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V101.txt",
+      "bytes": 58240,
+      "sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V102.txt",
+      "bytes": 34200,
+      "sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V103.txt",
+      "bytes": 42980,
+      "sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V201.txt",
+      "bytes": 45600,
+      "sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V202.txt",
+      "bytes": 46960,
+      "sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/EuRoC_TimeStamps/V203.txt",
+      "bytes": 38440,
+      "sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/RealSense_D435i.yaml",
+      "bytes": 2458,
+      "sha256": "5516796616ff6778bfb1fc40d9245bceba4f2105192cbed2848d3203cecbdde2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/RealSense_T265.yaml",
+      "bytes": 2775,
+      "sha256": "6dd2a064aa9c8844a7004bb59c481137bbdb5245ba30de69bde734b393950e92",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM-VI.yaml",
+      "bytes": 2788,
+      "sha256": "2a32cf68bde86da4eecc6e583c48ea0146738f8719dcc184a15143f22f04d052",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM-VI_far.yaml",
+      "bytes": 2960,
+      "sha256": "941990cd3ec2457625b7c88603ff88aaab9cb22ae6397aa09efdaba574fabfd0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "bytes": 119800,
+      "sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "bytes": 135471,
+      "sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "bytes": 135440,
+      "sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "bytes": 116040,
+      "sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "bytes": 38540,
+      "sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "bytes": 118280,
+      "sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "bytes": 308940,
+      "sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "bytes": 216200,
+      "sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "bytes": 194060,
+      "sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "bytes": 249600,
+      "sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "bytes": 178440,
+      "sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "bytes": 229940,
+      "sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "bytes": 512620,
+      "sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "bytes": 368980,
+      "sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "bytes": 337620,
+      "sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "bytes": 279980,
+      "sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "bytes": 354940,
+      "sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "bytes": 588060,
+      "sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "bytes": 448980,
+      "sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "bytes": 324260,
+      "sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "bytes": 56420,
+      "sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "bytes": 57640,
+      "sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "bytes": 56420,
+      "sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "bytes": 44560,
+      "sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "bytes": 56940,
+      "sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "bytes": 52720,
+      "sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "bytes": 111640,
+      "sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "bytes": 98160,
+      "sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "bytes": 144660,
+      "sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/mono_inertial_euroc.cc",
+      "bytes": 10220,
+      "sha256": "764e8402efeb1525fa5484ed0dbcf5ac5783c455817814eadfcf3fa990456d61",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/mono_inertial_realsense_D435i.cc",
+      "bytes": 16420,
+      "sha256": "cef5de2144720ff3e9558f659e370a8f66d97f58c37449f99cb3d68356891607",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/mono_inertial_realsense_t265.cc",
+      "bytes": 14186,
+      "sha256": "ca06fd4033f6c9528c9e13c00d4c27bc9444df6f14210b594431aa06f4b43d61",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular-Inertial/mono_inertial_tum_vi.cc",
+      "bytes": 11629,
+      "sha256": "c64963e341ce85640b0af5c961385e9d22dc6ae60484310e1a92a60ab1f16eab",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC.yaml",
+      "bytes": 2625,
+      "sha256": "3c4dd4e8b908185e7735681be892d1954d08de66b332ae1cdf335a181373e990",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/MH01.txt",
+      "bytes": 73640,
+      "sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/MH02.txt",
+      "bytes": 60800,
+      "sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/MH03.txt",
+      "bytes": 54000,
+      "sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/MH04.txt",
+      "bytes": 40660,
+      "sha256": "50630e55f6b38d0fcba479c1d6d36b66fef291ffe1b719fdbc561a9f2999864f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/MH05.txt",
+      "bytes": 45460,
+      "sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V101.txt",
+      "bytes": 58240,
+      "sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V102.txt",
+      "bytes": 34200,
+      "sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V103.txt",
+      "bytes": 42980,
+      "sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V201.txt",
+      "bytes": 45600,
+      "sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V202.txt",
+      "bytes": 46960,
+      "sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/EuRoC_TimeStamps/V203.txt",
+      "bytes": 38440,
+      "sha256": "7ed1d5e580d13e333a2e828d1ad28f79fb342c0b903d826e2c3948389dcba07f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/KITTI00-02.yaml",
+      "bytes": 1944,
+      "sha256": "4d80888fa5d0834f74996bf21dfbf244b82188d264ea227cd7d42e8074733401",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/KITTI03.yaml",
+      "bytes": 1945,
+      "sha256": "e40c18ce7a361c951978213d36c9be654f64a296bacd09d98dc736ec58e066a7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/KITTI04-12.yaml",
+      "bytes": 1946,
+      "sha256": "676d64c094cc9332b95761c98fb02d97fc3490f8a0ad0bb0d1ddebfa87665ffb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/RealSense_D435i.yaml",
+      "bytes": 1966,
+      "sha256": "31892b6eaeb743bbb09d24756a2e3800677f7d2e037e0b8bfc3573beb5f37268",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/RealSense_T265.yaml",
+      "bytes": 2114,
+      "sha256": "f09c33cd6bdf30bfe0ef967bfbaa402efa7e68b0e01c64d96481b10343e55004",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM-VI.yaml",
+      "bytes": 2141,
+      "sha256": "1196a6c12e1927884bb1f03431165cdd312f984bf7421c20b42c30dfc3a9dc6b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM1.yaml",
+      "bytes": 1995,
+      "sha256": "04d529fedbee94609c61eddca43bedd0b59ebc2018b656a83e5b1829a2fc6952",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM2.yaml",
+      "bytes": 1996,
+      "sha256": "0a6e4a02a1e13d7538cf77736d0c70f489bdfb713f935c7d2f6bd954ec0b1223",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM3.yaml",
+      "bytes": 1932,
+      "sha256": "9968e13e2a70d7f6ae13e3d5d892c477131e711c1a6629cfacbdd58659dd9090",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "bytes": 119800,
+      "sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "bytes": 135471,
+      "sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "bytes": 135440,
+      "sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "bytes": 116040,
+      "sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "bytes": 38540,
+      "sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "bytes": 118280,
+      "sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "bytes": 308940,
+      "sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "bytes": 216200,
+      "sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "bytes": 194060,
+      "sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "bytes": 249600,
+      "sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "bytes": 178440,
+      "sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "bytes": 229940,
+      "sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "bytes": 512620,
+      "sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "bytes": 368980,
+      "sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "bytes": 337620,
+      "sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "bytes": 279980,
+      "sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "bytes": 354940,
+      "sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "bytes": 588060,
+      "sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "bytes": 448980,
+      "sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "bytes": 324260,
+      "sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room1_512.txt",
+      "bytes": 56420,
+      "sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room2_512.txt",
+      "bytes": 57640,
+      "sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room3_512.txt",
+      "bytes": 56420,
+      "sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room4_512.txt",
+      "bytes": 44560,
+      "sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room5_512.txt",
+      "bytes": 56940,
+      "sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-room6_512.txt",
+      "bytes": 52720,
+      "sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-slides1_512.txt",
+      "bytes": 111640,
+      "sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-slides2_512.txt",
+      "bytes": 98160,
+      "sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/TUM_TimeStamps/dataset-slides3_512.txt",
+      "bytes": 144660,
+      "sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/Tello_ENV1_provisional.yaml",
+      "bytes": 1991,
+      "sha256": "7793a81ec6be419d09b6a026b55863c5013b1d3133190acdeabbf476e81827b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_euroc.cc",
+      "bytes": 7623,
+      "sha256": "95ebdc59468e3d97f10d9c36f892ee785a473e7c608c75c28c9c6e4a2751a877",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_kitti.cc",
+      "bytes": 6012,
+      "sha256": "c382e0027a0d9d80883c43bd1c0e35e7f96b533204344d5f0ef1d6adefaf56c0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_realsense_D435i.cc",
+      "bytes": 10397,
+      "sha256": "a5a76f58771c8075d5b3e23d9458f68a2fb54487d9ea4d7d10de1a5e92198acf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_realsense_t265.cc",
+      "bytes": 5767,
+      "sha256": "c50811a5195b904e4379d9c1d8c73b07566e1812c743c8f2a47e360179d1a084",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_tum.cc",
+      "bytes": 5851,
+      "sha256": "cc773161b6d9f4b86fb1732ca856dc783b29869796668aa4fd15a3a759fa3e5e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Monocular/mono_tum_vi.cc",
+      "bytes": 7978,
+      "sha256": "1f369be4ec06214831c69c70e616d98a5f90a76afc3ccc6de1a560e52666ef60",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/REAMDME.md",
+      "bytes": 130,
+      "sha256": "e38a8bc46d0b938d236d8a93e35b18bf70e8cbb00947f4f8bc679792036189c6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D-Inertial/RealSense_D435i.yaml",
+      "bytes": 2655,
+      "sha256": "ec2edf111bbe58f9b599f5596881aa26e82b23733d256bbfac8d2b62204985b5",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D-Inertial/rgbd_inertial_realsense_D435i.cc",
+      "bytes": 19868,
+      "sha256": "aad52bec6c07eca9f84dd07c4d1836add26095a94ef47a0ce3a1c2381bd7156f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/RealSense_D435i.yaml",
+      "bytes": 2101,
+      "sha256": "332e1f9ef17e7684b606f22415b956cf5e8a155bfa8f7b87e528906822b367a4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/TUM1.yaml",
+      "bytes": 2127,
+      "sha256": "6d0037d5d82a6cdf212f4552f69eacce77745ad9229f0f2846ba8d86dfde6e17",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/TUM2.yaml",
+      "bytes": 2110,
+      "sha256": "2ad25ed872d961babd9625cf6790033a3cbab841bd82beaaa398b4459dbbc672",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/TUM3.yaml",
+      "bytes": 2045,
+      "sha256": "0993b2b0f1021e0c97ec3a28ff42048c5c0039316a67cae4fae0367c1672b429",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr1_desk.txt",
+      "bytes": 51570,
+      "sha256": "86dfcf237cf092cc7466ee2c67dfc0a3a507fe879a1bbe063b962d8a7442c536",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr1_desk2.txt",
+      "bytes": 55800,
+      "sha256": "c17785636389dcc917b5702ad73b6531d775d9b9ab1d9df145f76a96b2806297",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr1_room.txt",
+      "bytes": 121680,
+      "sha256": "a9581a02e40054338c3973d801227f722e1a20cad1e39c426b177d3f1e183e2b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr1_xyz.txt",
+      "bytes": 71280,
+      "sha256": "c2de8a268d1a4273b6764f774cc8c829b352eb1179b195078bf5180f23dce23a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr2_desk.txt",
+      "bytes": 260370,
+      "sha256": "6c6652a77eb20edb9e5c388e2d015c2eef8ad4199be5cfcd11f3b001d5e7d4ef",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr2_xyz.txt",
+      "bytes": 325350,
+      "sha256": "c0b17fa9b97b073ff3bb3293f9e74666af7ffb45ccee72ef20b01a494ee95d2d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr3_nstr_tex_near.txt",
+      "bytes": 147510,
+      "sha256": "4bc593833dfb145968fe426f7df21ab0e64dd36c9c27645f1e8b75e04b5f8384",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr3_office.txt",
+      "bytes": 223920,
+      "sha256": "2fa19916178b76aa3202604173dcee87200247035467aebf87ec78f1373a3798",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr3_office_val.txt",
+      "bytes": 232560,
+      "sha256": "a4811b6e53d73e0f917ffc18c44fde9d88ba980ef77fc6830838c7827eab6b13",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr3_str_tex_far.txt",
+      "bytes": 81630,
+      "sha256": "16fa0bbb46f9be79868df0bbd0f9d9784ccffbcfde0e4bf75d28418c0bffb76d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/associations/fr3_str_tex_near.txt",
+      "bytes": 95130,
+      "sha256": "6f21456a2ba589bdaf293e6f40cf3c322c5e1905f4d91a6ab30381602fba7779",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/rgbd_realsense_D435i.cc",
+      "bytes": 16271,
+      "sha256": "f022b04b8590b40aba4debe4279bb40692d92db0ecc8420f429706b7ef1d8bf7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/RGB-D/rgbd_tum.cc",
+      "bytes": 5758,
+      "sha256": "5f69d96ccde9efa1e496c70508c0fb7cc054a59ffb90b8967df8c122d3be27c7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC.yaml",
+      "bytes": 3746,
+      "sha256": "299add56d7b997d60d67e4257efe79177ef797cd5dc1ad0163c8e00313ed47d3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/MH01.txt",
+      "bytes": 73640,
+      "sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/MH02.txt",
+      "bytes": 60800,
+      "sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/MH03.txt",
+      "bytes": 54000,
+      "sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/MH04.txt",
+      "bytes": 40640,
+      "sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/MH05.txt",
+      "bytes": 45460,
+      "sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V101.txt",
+      "bytes": 58240,
+      "sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V102.txt",
+      "bytes": 34200,
+      "sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V103.txt",
+      "bytes": 42980,
+      "sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V201.txt",
+      "bytes": 45600,
+      "sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V202.txt",
+      "bytes": 46960,
+      "sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V203.txt",
+      "bytes": 38420,
+      "sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/EuRoC_TimeStamps/V203_2.txt",
+      "bytes": 36400,
+      "sha256": "ae11d939e10a8d0be3b5f90dae54b5eb2bc6faaf095fa113648e817a35305149",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/RealSense_D435i.yaml",
+      "bytes": 2461,
+      "sha256": "b8d3eb11da5c201ca3322d6b780716185017e2f445607618f1ad50f0aea1deb4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/RealSense_T265.yaml",
+      "bytes": 3901,
+      "sha256": "520c0f62a9010a8f68aaa406345c26133e43005d153c66ebcb314d17ed3ccc6d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM-VI.yaml",
+      "bytes": 3900,
+      "sha256": "c725dbfdbfaeae549e1c398b3efc2a4828cb588efc81925acb9a1589f552010a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM-VI_far.yaml",
+      "bytes": 4184,
+      "sha256": "23d9290f7c9dcf212980cd8ce425f429beff19a1189031be6407a740161499d1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "bytes": 119800,
+      "sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "bytes": 135471,
+      "sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "bytes": 135440,
+      "sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "bytes": 116040,
+      "sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "bytes": 38540,
+      "sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "bytes": 118280,
+      "sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "bytes": 308940,
+      "sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "bytes": 216200,
+      "sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "bytes": 194060,
+      "sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "bytes": 249600,
+      "sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "bytes": 178440,
+      "sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "bytes": 229940,
+      "sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "bytes": 512620,
+      "sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "bytes": 368980,
+      "sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "bytes": 337620,
+      "sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "bytes": 279980,
+      "sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "bytes": 354940,
+      "sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "bytes": 588060,
+      "sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "bytes": 448980,
+      "sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "bytes": 324260,
+      "sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room1_512.txt",
+      "bytes": 56420,
+      "sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room2_512.txt",
+      "bytes": 57640,
+      "sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room3_512.txt",
+      "bytes": 56420,
+      "sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room4_512.txt",
+      "bytes": 44560,
+      "sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room5_512.txt",
+      "bytes": 56940,
+      "sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-room6_512.txt",
+      "bytes": 52720,
+      "sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides1_512.txt",
+      "bytes": 111640,
+      "sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides2_512.txt",
+      "bytes": 98160,
+      "sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/TUM_TimeStamps/dataset-slides3_512.txt",
+      "bytes": 144660,
+      "sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/stereo_inertial_euroc.cc",
+      "bytes": 9992,
+      "sha256": "652979ce9058c9a8cd319710a0578174d2f8117ed186133243f356d291b00b69",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/stereo_inertial_realsense_D435i.cc",
+      "bytes": 18202,
+      "sha256": "b03a2c6ca6ad3d5d729a6afd22a2efad1e4f6500ed2fee7885b4e3fa607e66af",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/stereo_inertial_realsense_t265.cc",
+      "bytes": 12929,
+      "sha256": "66ada3f3851800ca2b8a80a46e6b913253e4cdf52e9d21cde0e8346fedb816b6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo-Inertial/stereo_inertial_tum_vi.cc",
+      "bytes": 12435,
+      "sha256": "b99400d58c8ef8499732bd47cb141d529a5d818e257a5d2b3352059922558471",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC.yaml",
+      "bytes": 3176,
+      "sha256": "721602964ef5ffd5b5d594900ed6ee52069bafa32ea2482e5c7987fdad2ab442",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/MH01.txt",
+      "bytes": 73640,
+      "sha256": "9354db11b423f7169eda7a3048d9594ee14572c6017e1439dee7861261b065fb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/MH02.txt",
+      "bytes": 60800,
+      "sha256": "a4a754d1a4be67a4e429df815dbe95cab108b705a3e5eb4600da9edeca174ea2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/MH03.txt",
+      "bytes": 54000,
+      "sha256": "f980e3195235db3b4ef412c8cc4ef51fff27168b6b66461a14b939e6f42583a8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/MH04.txt",
+      "bytes": 40640,
+      "sha256": "f8bb471390f21589d493059573aea13bc72fff721aebc81a471e711987374b0c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/MH05.txt",
+      "bytes": 45460,
+      "sha256": "d4e428d4daf73371d12035f36d1f39dd8fdf7204cd28c9859ba1cd5e9923755b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V101.txt",
+      "bytes": 58240,
+      "sha256": "da79e209000d3db1cec733c2eebce528ff789b823d8326b84c1178fecf148b71",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V102.txt",
+      "bytes": 34200,
+      "sha256": "8a742ad3d5265fd937cfec01d10e7eaf4d529672e49277df632cc1869e6f8771",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V103.txt",
+      "bytes": 42980,
+      "sha256": "be86741d0740aed9884048aec04a34bba185fa17ea20066de0534e578bf80a9d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V201.txt",
+      "bytes": 45600,
+      "sha256": "df572b95486a9596ed44c3c8650bdc0ab2d81988226827caffb92fea871ac041",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V202.txt",
+      "bytes": 46960,
+      "sha256": "cf29658b893099797dbed55637ff032ddde89180dbd6079b4ffb5f49a8e84371",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/EuRoC_TimeStamps/V203.txt",
+      "bytes": 38420,
+      "sha256": "4a691c15c623a8f9ebbf7aa3cdd5f9c3e25cd193d2fe443afdafc904d254968d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/KITTI00-02.yaml",
+      "bytes": 1939,
+      "sha256": "29d61b2de14d73522f3b1d70267fc40a94c4e37156e1a34a45a6be84ef27728e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/KITTI03.yaml",
+      "bytes": 1942,
+      "sha256": "5fca9cd8ab7e827034604e3a28ad675390d9ab591bcc9ec4031294897d15fa04",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/KITTI04-12.yaml",
+      "bytes": 1943,
+      "sha256": "4ebfec7b4cf385f02de3fa18fb344b2a79c8e6923e8675a5f7c25ce1cb72bf2b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/RealSense_D435i.yaml",
+      "bytes": 1966,
+      "sha256": "67f3b4ca7b78b18fa64cf840efcb4f87c51defe5df20ae90259186ebb0d58d58",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/RealSense_T265.yaml",
+      "bytes": 3021,
+      "sha256": "69daf63ba482cb1b42c5289dbb3b53187253aef16bb001ac84681f00bbdca92c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM-VI.yaml",
+      "bytes": 3036,
+      "sha256": "bd82d61bbd5c8d048c212640e092241418fe240e8c6417daa9e086d753f745b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor1_512.txt",
+      "bytes": 119800,
+      "sha256": "a05b728ea3513ec2c89f3d0cc9229bb4193bbbb6acc9704ac5f455707e15cea8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor2_1024.txt",
+      "bytes": 135471,
+      "sha256": "c09087d53302f0e564e2ea6fb94f56385485a276d0ef03edd7d106102db7525e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor2_512.txt",
+      "bytes": 135440,
+      "sha256": "a4c23272a517ff31a673098127c0d5b4943f5a9d4b5bdf3aa6fca47f5b5036c4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor3_512.txt",
+      "bytes": 116040,
+      "sha256": "aee4d706b3de576b7523e383070a570ba108a1b308234013cf489d6d11e72228",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor4_512.txt",
+      "bytes": 38540,
+      "sha256": "6e06d30bc5deb14a2e3b67d129a871d45d1e0be78b0dda6a78273c40b5829fb1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-corridor5_512.txt",
+      "bytes": 118280,
+      "sha256": "d1f7cabe1f233d7001b342c746ce3d23614230837d3baf49267690f8a82eb5b7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale1_512.txt",
+      "bytes": 308940,
+      "sha256": "aaac88c56e2d0785eab9e7864ae8e5260122422b3eab8eede341c3389355884f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale2_512.txt",
+      "bytes": 216200,
+      "sha256": "08b54b0ab1193777a6614ad264b01a4713d075340e85e8ed50a2ee758c243d1d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale3_512.txt",
+      "bytes": 194060,
+      "sha256": "1d423be6be89ca37a19558b13222da7a71f92f396b36b5894a057b17adeecbbe",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale4_512.txt",
+      "bytes": 249600,
+      "sha256": "9a77c3240c11a746de1746595b2481bf5eb7bd39695e2482b0bc8a837d959329",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale5_512.txt",
+      "bytes": 178440,
+      "sha256": "9e6821729e960b6f7cdf90c494caaa425affdfc7c262fc3502e8a277a7970b88",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-magistrale6_512.txt",
+      "bytes": 229940,
+      "sha256": "fcbc2ec1000ad6a6b7e7795256d6a833f391ffd4bfbced2cfd86d2a8986ab078",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors1_512.txt",
+      "bytes": 512620,
+      "sha256": "2fd0f01fa6a0a48cdefcf0c2d2876b4808126fc8816507152ffe82ef74f03e24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors2_512.txt",
+      "bytes": 368980,
+      "sha256": "5fbf47bbc487f5b902691d00516904538cbec789545673fe31a8a85648231123",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors3_512.txt",
+      "bytes": 337620,
+      "sha256": "ac149aaf93af77348322c17240ae9cb4bf98b99267c6a13b4df8c8cbe42613b2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors4_512.txt",
+      "bytes": 279980,
+      "sha256": "92f293098b59b4c845dc1102117a9f6aa0633b5df40e9178aef505f2b87f7672",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors5_512.txt",
+      "bytes": 354940,
+      "sha256": "3d0d03973af4c2fdcc69e75c9a8808e69c3105d3efe5dd773a77e8ee245e099f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors6_512.txt",
+      "bytes": 588060,
+      "sha256": "9169e56dfe0a0903b256e92dc88109a95ae11b5e958939100710c17074bcea85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors7_512.txt",
+      "bytes": 448980,
+      "sha256": "2576d307cec7fcedcd41bc8d628fa8420a15f309730e97f5cb70e8efbc8be3d4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-outdoors8_512.txt",
+      "bytes": 324260,
+      "sha256": "d293287095f08c8be373659c639e1991bb8b6ed926708573888dc4010107650d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room1_512.txt",
+      "bytes": 56420,
+      "sha256": "12880c7916fc92221ecd91cef619a911c7f3cf56aa3c0832db2822f555154953",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room2_512.txt",
+      "bytes": 57640,
+      "sha256": "075401a2475f5c885a12f0dba620e477f27d4d2b7f0541832686af9f56fa39dc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room3_512.txt",
+      "bytes": 56420,
+      "sha256": "afee8cde589bda610d63b06673be476f6f2206a5a81f77e414b25c8c7c352a49",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room4_512.txt",
+      "bytes": 44560,
+      "sha256": "93264d6ed0039abbd63c3ec14fe7643f896561c2bce7480785839708453ff033",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room5_512.txt",
+      "bytes": 56940,
+      "sha256": "c546133022870df0ce05c32ef2c847155cc43a937d50fc1011900f82a9bf44fc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-room6_512.txt",
+      "bytes": 52720,
+      "sha256": "3a89e9c4bb4192220b2407310ab3abdca22e529cf812984b074ce6e55030022e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-slides1_512.txt",
+      "bytes": 111640,
+      "sha256": "1ad82b5a1f9b2b0551fe0928bf4376aa575cc1167f13d59db9b61c6b086d616b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-slides2_512.txt",
+      "bytes": 98160,
+      "sha256": "9fe79faa51afe0ef39ba38308f40ae33c5764476bb296f780315f02337d2ee47",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/TUM_TimeStamps/dataset-slides3_512.txt",
+      "bytes": 144660,
+      "sha256": "d2ed749b940cf689feb572e09cc23d749a21f423ebee831a0ea701a04d60f1c2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/stereo_euroc.cc",
+      "bytes": 6938,
+      "sha256": "a48dfccd12eb29448e789225477063af269a4025f214db73d8dc92d4cd19876f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/stereo_kitti.cc",
+      "bytes": 6448,
+      "sha256": "dcf23fe67e0457d2b19c0d71b47fd53fa93401d3c1308ae491c02e061e3b9dc0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/stereo_realsense_D435i.cc",
+      "bytes": 12131,
+      "sha256": "8b82984314030f87aa80c0b1fb4abe9aadaa75abbd00075388a359d6fca7a363",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/stereo_realsense_t265.cc",
+      "bytes": 6465,
+      "sha256": "8ca53fc9879e570455d74ce9424b13950e00c5df2f8b9febb173ee031bfdb261",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples/Stereo/stereo_tum_vi.cc",
+      "bytes": 10001,
+      "sha256": "42536f12d0fa9fa6b279b991569037f264db9eb154deefd97c9d75b2d5979373",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular-Inertial/mono_inertial_euroc.cc",
+      "bytes": 10219,
+      "sha256": "97d9bc21b45f818a42547f19ba9fab8b6a9a3177e3a73ad3cdddaaf64a843890",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular-Inertial/mono_inertial_realsense_D435i.cc",
+      "bytes": 16420,
+      "sha256": "cef5de2144720ff3e9558f659e370a8f66d97f58c37449f99cb3d68356891607",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular-Inertial/mono_inertial_realsense_t265.cc",
+      "bytes": 14186,
+      "sha256": "ca06fd4033f6c9528c9e13c00d4c27bc9444df6f14210b594431aa06f4b43d61",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular-Inertial/mono_inertial_tum_vi.cc",
+      "bytes": 11629,
+      "sha256": "c64963e341ce85640b0af5c961385e9d22dc6ae60484310e1a92a60ab1f16eab",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_euroc.cc",
+      "bytes": 7623,
+      "sha256": "95ebdc59468e3d97f10d9c36f892ee785a473e7c608c75c28c9c6e4a2751a877",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_kitti.cc",
+      "bytes": 6012,
+      "sha256": "c382e0027a0d9d80883c43bd1c0e35e7f96b533204344d5f0ef1d6adefaf56c0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_realsense_D435i.cc",
+      "bytes": 10397,
+      "sha256": "a5a76f58771c8075d5b3e23d9458f68a2fb54487d9ea4d7d10de1a5e92198acf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_realsense_t265.cc",
+      "bytes": 5767,
+      "sha256": "c50811a5195b904e4379d9c1d8c73b07566e1812c743c8f2a47e360179d1a084",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_tum.cc",
+      "bytes": 5807,
+      "sha256": "970e306cdda76253b88de00adca9f7b51205b36eb34494876e3bd9477ae9d6c5",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Monocular/mono_tum_vi.cc",
+      "bytes": 7978,
+      "sha256": "1f369be4ec06214831c69c70e616d98a5f90a76afc3ccc6de1a560e52666ef60",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/RGB-D-Inertial/rgbd_inertial_realsense_D435i.cc",
+      "bytes": 19868,
+      "sha256": "aad52bec6c07eca9f84dd07c4d1836add26095a94ef47a0ce3a1c2381bd7156f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/RGB-D/rgbd_realsense_D435i.cc",
+      "bytes": 16271,
+      "sha256": "f022b04b8590b40aba4debe4279bb40692d92db0ecc8420f429706b7ef1d8bf7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/RGB-D/rgbd_tum.cc",
+      "bytes": 5758,
+      "sha256": "5f69d96ccde9efa1e496c70508c0fb7cc054a59ffb90b8967df8c122d3be27c7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/AR/ViewerAR.cc",
+      "bytes": 17975,
+      "sha256": "cb01adfefd76e301f19d98fe89883dd36316e9ce6f841955109fb8fd2600e420",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/AR/ViewerAR.h",
+      "bytes": 3563,
+      "sha256": "1b839f57d4264da5b9e8ac551003c7c75c23092d411f26d3517ab721eee56a1c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/AR/ros_mono_ar.cc",
+      "bytes": 4705,
+      "sha256": "23f1a2906c1c33d15da82d96eca23d6cb7e1550ad8ba410f5e35a5c2cf0f68aa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/ros_mono.cc",
+      "bytes": 2554,
+      "sha256": "2cef2e9dcf5dc4c1ab4e4f157ab8403b9763bf1d117e6529dcd12d5728f35e21",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/ros_mono_inertial.cc",
+      "bytes": 5358,
+      "sha256": "b63b351cb5a569a23a452d72c16d443ad5027afe6f582d6b5ef73c286e3ef34b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/ros_rgbd.cc",
+      "bytes": 3390,
+      "sha256": "b7a00524f13bb6160b44c413d464f9645e1d34d40fcffb83a9fafc84e60f3ba1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/ros_stereo.cc",
+      "bytes": 5441,
+      "sha256": "a1d639d4d6e2800e6a0428a180eca67e60da09f8ccb58b635099b2cf951c9abc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/src/ros_stereo_inertial.cc",
+      "bytes": 8629,
+      "sha256": "999ccefd596003bf370255d00386b6919ece7fe659d12f36db5e404d24133297",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo-Inertial/stereo_inertial_euroc.cc",
+      "bytes": 13229,
+      "sha256": "76de0474a7bab70120964af6181e3cc8619495493e04155ba734fb788f056b24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo-Inertial/stereo_inertial_realsense_D435i.cc",
+      "bytes": 18202,
+      "sha256": "b03a2c6ca6ad3d5d729a6afd22a2efad1e4f6500ed2fee7885b4e3fa607e66af",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo-Inertial/stereo_inertial_realsense_t265.cc",
+      "bytes": 12929,
+      "sha256": "66ada3f3851800ca2b8a80a46e6b913253e4cdf52e9d21cde0e8346fedb816b6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo-Inertial/stereo_inertial_tum_vi.cc",
+      "bytes": 12435,
+      "sha256": "b99400d58c8ef8499732bd47cb141d529a5d818e257a5d2b3352059922558471",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo/stereo_euroc.cc",
+      "bytes": 10578,
+      "sha256": "9cb5c5ebd9e037f941867d4bec92f1fbcdf57828e8daf3bb3b7cb8da04dce47f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo/stereo_kitti.cc",
+      "bytes": 6448,
+      "sha256": "dcf23fe67e0457d2b19c0d71b47fd53fa93401d3c1308ae491c02e061e3b9dc0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo/stereo_realsense_D435i.cc",
+      "bytes": 12131,
+      "sha256": "8b82984314030f87aa80c0b1fb4abe9aadaa75abbd00075388a359d6fca7a363",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo/stereo_realsense_t265.cc",
+      "bytes": 6465,
+      "sha256": "8ca53fc9879e570455d74ce9424b13950e00c5df2f8b9febb173ee031bfdb261",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Examples_old/Stereo/stereo_tum_vi.cc",
+      "bytes": 10002,
+      "sha256": "a2d131e0a313ea2df4faf043998a581eef08db27184f2f465c691a1127fa8a81",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/LICENSE",
+      "bytes": 35141,
+      "sha256": "589ed823e9a84c56feb95ac58e7cf384626b9cbf4fda2a907bc36e103de1bad2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/README.md",
+      "bytes": 13231,
+      "sha256": "b6dc671f967dd52e7e6ebcd6f4072692c93b0ab570aa9a9bcb6e4917cd4707f4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/CMakeLists.txt",
+      "bytes": 1017,
+      "sha256": "d6e97c1e1096194f662effd364139b673167524b8f199e0d43b81b31110ba64a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/BowVector.cpp",
+      "bytes": 2752,
+      "sha256": "f76ad8baec12b6060cf5092f6cbfc9bb6ed1d3d5614f0040fd09db5bbce33f62",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/BowVector.h",
+      "bytes": 2199,
+      "sha256": "9a121a367ac87c1a0069439963e841f82b081ba3e5906d6dc0da12bef484cd0f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/FClass.h",
+      "bytes": 1647,
+      "sha256": "1dea5764e97e2fcb0bab344da8c2bef2df94c404911457775a30c83072bb3e54",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/FORB.cpp",
+      "bytes": 4409,
+      "sha256": "e07667aa870c7776818833c1b6fe285527b455005beed7ce58826f240699ac03",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/FORB.h",
+      "bytes": 1676,
+      "sha256": "fc3b8e44b917e45b49cc7ccd52490dd4ea22c56d9b957436f42e8ce1b8d005b7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/FeatureVector.cpp",
+      "bytes": 1831,
+      "sha256": "9f5917c60d9839c52a6cbfcb9d42cc92ef8349f646feb9748949dc8593fec706",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/FeatureVector.h",
+      "bytes": 1410,
+      "sha256": "8bc2e9b7e520e7c813894c5333b5aea960087c45f770a15e3d1c11fac7e72222",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/ScoringObject.cpp",
+      "bytes": 7890,
+      "sha256": "6de0c097cf24426d1abc2a186fa2b2f0008eceaae9e3e0022f2ac891529e6f8b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/ScoringObject.h",
+      "bytes": 2449,
+      "sha256": "e793d64ede998794914c33136995bfd6d0efc720c13db8b5f29b95fbf90ec023",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DBoW2/TemplatedVocabulary.h",
+      "bytes": 42457,
+      "sha256": "e74ba45e695eaa4a469001c66f61d076712ebd6fa7cc7b0ffad4bfc2ad8aa94b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DUtils/Random.cpp",
+      "bytes": 2886,
+      "sha256": "7c7e5f675e7b13bb8769f0fc0292a30e34d577179254ac1954ca8c8f610078ec",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DUtils/Random.h",
+      "bytes": 3774,
+      "sha256": "dff225924c34969f89c4f642e34b50a9defcf6037604b99bacdabf731d5ff452",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DUtils/Timestamp.cpp",
+      "bytes": 5117,
+      "sha256": "886a1d8c20e196602a78a12c8664d524a2822652e8dbd9197393f9770d646f3a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/DUtils/Timestamp.h",
+      "bytes": 4567,
+      "sha256": "b1cbdad7ca368c044ff1ce72ed8799e235bff2d99016b8f9733f70a36fb5f07a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/DBoW2/README.txt",
+      "bytes": 443,
+      "sha256": "7c6369146420510c6a373e573c4b167987400a3f32ed72dafb65e90cda15feb1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/.clang-format",
+      "bytes": 2581,
+      "sha256": "72016947570232e7a3736ed10c89ee8a1e56c3146679f5ffaab8016f33ccb255",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/.gitignore",
+      "bytes": 53,
+      "sha256": "cac559773b6871136ca9fb15c364f391e62cd02d0b7c267bfb005f5f33a156a1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/.travis.yml",
+      "bytes": 2788,
+      "sha256": "b1b6e1b5837fd1c1b7297108991fb176b210f27aef17a5ee5693d084285ce5ed",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/CMakeLists.txt",
+      "bytes": 4720,
+      "sha256": "348a1786fc183b1a6ca90c219527e9151c63ec9b9f957f1c6ed544809d766f51",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/LICENSE.txt",
+      "bytes": 1107,
+      "sha256": "fb709d95e89b7bff8987ba32050be62eb110edc2727262a85b2726b22d7d1571",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/README.rst",
+      "bytes": 1492,
+      "sha256": "7c4fa7139e86401d9439f85ef3b86398e0585a9e5a2ad251b0af792b58322232",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/SophusConfig.cmake.in",
+      "bytes": 131,
+      "sha256": "ec5593a23e9a6a2fa759868cd6b7f678e53b3d3af228510cbc61a8fd7f276198",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/appveyor.yml",
+      "bytes": 527,
+      "sha256": "475557ff831c2e09850f60e4435c8afec899c89e0f80026d8fe4226635a81ea7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/doxyrest-config.lua",
+      "bytes": 658,
+      "sha256": "190bd690e0153c38b38ddebf137ceafa02dd64fd1d23bd61552d8ed046fb9208",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/examples/CMakeLists.txt",
+      "bytes": 247,
+      "sha256": "49452fb7994f1ef75e68505fe03f86ac6a8d4fd186b63a6b623e0f077bea4d85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/examples/HelloSO3.cpp",
+      "bytes": 1512,
+      "sha256": "974ac3daf80b5961f9c68aef887622b90285e3c78db64fc578fc6edb464b03fe",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/make_docs.sh",
+      "bytes": 124,
+      "sha256": "165fe8efb2275d8afc92aca0f767371bac9d1c98bf9f77f3ba81050df903bee5",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/package.xml",
+      "bytes": 647,
+      "sha256": "c1cb01b93ea8c2b17b8580efb7e21e7f6692e677d65878fbb6e05190037050c7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/Se2_Dx_exp_x.cpp",
+      "bytes": 585,
+      "sha256": "87796483477c84f01ae203b115b7f284a7c1af1ff84675104e345753b9d872fd",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/Se2_Dx_this_mul_exp_x_at_0.cpp",
+      "bytes": 221,
+      "sha256": "5baf5a5176ea27f39ea72fddff9ed149740d7eb9b57913c5daf79f3b8aaae5f7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/Se3_Dx_exp_x.cpp",
+      "bytes": 4714,
+      "sha256": "eab96c6ed8337dc4457bcd8cc3d9f3bbe884359fd3861ca808a284ea93fdc5fa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/Se3_Dx_this_mul_exp_x_at_0.cpp",
+      "bytes": 1405,
+      "sha256": "3e4714feba1cde31095e0f7c54f1885629337f9ba5decea7f740c3485249d2d9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/So2_Dx_exp_x.cpp",
+      "bytes": 49,
+      "sha256": "60bdec759ade51031c425c16298d20df1fe00873b0ac4d605ddb9a98cc354541",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/So2_Dx_this_mul_exp_x_at_0.cpp",
+      "bytes": 37,
+      "sha256": "1b6d0d06376b2f929271a0e4b3fb17c3f933b56f26d6afdf1c89c2ddf983d8c6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/So3_Dx_exp_x.cpp",
+      "bytes": 867,
+      "sha256": "9e8d0c757e58bda00f24ebf6f8dd5bccc88dd55cb1f1e835cd38d35276383684",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/cpp_gencode/So3_Dx_this_mul_exp_x_at_0.cpp",
+      "bytes": 379,
+      "sha256": "68c373ac3d7c3c283285738b8d1f4bec8cd7ba53ea2c6f02d2094b7db488ff38",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/run_tests.sh",
+      "bytes": 287,
+      "sha256": "3ebd61070c5b41d9c72a8b271fb21cc568b5efa539ebaae27783c6a553261f4e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/__init__.py",
+      "bytes": 324,
+      "sha256": "95437792b72a567b14e9668f75c2bd6d039b8b295a5ab55c42251af531c68c3a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/complex.py",
+      "bytes": 3282,
+      "sha256": "57dde0b2742394da234096c1430af0c085f830c3602856da226271848cdb3e7b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/cse_codegen.py",
+      "bytes": 473,
+      "sha256": "334e9ece27fc2fa2f0274acf9b1fccea8d9492be8021af28b625f3b2a4157a79",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/dual_quaternion.py",
+      "bytes": 3053,
+      "sha256": "58875f74bb561317dc620c82b26b0c561bc59842c5467d615ea523c608f53070",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/matrix.py",
+      "bytes": 1027,
+      "sha256": "a4183668ef461dd87e210682b0019d1a3439a2205c79754b9f9c21c1bd53ec5f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/quaternion.py",
+      "bytes": 4270,
+      "sha256": "06b6b3786fd5cb177294194404ef7b697386ff0a08b5ad088d1f84eaae667f37",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/se2.py",
+      "bytes": 7535,
+      "sha256": "0ec23f55ec09d6b71fb4e79e0a5225d4a9a527d493ecf7102c8b5f2accc42a68",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/se3.py",
+      "bytes": 9301,
+      "sha256": "d326f42fdb6ac0b63c64a11fbb430155176dd5be4d20f6182839ad9233d635fc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/so2.py",
+      "bytes": 5848,
+      "sha256": "7458b35a368e9fc24a118c2bb39375c6beb93e8500605eefbb4c8c3a00a13878",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/so3.py",
+      "bytes": 8954,
+      "sha256": "33f83b5a31bc6354c91c65743488a30101a33fa7dec28a898ff4001f08abb68e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/py/sophus/so3_codegen.py",
+      "bytes": 71,
+      "sha256": "3af4621685f29b5a3d49113246fe3578bf1b2b861bccf4f729aaef9b2854abd0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/rst-dir/conf.py",
+      "bytes": 1872,
+      "sha256": "28b9f0dac12776d11943b9371dce3e2addbcb5775e9fbb515faa8182628831d8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/rst-dir/page_index.rst",
+      "bytes": 197,
+      "sha256": "fd73ebf39f222de701eadc268267201bd4372758f930866c4e1ba664edad0b88",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/rst-dir/pysophus.rst",
+      "bytes": 322,
+      "sha256": "b892cffd3533f8cd14155b76eb2f03163798a27e05d436ea070eabd2bc90bdd2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/run_format.sh",
+      "bytes": 153,
+      "sha256": "52ff143045e3c58e31356e6e9e229b9fab98f6e11406cad8c5e3738713d38c01",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/scripts/install_docs_deps.sh",
+      "bytes": 402,
+      "sha256": "b439af040e1d364bcf8991f27cade5441e562afd5d1d831925042a7d6863751b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/scripts/install_linux_deps.sh",
+      "bytes": 705,
+      "sha256": "0cd6c9b7313a931ebda70bcf65f20cbc87a9d487b737e884f7e6e4290552f72a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/scripts/install_osx_deps.sh",
+      "bytes": 484,
+      "sha256": "40993622f5a2b8b4239918200dfe19dc22f758655edc26f4c04afad648946b7a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/scripts/run_cpp_tests.sh",
+      "bytes": 201,
+      "sha256": "de9561aa868116af24d84694cf469dc1c8df047801d52c2fdc65f91be6c2d2e1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/average.hpp",
+      "bytes": 8227,
+      "sha256": "9a4e80395f2bfdd5ac4d1c7bb92b01aab88ceaabae31b70cf30203ab2b0d7ebf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/common.hpp",
+      "bytes": 4625,
+      "sha256": "f618d9abd4ec40c838e1839e9099f4640881e17d51e6257facee3a92a836f972",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/example_ensure_handler.cpp",
+      "bytes": 398,
+      "sha256": "797e0bc38a2c7e5e1908f7d8e9a1ab08e0f76bb92d4c2649902abeedcad6884e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/formatstring.hpp",
+      "bytes": 1810,
+      "sha256": "1ece8b982ca5073f875eb285f10a563e85fb16d4f0a3cdbce7148fde6f9f3a24",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/geometry.hpp",
+      "bytes": 6141,
+      "sha256": "c7800bd3a6ecb41c5025559f29c66140c86b3aae78e6e7ed104ba655e7e6641e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/interpolate.hpp",
+      "bytes": 1282,
+      "sha256": "44a60c9348a3acacb5b7bd59f89af6c2104526cf0edba44db9ab54ae134e3dc5",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/interpolate_details.hpp",
+      "bytes": 2647,
+      "sha256": "11d6f59f8077938ed72e3d57c85c1de706364d9c35dbd89c77da59c5489a88aa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/num_diff.hpp",
+      "bytes": 2850,
+      "sha256": "42a156fc94a07eb13eb8c55a463cb1e36e8cb15ce15e5c6605b3e28d040d445c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/rotation_matrix.hpp",
+      "bytes": 2685,
+      "sha256": "c840407beff404029d01f2bb6b0d913dfa8ed3cfbcc6d0bbc012ff4cd8b68db6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/rxso2.hpp",
+      "bytes": 22042,
+      "sha256": "1aec177a97a85d1c38696aae39371354b5a9e519afc57f25c12528bc766a60ad",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/rxso3.hpp",
+      "bytes": 24958,
+      "sha256": "a2a45f86581d2fc5d3e3a350c8e8a27fa0f6cfb52f0b7b037db0bf254391d98f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/se2.hpp",
+      "bytes": 26622,
+      "sha256": "57bd2f3de084348846a244b5b73fb7cc1a7eb4a34840c8d4c23c5cb139253fb2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/se3.hpp",
+      "bytes": 35703,
+      "sha256": "4b807c9f42a846c28cfdab74d31812c5ebda69ccb127ed0d219ad3da7051c62d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/sim2.hpp",
+      "bytes": 24160,
+      "sha256": "d7e096d42f0e8b3614cf4022974fd9e5e1fcde877ab610fb0d3fe2437e7bc040",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/sim3.hpp",
+      "bytes": 24983,
+      "sha256": "6f1717a61517f17c20a12b17598d963831e1baa31e73320457cadaf38ef22fd7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/sim_details.hpp",
+      "bytes": 3536,
+      "sha256": "63be0e4f3673599d17629e76792ca55d822496656467b548bd24b59067e2fab7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/so2.hpp",
+      "bytes": 21194,
+      "sha256": "1a22dd4536ab07f11ad8cd76791b96be67635e6dd1459e2f45887690588d6ca5",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/so3.hpp",
+      "bytes": 28975,
+      "sha256": "38a295ce4267cabc27766c8d632a06dabc9cfeff142ea193b399b74f50312889",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/test_macros.hpp",
+      "bytes": 6620,
+      "sha256": "48cf13008209e24c3c338f574de8af5aa20040384e00d06cd4fbcbe8534a8d33",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/types.hpp",
+      "bytes": 6323,
+      "sha256": "0f0ca642f545283707d240c2c4391e2484520f52506081385d6d20e832cc965b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/sophus/velocities.hpp",
+      "bytes": 2401,
+      "sha256": "bb7fa298e1f9f3267dd88b9bb1172d0288411b496a36b1a0b6f1eac5fd32bfcb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/CMakeLists.txt",
+      "bytes": 47,
+      "sha256": "1ce5e7bc5de4c1450d4fff6fbd53b5906466cdf68664fc1ad584127a6c51e587",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/ceres/CMakeLists.txt",
+      "bytes": 645,
+      "sha256": "7d46f95f332d2518803042279494118fd779483aafc7924e593033c913a17d56",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/ceres/local_parameterization_se3.hpp",
+      "bytes": 1297,
+      "sha256": "1456b17bb80992c9bf4224ff928f1017212cbda146fab286c726ef8d933a5388",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/ceres/test_ceres_se3.cpp",
+      "bytes": 7199,
+      "sha256": "66f56d337d27c10d767cf062bb39c145d1a8112e7989391785864c14319f5b2b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/CMakeLists.txt",
+      "bytes": 579,
+      "sha256": "b136ce9868abbcd717b1899b15451eba2c6b74f8441955ba654e50b8b4de93db",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_common.cpp",
+      "bytes": 1891,
+      "sha256": "2c5b9ac096b21bc02612e03977a21fa8735f480dadad75856459fbc1b83676fa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_geometry.cpp",
+      "bytes": 4716,
+      "sha256": "1f747bf8a243af25a149e9db0efe8874c84e77237320c5e59414fa74d0da33b9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_rxso2.cpp",
+      "bytes": 9713,
+      "sha256": "bc05f54b7eb5b7012ad339abfbb9be3fa28fa19c5117247a124224271a8ab1bd",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_rxso3.cpp",
+      "bytes": 11040,
+      "sha256": "5b42d2c22449602e9a23af61088724a3edfc4f2c498c99880c2b0a2d6c6dd9e1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_se2.cpp",
+      "bytes": 9566,
+      "sha256": "85de49d13f042d2b41e766a1e31ce405c95dce934cf80f73e427bdab155e32a2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_se3.cpp",
+      "bytes": 10229,
+      "sha256": "419193596d5357d26d79543bd2be633d9ccac54952629396262a1b4716023dba",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_sim2.cpp",
+      "bytes": 8500,
+      "sha256": "ce5cc6ad781ed5777fef4cd6827e0752912b2dd7de9e80385f6b86dde956fcf2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_sim3.cpp",
+      "bytes": 11189,
+      "sha256": "b8f71d9313af94d8ed37b3ee2e98d7c7bad27ee0908cc12922f1092dfde17134",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_so2.cpp",
+      "bytes": 5898,
+      "sha256": "d24554ca43afa8cccdcb0c7620889d1cfba81579efa72bdae8b2e215e750de0a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_so3.cpp",
+      "bytes": 10276,
+      "sha256": "bda6f591fd462d7b60c3c14543ee7d9fae260424f3c44a4d772770a1d637a76a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/test_velocities.cpp",
+      "bytes": 4572,
+      "sha256": "89123ef4736c31b4605b9358f8bb5c84a2984006b22c37891fc0c5fb1d20774f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/Sophus/test/core/tests.hpp",
+      "bytes": 21398,
+      "sha256": "736287f18adcb4f2c56173a2ad23823a4cc011e55437765e791a6c2352eef35a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/CMakeLists.txt",
+      "bytes": 5811,
+      "sha256": "4dbf082c7284e5c29627fe0ceeefd9fd6d1cd263c7ae61327e12faf14f17bc30",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/README.txt",
+      "bytes": 243,
+      "sha256": "234a825b5092cf414f86abdd69ffbcbb75f8101f6e16a5e50249fc9543153a54",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/config.h.in",
+      "bytes": 384,
+      "sha256": "0c491700c90db2f19d6fa69d0bb27ef3eb04466c87255a643df8a20cf5d56f30",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_binary_edge.h",
+      "bytes": 4621,
+      "sha256": "1e396458fb92548a7079d56e6179dc86fd19748541161c198b280016f68b9f37",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_binary_edge.hpp",
+      "bytes": 7868,
+      "sha256": "9655a57a1fe518bb372fb5265acea03543dc0707697aac9c77feef6c59c0856c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_edge.h",
+      "bytes": 3912,
+      "sha256": "683ccd95dc78be9db39fd1b277ef22bf7e8d3cd4792e3acdf9d813896a5e40e2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_multi_edge.h",
+      "bytes": 3921,
+      "sha256": "c42d03957ec4ec139b34eab278df6557d422393644d293e6f25df1452c35d299",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_multi_edge.hpp",
+      "bytes": 7378,
+      "sha256": "9aac7a9195d5ee6cac3124bad9a115def5fa00e86e82d6b7e513f28aeddacbe2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_unary_edge.h",
+      "bytes": 3603,
+      "sha256": "5d5fb8a7faa5ecb26a9ca90d5a8280643d55c15c2808061afed39fa5721a26d2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_unary_edge.hpp",
+      "bytes": 4571,
+      "sha256": "dd727ec8e2c191710d2cc862f5796bd0a2aa407daa8bcd11ea18419b8ea7a795",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_vertex.h",
+      "bytes": 4545,
+      "sha256": "f956ec6d86e3e4b43228ab7bc57810b41cb82062e7b46541399159706e99a97b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/base_vertex.hpp",
+      "bytes": 2152,
+      "sha256": "05fcda66893af6ca2310ab5c5ca69548ca96c588abcfe44c7d04bce07b79404a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/batch_stats.cpp",
+      "bytes": 3360,
+      "sha256": "556cc47ab9edf677b55b330625988454c058f59a67d2fc4c011f3f605410ddef",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/batch_stats.h",
+      "bytes": 3782,
+      "sha256": "cc678452dd908098433152149dcafe3eba1c62c4d98338d1daa7ab248900d416",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/block_solver.h",
+      "bytes": 7527,
+      "sha256": "f5770bc30601b5a4edf9c1fa7024bad0dfa18a64a4d8f35c254615e6369b75f6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/block_solver.hpp",
+      "bytes": 22001,
+      "sha256": "4bd95bc0ba4d03881e0d0537be9dc68e3b2648e69824c0e250fb92eecf2b996e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/cache.cpp",
+      "bytes": 5242,
+      "sha256": "c463c19d3bfe5f333be2a4d62ccee87145efdca2dc2def774958c7b13bb4ac2f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/cache.h",
+      "bytes": 4952,
+      "sha256": "2c5a42aff3b539ecb351173e2ca42e718531aedb5b623717ecd60ed57b00da32",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/creators.h",
+      "bytes": 2656,
+      "sha256": "2fb284d0e94250e00ba55e8011b917612172c6d1584b4689ff4f4eabe932e6f1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/eigen_types.h",
+      "bytes": 4167,
+      "sha256": "b5ae33ea20d5ddd9620c17d7d4269c505f0a17c444c530cb516a9b07e2196011",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/estimate_propagator.cpp",
+      "bytes": 10141,
+      "sha256": "6ec88190e3430acbdb52a0e4c7bc91bfcda3b6af7fdc6f2522a3559b0502d4e6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/estimate_propagator.h",
+      "bytes": 6395,
+      "sha256": "a1d536ea84b1e0173ea7f00e54eea336581e2f303987485410c54d3d45aed682",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/factory.cpp",
+      "bytes": 6420,
+      "sha256": "802f88f0ef981ef4c4c0f1f3f900d956cc72e5751db9738f4257c51dd59bf79c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/factory.h",
+      "bytes": 5930,
+      "sha256": "63d33b8d51720936382294cdc721efe6bfc22d2f67264996a00ae62e6fccb785",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_dijkstra.cpp",
+      "bytes": 9489,
+      "sha256": "f686f06917538fe887dc6136d05fcfb4f04623076cddf583202b9b346b6cad64",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_dijkstra.h",
+      "bytes": 4579,
+      "sha256": "004c7f33786a8848781f3d9fafd0d13640969877269730f10aea16ac36553521",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_graph.cpp",
+      "bytes": 4368,
+      "sha256": "4533fad0ebc49ab52931c16335c50e6986cbf1e21e125f2dd9ab78c7653b022b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_graph.h",
+      "bytes": 8135,
+      "sha256": "398f0a3dbb5859c81c34780c4b21c7f103b50bc1ba8e48f4d1c561c882855e03",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_graph_action.cpp",
+      "bytes": 8960,
+      "sha256": "f706feea6e771bf6e5e4edb5cb22c8719ef3d10ccaac74b77096ae2e676ab16a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/hyper_graph_action.h",
+      "bytes": 7930,
+      "sha256": "40ffdc043c30ad83533cb21ee5549ff88e07b216e73a920fb90501649cdf73fa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/jacobian_workspace.cpp",
+      "bytes": 3376,
+      "sha256": "45098fc5d4178239f2d77c2d341b0d6ba981c3e6bc53cbc0da041ddc9723c8a8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/jacobian_workspace.h",
+      "bytes": 3321,
+      "sha256": "e93cd1b3caa1f4770ddd0df03ca25a490f46132f2a67d365120d996f230c1c49",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/linear_solver.h",
+      "bytes": 3811,
+      "sha256": "6d5e3b3b2d82b4b5179295dc8be790ad59c41227b0437813020ccdc87569d7f3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/marginal_covariance_cholesky.cpp",
+      "bytes": 7345,
+      "sha256": "dabb811cc88f99f2b15abc04649e1b2deff36bf910a49b53fe5ce6d4c5646fe6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/marginal_covariance_cholesky.h",
+      "bytes": 4172,
+      "sha256": "05bf4d1d60e98e565713681f8fa229f47af0810745ba662f6a2d542e92bb1067",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/matrix_operations.h",
+      "bytes": 3358,
+      "sha256": "825b2138fd65694e06db91f55715e61f1be6b05f96cb92ff796ad0c3cec8fa45",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/matrix_structure.cpp",
+      "bytes": 3566,
+      "sha256": "b1afe72b3af1ceecc133465b5f663a0332ce86db8d177b24627612496ea62aeb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/matrix_structure.h",
+      "bytes": 2581,
+      "sha256": "1d508f74a94466af8e0f6f76bd7b44181df61112f0de37fc645d76fb84dd804f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/openmp_mutex.h",
+      "bytes": 2916,
+      "sha256": "2b760a5d810c49acf4b9fe02cd2aaaafb61c7966f7b83298438fbba24c5bb2fb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimizable_graph.cpp",
+      "bytes": 27537,
+      "sha256": "442c933629684f835af8e8c2b8411a7f6ab056fa3b15619c5508e1753abc2f86",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimizable_graph.h",
+      "bytes": 25597,
+      "sha256": "fcb528ed12c302e4e547829a70905b4445523c4a4e1ad77e8a470a1f74af40a6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm.cpp",
+      "bytes": 2283,
+      "sha256": "04734f6c92c324e4df59229dbe59973fdc8f9c8deea3492b8cf064858334958a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm.h",
+      "bytes": 4355,
+      "sha256": "8efd28639e17cbb106f282e7487bec28d21a3bc1e03ceae39f49e5b76ad226dd",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_dogleg.cpp",
+      "bytes": 8625,
+      "sha256": "1c43941163594d377676a84824299e445151d53b01b5bef20fe19ad811e897ef",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_dogleg.h",
+      "bytes": 3493,
+      "sha256": "7e53808c560e0a09705bdbe50c665ee77716d22cbcc93356049a945561b67b3c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_factory.cpp",
+      "bytes": 4892,
+      "sha256": "4719602c2fcaa107888694aff57fe4e5777e3ddcf642adceb7a9bda23bffb50f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_factory.h",
+      "bytes": 6192,
+      "sha256": "45fb0b89dd4c8379bdc47157188d724749828453cb1de3238762d64e00ed2011",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_gauss_newton.cpp",
+      "bytes": 3491,
+      "sha256": "059bda2ad528c579c5ccbcb6263ebcb05c61be5cd9c9a9ed300c83657aa634c1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_gauss_newton.h",
+      "bytes": 2177,
+      "sha256": "1a2227179e9aeeed0e66aa8c054219b6da1999e6322d8666811afa7e467efa47",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_levenberg.cpp",
+      "bytes": 6915,
+      "sha256": "dcb7768aa5c442c9092c431725d4d5f57089097490740ae3cd570e9976ebaf0e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_levenberg.h",
+      "bytes": 3815,
+      "sha256": "fd562b60554a23e4167fc43c9ec1b42942881b88f7f12facbd3051f61f46d8f2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_property.h",
+      "bytes": 2593,
+      "sha256": "af0f92b8fa924aa6a675d0550ead9bde0de0ef92e1f860fe78d017995f8485d7",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_with_hessian.cpp",
+      "bytes": 3537,
+      "sha256": "9d4403bc65ac6e00cb74289c7469815f34576a1d95d5e4963bb9a9389f48aa02",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/optimization_algorithm_with_hessian.h",
+      "bytes": 2731,
+      "sha256": "59d0c50f6fc1773ad2c42c17d91fc64bcbc4aca9694e0e25839daf52dadc594a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/parameter.cpp",
+      "bytes": 1587,
+      "sha256": "adf882c9790e3bf00d6e7ceea58903f8a23fc76865b6f2fefe31fd4ff146e6b6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/parameter.h",
+      "bytes": 2166,
+      "sha256": "3c6888ca867e952606973aad108e96bd4e2146748d6ae9ba368ac6368a92d49c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/parameter_container.cpp",
+      "bytes": 4459,
+      "sha256": "119e78e3f46de632d0f7b2cde59e4777770456c2e8cb4f00eca47d5ae4fafba4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/parameter_container.h",
+      "bytes": 2827,
+      "sha256": "fd8240eeb49957aff6036c41c38423ff4327d45c8cafb167159a3b5ef3de7015",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel.cpp",
+      "bytes": 1670,
+      "sha256": "42e2bef2c0e1b65c4d5936937fe76dc5a2695053a288c14bae9173a2f2ec5c9e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel.h",
+      "bytes": 2835,
+      "sha256": "dffa24dd6025ad18096094f3e7819d11b9e4f185ae61e6cfc8d64b3fea67437f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel_factory.cpp",
+      "bytes": 3401,
+      "sha256": "bbf2aff4980c691dfb8c3135f2602c073093d461160405557f719c498f982ab8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel_factory.h",
+      "bytes": 4749,
+      "sha256": "8e74c6e53284ff217668eb72cf55d89a63c4506ca5fa12415ff41fe1e1364afc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel_impl.cpp",
+      "bytes": 4973,
+      "sha256": "1efeeaac21f96127bb839a9ae6bfab880e7b0c00b45ae82b8f149cfcb9942778",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/robust_kernel_impl.h",
+      "bytes": 4678,
+      "sha256": "6be2f1d8eafe2d930f8ef351a111840f931cc8c0369a2fae0eb93e0b34c1ed6f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/solver.cpp",
+      "bytes": 2610,
+      "sha256": "d9b969dfc280f5ef4cc882304213b64b004ad70669824d582edcbe0da3cf67dd",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/solver.h",
+      "bytes": 5444,
+      "sha256": "8a3d8433ddfca1f5852969cf90e03c7fa42148dcd1866f874ec4ffcf3c5e8cd8",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_block_matrix.h",
+      "bytes": 9514,
+      "sha256": "fe37f3a604dd8851aa709291d00ce4db0d9a914d149e1fd8f6afc38549967ec9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_block_matrix.hpp",
+      "bytes": 25490,
+      "sha256": "2de7df4ff7f1b4eef1cdaa929c4f5cf6ef3bdb26fc4c2ef4c890ad8ce22ea1b4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_block_matrix_ccs.h",
+      "bytes": 10801,
+      "sha256": "5eb5feb615eaa0d31b6f945a5e5a9ef948ab1502d425187faa021ed9d3fb51cf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_block_matrix_diagonal.h",
+      "bytes": 4184,
+      "sha256": "e31698bb9856b178446f4d6bab58ab4b2df39224f0fa17b626214ada0c983018",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_block_matrix_test.cpp",
+      "bytes": 3192,
+      "sha256": "e5d24d09037ef7618719f09d2241469b293f36362d09e4409dacfb3815354761",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_optimizer.cpp",
+      "bytes": 20717,
+      "sha256": "7426fbe2f617654ff31acb52c3bd8a3bb0532cb89c71f58318bdd1d5b9c0125d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/core/sparse_optimizer.h",
+      "bytes": 12602,
+      "sha256": "2d2b79e84c60f1478c8d4bcc40cab77cb9a7a51dd3da4fff4e9df72cd24a47a4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/solvers/linear_solver_dense.h",
+      "bytes": 3947,
+      "sha256": "3f7d758f6bc04c743301bc2c8cdefaa467b321a7bf89f3699f3804c2beb0f7d0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/solvers/linear_solver_eigen.h",
+      "bytes": 9083,
+      "sha256": "a8248f48bf71dbf6f0148db6d959239417eea270e285f88a9bff8a8ada56ef62",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/color_macros.h",
+      "bytes": 2572,
+      "sha256": "5e253c4401ed28fe6fcad7ed5bc17d9b7d5c93c685adbd2e4f13cfed6596b44f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/macros.h",
+      "bytes": 4360,
+      "sha256": "9d11bfd7cb5966164ecf0eab28da90c387d71a406257bc7213859dd3a0fbbc42",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/misc.h",
+      "bytes": 4207,
+      "sha256": "3dec7ae114c44b399adf0b892ece97923ddef1a3ab410287e80b25ef8c264e2e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/os_specific.c",
+      "bytes": 2043,
+      "sha256": "adf3d31295b89b071a50754f08061bdd0d27e172861576e93481eaee3ad28b57",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/os_specific.h",
+      "bytes": 1882,
+      "sha256": "7e0142edaee894fdf1e256babe975b0deed30ff7caec45d6fabcdb2fc5260796",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/property.cpp",
+      "bytes": 3410,
+      "sha256": "2b069a8987aaaad8342cfa54e3d35e9872683d36209abff603f8ddfff15392ea",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/property.h",
+      "bytes": 5023,
+      "sha256": "52ad769e4f3d1e5a61512013e4f8a057f7990913daae79ede5707806e1a0d557",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/string_tools.cpp",
+      "bytes": 5037,
+      "sha256": "5cb86840aee0a6bcadcd1187c9813b73c699bc9b17b6188b30e7b96b4aca263d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/string_tools.h",
+      "bytes": 4767,
+      "sha256": "3d36e6b6132d1ef686a212d7784727aafc377b607b1f311af70d661d93c76493",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/timeutil.cpp",
+      "bytes": 3722,
+      "sha256": "aaf8fd31707af6089766065be1824c6b3be79c3f21b41ff33e25d65d4c7cce34",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/stuff/timeutil.h",
+      "bytes": 3690,
+      "sha256": "4f540b5adcca2bc54ffbf2ab8fe575cde9dd8016742ecc2028e233290b186a38",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/se3_ops.h",
+      "bytes": 1851,
+      "sha256": "74d316a87d2da4174264d6a871e2622e9381d4cad9651ec5210afacf390d7014",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/se3_ops.hpp",
+      "bytes": 2334,
+      "sha256": "227eaaa4e3a959b285f0bf62cdb9debecdf93e0cf80e44c9bc9fbcf9aed171e6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/se3mat.cpp",
+      "bytes": 845,
+      "sha256": "c80676a6c255b5d44e1e90691d8c507d1c1306cd67be02c6c48db11258d5e1fd",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/se3mat.h",
+      "bytes": 923,
+      "sha256": "e6735e258b6d75587a34839c2dfeff4d1cf24056088eb606c466ed93a1c5df4a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/se3quat.h",
+      "bytes": 8167,
+      "sha256": "13482d9d406651871f732d19cb483944f03b98967442a840e885d46b6bb5694b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/sim3.h",
+      "bytes": 6948,
+      "sha256": "e6819adfba5e6323d4c101ebd413764f6bb49b46d2902f75f322a4760c5b2d39",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_sba.cpp",
+      "bytes": 1905,
+      "sha256": "39c3f848a148756dd4ac764a2a3192c259445e941d9af073910a9f758718b627",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_sba.h",
+      "bytes": 2045,
+      "sha256": "7cb71356eafa4a7b14f641a903763b60968da4a334080832f2aa1efb491e3646",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.cpp",
+      "bytes": 6226,
+      "sha256": "731d1e5ee02e70970dfe6829a419e33c3375cdafbc160c40dde32e1801111fdf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h",
+      "bytes": 5635,
+      "sha256": "2f055ae0c5e3502a67f8eca70561db78d825600b56963235a8cb270ceebb858d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.cpp",
+      "bytes": 11076,
+      "sha256": "4a8d225b5bbfecbeda90fb4990fb8f777c69813ec293ee9b06b8685773ff1653",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/g2o/types/types_six_dof_expmap.h",
+      "bytes": 7243,
+      "sha256": "244a22fcba8882a64869760e0658262328d8b91ecf421e3aeeb012b2310cbf3d",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Thirdparty/g2o/license-bsd.txt",
+      "bytes": 1401,
+      "sha256": "968d80fdf6138ea9e3f9713392165ccdf5c5ab58c66c38abae1ef731f7077228",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/Vocabulary/ORBvoc.txt",
+      "bytes": 145250924,
+      "sha256": "f8dd027f7a6cb88129821341194d7f2c75b77b3394257ddd0d2229863d1a3570",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/build.sh",
+      "bytes": 621,
+      "sha256": "74394f36bfa7b2f1defcecb7afa4c888508f598c530ba5cb055a94fdb8471475",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/build_ros.sh",
+      "bytes": 116,
+      "sha256": "355ecead524b18cb89887bc0dfd6432be1ed561d321cee94625aeede46036707",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Atlas.h",
+      "bytes": 4672,
+      "sha256": "16a90abe764df6931f67bda5ad834c0f5286b6ebac271d45a3642ce05855991a",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/CameraModels/GeometricCamera.h",
+      "bytes": 4130,
+      "sha256": "0d19c3f1299fc162959a720a24da1f97b7c110ed687e6237c2e5c070070d7d89",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/CameraModels/KannalaBrandt8.h",
+      "bytes": 4824,
+      "sha256": "99429f3cd47fcff65052edb2d925e8a36b4e53d0920f9d73aefdbb9868ce0b23",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/CameraModels/Pinhole.h",
+      "bytes": 3803,
+      "sha256": "7bc668d63e6cffe5648aba67251ccb37d0145f01683142c396ab4e5bb766e2c3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Config.h",
+      "bytes": 1409,
+      "sha256": "ff2dd06bbe3ae3f8ae2a2a14f6f5bb9ec45473d86fe64c07076dac26e86f4e71",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Converter.h",
+      "bytes": 3314,
+      "sha256": "5ae748dfecd2030af9f5b9f7432d7e2ef84912336963efbfce87da2bc8632d75",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Frame.h",
+      "bytes": 12029,
+      "sha256": "368bf57e62193ab9931688401d3c1363b7eef727e0569058c8744e2f218e4215",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/FrameDrawer.h",
+      "bytes": 2459,
+      "sha256": "0302c06ab63cc875ca294ba1cb821759510e4c1a6ae8a15829100ed07986a855",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/G2oTypes.h",
+      "bytes": 25071,
+      "sha256": "97cdb8ef2afed30eca6d138f1946c90b05bd1b03f47ddca6c4fddf7bfc7d090c",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/GeometricTools.h",
+      "bytes": 3013,
+      "sha256": "e0e00bd1139872322f83afedbe13e400dee7cf0701b9332c31edb792dc1adaaa",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/ImuTypes.h",
+      "bytes": 8615,
+      "sha256": "842567256c67feff8fc2235d303f9569617a000039b89f7253f81808dd300e85",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/KeyFrame.h",
+      "bytes": 16716,
+      "sha256": "bef849a9d9bc8167968dd68018146ea0d8f464e5da4d6726d92a0cba4f9d29e9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/KeyFrameDatabase.h",
+      "bytes": 2884,
+      "sha256": "4b9179d323f59b0bddf818abbd11264a185ebf9eb410cdf9186573ff1be67650",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/LocalMapping.h",
+      "bytes": 4536,
+      "sha256": "c786993960d52b74a064c2e487f0e450f989b954b17585febb5e6f8d95e1915b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/LoopClosing.h",
+      "bytes": 7012,
+      "sha256": "10e5900cea38d06a1a63a33ea59900346f9a28ce4f56867ced3a7c18de3b7854",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/MLPnPsolver.h",
+      "bytes": 9670,
+      "sha256": "fe04bfeaf38e8dd1c9d71dfdb4f0397a2b7d74760a9b30e621b099b615d07642",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Map.h",
+      "bytes": 5532,
+      "sha256": "ae3fae7482ae519980a22a485de3b321e87b376c005bb74a6be268bff3b17330",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/MapDrawer.h",
+      "bytes": 2400,
+      "sha256": "8b01916d4ad875bd67397f6496ad67e6463f7c6b66af44e606198c16c60c511e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/MapPoint.h",
+      "bytes": 7235,
+      "sha256": "5a9fe47b4e900c87f119c28a6cf0600a7e65f5811fc1550a258bf4a865865384",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/ORBVocabulary.h",
+      "bytes": 1230,
+      "sha256": "f8ef5d8ffe6af6e56a79f02b216dcbc509e8c2075d8a62a31b49a9b791be90b4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/ORBextractor.h",
+      "bytes": 3369,
+      "sha256": "0f6b92927ee8d4a69eaabdc9cbc473af5d61817a147f37ae97e2f6ac058388f9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/ORBmatcher.h",
+      "bytes": 5273,
+      "sha256": "9409ee41fc9c12f0167e8ae92da9b16209b071ea9b463b8fc6e0456e1b67b759",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/OptimizableTypes.h",
+      "bytes": 6954,
+      "sha256": "e849689b824fc066fbe4ed9b9991a6734f8701098d85331a10ff99f3d622f9ca",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Optimizer.h",
+      "bytes": 5684,
+      "sha256": "6fdd0974980adf1caac9856c1fa484253a8a4705f4d68e85d6bcad965c7261e3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/SerializationUtils.h",
+      "bytes": 4448,
+      "sha256": "6b18aa6e5e6af97b4e803812af0d42d627f9ad48a936e4b57cdc60c72cf4d0cc",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Settings.h",
+      "bytes": 7355,
+      "sha256": "1a04bc0eafe5019b0559f33aa0193ef35f921b82afc34fd9a5c61ba1364227bb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Sim3Solver.h",
+      "bytes": 3997,
+      "sha256": "0f390ef7a2aa3dec3bf8e7bbef0ac089ffe733dbfc13b49510c25eaf85f229a1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/System.h",
+      "bytes": 8521,
+      "sha256": "6da4ae010ce2dd0bc98250ce1672192da7e6b37616686e2d7e6002acfc92988f",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Tracking.h",
+      "bytes": 10095,
+      "sha256": "9b20af086b2365edd60721fdab10683e69808717e5cabac21274faabf7989ec3",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/TwoViewReconstruction.h",
+      "bytes": 4278,
+      "sha256": "7e31773a4993c05b24c42934359e4e9753f3ca0bac5a60afa121aaec268eacc4",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/include/Viewer.h",
+      "bytes": 2455,
+      "sha256": "ca67dbee936edbeb1b9e2fe2fc4c5f13e08ea01df1883b332f652b35cf5bd738",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Atlas.cc",
+      "bytes": 9724,
+      "sha256": "1f73d474364e72305c88f235e23a3873f97a07b9e512b460009e32e58371d5ea",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/CameraModels/KannalaBrandt8.cpp",
+      "bytes": 16472,
+      "sha256": "e73819dc9326325adaf1e3c1b26ec0100b5d9788a399cd23208caedaf8ec0e81",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/CameraModels/Pinhole.cpp",
+      "bytes": 6011,
+      "sha256": "9862467de077ffcf49a0aa70fc68dcd3ffa5ea9310c3645574c97aecee981850",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Config.cc",
+      "bytes": 1051,
+      "sha256": "8a9e6982af8a365b22a4beb0d97116989df292abdc66e97fd12275b498d0abbb",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Converter.cc",
+      "bytes": 8886,
+      "sha256": "ab4279ecf305cd8c3c733d5f84a17051c60df94481aa97ff73555b8cf6afe839",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Frame.cc",
+      "bytes": 40247,
+      "sha256": "67e0c446d9da80db11aceee4ff2664487cfe1f2502bc50d843ff7471917eb42e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/FrameDrawer.cc",
+      "bytes": 13878,
+      "sha256": "0ac1553f3f15c2860006d6d38c76d7da53566ede52dd8dd66c98392977f50f50",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/G2oTypes.cc",
+      "bytes": 29027,
+      "sha256": "0a96d5600440601ce9c8dcdedfa8c63c80b2285fbca6c81db3d983180ff34252",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/GeometricTools.cc",
+      "bytes": 2543,
+      "sha256": "7bbd9e2b379665e1e1951de05786c156dc2d4f80efa090b8d203e97e16e09d2b",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/ImuTypes.cc",
+      "bytes": 11461,
+      "sha256": "d33f157fea6efeefa5ba5ce43ee110e971ff08087f212de6a9fee1ea72dd3762",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/KeyFrame.cc",
+      "bytes": 32886,
+      "sha256": "cbf89046b758e56bb3327f72cbf920e936ead85805d11a70f2ecd1eb55c5df17",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/KeyFrameDatabase.cc",
+      "bytes": 28605,
+      "sha256": "5350a6b1774333f1f318cff950b62c39fc718474ad86ef209bce3f578856b5f2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/LocalMapping.cc",
+      "bytes": 51110,
+      "sha256": "6da465cd5b88b6278188935f7b9264d493dd88d3487a75bccf4614bd40c8a30e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/LoopClosing.cc",
+      "bytes": 96903,
+      "sha256": "00646de5da317e268534ffe556786e51e71e46d52ab142c17bab0b42e7287785",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/MLPnPsolver.cpp",
+      "bytes": 44124,
+      "sha256": "43fb4bbd7169d24f3118c83cd1a79f083476ac439926ffca068568d15cc7bdcf",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Map.cc",
+      "bytes": 11798,
+      "sha256": "5aa232fb8dc1b2892c5c9869f46ec3ce7c88766b90345e20ef528485cd4ec1b9",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/MapDrawer.cc",
+      "bytes": 12955,
+      "sha256": "7a4289a207797cbafc273132dd573fe99ae7829d63da42782ffd982c0918a445",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/MapPoint.cc",
+      "bytes": 18298,
+      "sha256": "99f2e631cbcedf5bd90359724d0faad64120416e0750bd1b2b78c7945ca19123",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/ORBextractor.cc",
+      "bytes": 53344,
+      "sha256": "c63ba40006b94d23cf93fd832fd7a48af835ddf087fb5dcc7caf9692b397f576",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/ORBmatcher.cc",
+      "bytes": 74106,
+      "sha256": "ca66fed46590033c7a02e0e9452cfdb5348c41d691123655695c31ff3a681ab1",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/OptimizableTypes.cpp",
+      "bytes": 10042,
+      "sha256": "53288e031c2e7f254e834139c820ff17384f97cf53a042deeb3f5e97b9b4c733",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Optimizer.cc",
+      "bytes": 193395,
+      "sha256": "a1ab6e9eb182ed518902ea4fb4db2bd1afb87353f5c790f6989ff60569516261",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Settings.cc",
+      "bytes": 27056,
+      "sha256": "bfa34355c01cf497ba5edbc3631fe403fb084e961386b832a62ed12a1fea261e",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Sim3Solver.cc",
+      "bytes": 13246,
+      "sha256": "5ec63bc27f0e9734ad3de26e023e40751f9ecee77295b35767d665752e4a28f6",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/System.cc",
+      "bytes": 52272,
+      "sha256": "e880bcc12e4797808222edf51790d90b82349300300f43b3d8094380eaf0c5d0",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Tracking.cc",
+      "bytes": 138424,
+      "sha256": "3a3654bcc675f859cce1f2fb28ab32a129e8d734d0ac3d55417ff8b47a013264",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/TwoViewReconstruction.cc",
+      "bytes": 28912,
+      "sha256": "6f28157a672b98e154bfc1d8a40e512828002ab935c1222a67b301bb8c47f6d2",
+      "matches_user_collection_manifest": true
+    },
+    {
+      "path": "ORB_SLAM3/src/Viewer.cc",
+      "bytes": 13012,
+      "sha256": "a6a15d3055654dc44db5209f2ae0cff4daa670508a42ab9dc623c46b197e2388",
+      "matches_user_collection_manifest": true
+    }
+  ],
+  "build_executed_here": false
+}

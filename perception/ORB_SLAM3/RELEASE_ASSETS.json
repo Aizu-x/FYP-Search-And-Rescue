@@ -1,0 +1,25 @@
+{
+  "vocabulary": {
+    "archive": "ORB_Vocabulary.zip",
+    "archive_bytes": 42527918,
+    "archive_sha256": "830da2c9f939a06b76b1509e7f855ac77465a8d90c9687f75bacdf02d6081f90",
+    "member": "ORBvoc.txt",
+    "destination": "source/ORB_SLAM3/Vocabulary/ORBvoc.txt",
+    "bytes": 145250924,
+    "sha256": "f8dd027f7a6cb88129821341194d7f2c75b77b3394257ddd0d2229863d1a3570"
+  },
+  "recordings": [
+    {
+      "archive": "ORB_video1_first20s_COMPLETE.zip",
+      "zip_bytes": 247606716,
+      "zip_sha256": "e39266b0a484212ee73be070f5cb06d0d3d1e8bdb7541d58ce38fbafb74f0e03",
+      "png_count": 400
+    },
+    {
+      "archive": "ORB_video2_first20s_COMPLETE.zip",
+      "zip_bytes": 268764402,
+      "zip_sha256": "7e725fcb31f4a821a6e2e09b29f29f0cc1f7ce22edb785de47c1865ec4db1d32",
+      "png_count": 400
+    }
+  ]
+}

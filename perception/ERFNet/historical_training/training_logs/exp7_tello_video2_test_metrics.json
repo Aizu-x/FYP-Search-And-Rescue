@@ -1,0 +1,366 @@
+{
+  "experiment": "ERFNet Experiment 6",
+  "checkpoint_epoch": 6,
+  "evaluation_size": 640,
+  "ignored_label": 255,
+  "class_names": [
+    "Free Space",
+    "Blocked",
+    "Obstacle"
+  ],
+  "overall_metrics": {
+    "classes": [
+      {
+        "class": "Free Space",
+        "iou": 0.9454685711001772,
+        "precision": 0.9792159807337475,
+        "recall": 0.9648305247226163,
+        "ground_truth_pixels": 443339,
+        "predicted_pixels": 436826
+      },
+      {
+        "class": "Blocked",
+        "iou": 0.8430075353930483,
+        "precision": 0.8988343891166068,
+        "recall": 0.9313787917790032,
+        "ground_truth_pixels": 147622,
+        "predicted_pixels": 152967
+      },
+      {
+        "class": "Obstacle",
+        "iou": 0.14347984017435525,
+        "precision": 0.1830398517145505,
+        "recall": 0.398989898989899,
+        "ground_truth_pixels": 990,
+        "predicted_pixels": 2158
+      }
+    ],
+    "mean_iou": 0.6439853155558602,
+    "pixel_accuracy": 0.955541928301498
+  },
+  "confusion_matrix": [
+    [
+      427747,
+      15081,
+      511
+    ],
+    [
+      8878,
+      137492,
+      1252
+    ],
+    [
+      201,
+      394,
+      395
+    ]
+  ],
+  "per_image": [
+    {
+      "image": "video2_02s.png",
+      "valid_pixels": 64286,
+      "confusion_matrix": [
+        [
+          27984,
+          4422,
+          380
+        ],
+        [
+          1401,
+          29681,
+          258
+        ],
+        [
+          11,
+          138,
+          11
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.8182934674542371,
+            "precision": 0.9519662539120969,
+            "recall": 0.853535045446227,
+            "ground_truth_pixels": 32786,
+            "predicted_pixels": 29396
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8267688022284122,
+            "precision": 0.866826319324786,
+            "recall": 0.9470644543714103,
+            "ground_truth_pixels": 31340,
+            "predicted_pixels": 34241
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.013784461152882205,
+            "precision": 0.01694915254237288,
+            "recall": 0.06875,
+            "ground_truth_pixels": 160,
+            "predicted_pixels": 649
+          }
+        ],
+        "mean_iou": 0.5529489102785105,
+        "pixel_accuracy": 0.8971782347634011
+      }
+    },
+    {
+      "image": "video2_05s.png",
+      "valid_pixels": 84651,
+      "confusion_matrix": [
+        [
+          42489,
+          4431,
+          10
+        ],
+        [
+          1439,
+          36058,
+          51
+        ],
+        [
+          33,
+          85,
+          55
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.8778356266269989,
+            "precision": 0.9665157753463297,
+            "recall": 0.905369699552525,
+            "ground_truth_pixels": 46930,
+            "predicted_pixels": 43961
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8572175732217573,
+            "precision": 0.8886971952481885,
+            "recall": 0.9603174603174603,
+            "ground_truth_pixels": 37548,
+            "predicted_pixels": 40574
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.23504273504273504,
+            "precision": 0.47413793103448276,
+            "recall": 0.3179190751445087,
+            "ground_truth_pixels": 173,
+            "predicted_pixels": 116
+          }
+        ],
+        "mean_iou": 0.6566986449638305,
+        "pixel_accuracy": 0.9285418955476014
+      }
+    },
+    {
+      "image": "video2_08s.png",
+      "valid_pixels": 114576,
+      "confusion_matrix": [
+        [
+          92281,
+          707,
+          18
+        ],
+        [
+          1821,
+          19221,
+          354
+        ],
+        [
+          53,
+          40,
+          81
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.9726075042158516,
+            "precision": 0.9800966491423716,
+            "recall": 0.9922048039911403,
+            "ground_truth_pixels": 93006,
+            "predicted_pixels": 94155
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8680395610350901,
+            "precision": 0.9625901442307693,
+            "recall": 0.8983454851374089,
+            "ground_truth_pixels": 21396,
+            "predicted_pixels": 19968
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.14835164835164835,
+            "precision": 0.17880794701986755,
+            "recall": 0.46551724137931033,
+            "ground_truth_pixels": 174,
+            "predicted_pixels": 453
+          }
+        ],
+        "mean_iou": 0.6629995712008633,
+        "pixel_accuracy": 0.9738776008937299
+      }
+    },
+    {
+      "image": "video2_11s.png",
+      "valid_pixels": 119018,
+      "confusion_matrix": [
+        [
+          97399,
+          1255,
+          36
+        ],
+        [
+          1502,
+          18540,
+          126
+        ],
+        [
+          35,
+          21,
+          104
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.9717840502060323,
+            "precision": 0.9844647044554055,
+            "recall": 0.986918634106799,
+            "ground_truth_pixels": 98690,
+            "predicted_pixels": 98936
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8645775041969782,
+            "precision": 0.9356075898264029,
+            "recall": 0.9192780642602142,
+            "ground_truth_pixels": 20168,
+            "predicted_pixels": 19816
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.32298136645962733,
+            "precision": 0.39097744360902253,
+            "recall": 0.65,
+            "ground_truth_pixels": 160,
+            "predicted_pixels": 266
+          }
+        ],
+        "mean_iou": 0.7197809736208792,
+        "pixel_accuracy": 0.9750037809406981
+      }
+    },
+    {
+      "image": "video2_14s.png",
+      "valid_pixels": 108106,
+      "confusion_matrix": [
+        [
+          86973,
+          1887,
+          47
+        ],
+        [
+          1506,
+          17255,
+          262
+        ],
+        [
+          39,
+          88,
+          49
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.9615376111086543,
+            "precision": 0.9825459228631465,
+            "recall": 0.9782469321875668,
+            "ground_truth_pixels": 88907,
+            "predicted_pixels": 88518
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8217449280883894,
+            "precision": 0.8972958918356734,
+            "recall": 0.9070598748882931,
+            "ground_truth_pixels": 19023,
+            "predicted_pixels": 19230
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.10103092783505155,
+            "precision": 0.13687150837988826,
+            "recall": 0.2784090909090909,
+            "ground_truth_pixels": 176,
+            "predicted_pixels": 358
+          }
+        ],
+        "mean_iou": 0.6281044890106985,
+        "pixel_accuracy": 0.964581059330657
+      }
+    },
+    {
+      "image": "video2_17s.png",
+      "valid_pixels": 101314,
+      "confusion_matrix": [
+        [
+          80621,
+          2379,
+          20
+        ],
+        [
+          1209,
+          16737,
+          201
+        ],
+        [
+          30,
+          22,
+          95
+        ]
+      ],
+      "metrics": {
+        "classes": [
+          {
+            "class": "Free Space",
+            "iou": 0.9568236034132852,
+            "precision": 0.9848644026386514,
+            "recall": 0.971103348590701,
+            "ground_truth_pixels": 83020,
+            "predicted_pixels": 81860
+          },
+          {
+            "class": "Blocked",
+            "iou": 0.8145318279151256,
+            "precision": 0.8745427944403804,
+            "recall": 0.9223012068110431,
+            "ground_truth_pixels": 18147,
+            "predicted_pixels": 19138
+          },
+          {
+            "class": "Obstacle",
+            "iou": 0.25815217391304346,
+            "precision": 0.30063291139240506,
+            "recall": 0.6462585034013606,
+            "ground_truth_pixels": 147,
+            "predicted_pixels": 316
+          }
+        ],
+        "mean_iou": 0.6765025350804846,
+        "pixel_accuracy": 0.9618907554730837
+      }
+    }
+  ]
+}

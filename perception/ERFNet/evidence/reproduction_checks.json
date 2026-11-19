@@ -1,0 +1,23 @@
+[
+  {
+    "environment": "ENV1",
+    "fresh_neural_inference_labels_pixel_exact": true,
+    "derived_grid_exact": true,
+    "unselected_map_margin_disabled": true,
+    "source_label_sha256": "3b57b47b5298ba90c854a2030d4ccbb85026a0b23cc99757b91b1591f14adfbc"
+  },
+  {
+    "environment": "ENV2",
+    "fresh_neural_inference_labels_pixel_exact": true,
+    "derived_grid_exact": true,
+    "unselected_map_margin_disabled": true,
+    "source_label_sha256": "ce58009869e23e1a241e7f5a447f78e2aa9a3df1996c695efa7d6956f9d3561a"
+  },
+  {
+    "environment": "ENV3",
+    "fresh_neural_inference_labels_pixel_exact": true,
+    "derived_grid_exact": true,
+    "unselected_map_margin_disabled": true,
+    "source_label_sha256": "7f0376050a279977d22b39c3b8bfdd13c2e4753ad197dad4597735b09c7d2aed"
+  }
+]
