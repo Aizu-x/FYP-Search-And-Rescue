@@ -182,10 +182,8 @@ flowchart LR
         NAV["Navigator<br/>A* · path following · mission"]
         YOLO["YOLOv5n<br/>green / red blocks"]
         UAV["UAV section<br/>keys → sticks · video · footage"]
-        TEAM["Team simulator<br/>task graph · Kahn"]
         UI <--> NAV
         UI <--> UAV
-        UI <--> TEAM
         YOLO --> NAV
     end
     subgraph Robot["🤖 MentorPi-M1: executor"]
