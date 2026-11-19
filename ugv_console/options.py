@@ -12,7 +12,7 @@ from ugv_planner.config import EXAMPLES
 
 OFFLINE, SIM, ROBOT = 'offline', 'sim', 'robot'
 MODES = (OFFLINE, SIM, ROBOT)
-MODE_LABELS = {OFFLINE: 'Planner', SIM: 'Simulator', ROBOT: 'Robot'}
+MODE_LABELS = {OFFLINE: 'Planner', SIM: 'Simulator', ROBOT: 'UGV'}
 # names used by the previous (Tk) console's settings file
 OLD_MODE_NAMES = {'Offline simulation (original)': OFFLINE, 'Closed-loop simulated UGV': SIM,
                   'Physical MentorPi': ROBOT}
@@ -51,6 +51,10 @@ SCHEMA = {
     'lidar_sees': Opt('choice', 'room', choices=('room', 'walls'), label='The LiDAR sees'),
     'auto_find': Opt('bool', True, label='Find the robot automatically'),
     'corner_gap_cm': Opt('float', 10.0, 0.0, 40.0, label='Corner start: distance from the walls (cm)'),
+    # team simulator (team_console.py): 1 = the single-robot simulator, 2-4 = a team
+    'sim_robots': Opt('int', 1, 1, 4, label='Robots in the simulator'),
+    'team_scan': Opt('bool', True, label='Team: look around at the goal'),
+    'team_approach': Opt('bool', True, label='Team: drive up to survivors found'),
     'brush': Opt('int', 1, 0, 10, label='Brush radius (cells)'),
     'scale_x': Opt('float', 1.0, 0.7, 1.3, label='X scale'),
     'scale_y': Opt('float', 1.0, 0.7, 1.3, label='Y scale'),

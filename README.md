@@ -10,7 +10,7 @@
 ![Robot](https://img.shields.io/badge/Robot-HiWonder%20MentorPi--M1-3b82f6)
 ![ROS 2](https://img.shields.io/badge/Robot%20side-ROS%202%20Humble-22314E?logo=ros&logoColor=white)
 ![UAV](https://img.shields.io/badge/UAV-Tello%20drone-ef4444)
-![Tests](https://img.shields.io/badge/Tests-339%20passing-16a34a)
+![Tests](https://img.shields.io/badge/Tests-426-16a34a)
 
 <img src="docs/images/demo.gif" alt="The robot drives to the goal, spots a green object, approaches it, holds 3 seconds and marks the survivor secured" width="860">
 
@@ -33,6 +33,7 @@
 | 📍 **Knows where it is** | No pin placed by eye: stand the robot in a corner one block length from both walls and click that corner, or press **Find robot**. You can still nudge the position by hand. |
 | 🛰️ **LiDAR tracking** | The LiDAR sits higher than the arena walls, so it sees the room instead. The console draws the room's outline and follows the robot's true movement in it: no wheel drift, and a robot that is carried elsewhere is found again. Tall unexpected objects stop the robot and are planned around. |
 | 🖥️ **Modern console** | Smooth 60 fps map, live camera with detection boxes, survivor list, activity log, dark and light theme. Runs in your browser, on your laptop only. |
+| 👥 **Team simulator** | Up to **four simulated robots** in one arena, each with its own colour, label, start, goal and camera. A task graph and **Kahn's algorithm** decide who drives when: robots that are not in each other's way start together, the others wait their turn. A robot that sees a survivor drives up to it and secures it. Simulator only. |
 | 🛑 **Safety first** | Nothing moves without **AUTHORIZE**. **Esc = STOP**. The robot stops by itself if the link, the laptop or the console page goes away. |
 
 ## How it fits together
@@ -101,6 +102,11 @@ Left: manual control. Right: a planned flight under way (step 2 of *Up 20 cm, Tu
 |---|---|
 | <img src="docs/images/console_uav.png" alt="UAV section: live drone camera, battery, altitude, flight keys" width="430"> | <img src="docs/images/console_uav_plan.png" alt="Planned flight: the plan's steps, the one being flown is highlighted" width="430"> |
 
+**Team simulator**: three simulated robots. R1 and R3 drive, R2 waits until R1 is clear of its route; top right, the
+tasks of the team in the order Kahn's algorithm gives them.
+
+<img src="docs/images/console_team.png" alt="Team simulator: three coloured robots, their routes, the order card and one camera per robot" width="860">
+
 ## Quick start
 
 You need **Python 3.11, 3.12 or 3.13** on Windows, macOS or Linux. No robot is needed to try it.
@@ -125,6 +131,10 @@ On macOS / Linux use `.venv/bin/python` instead of `.venv\Scripts\python.exe`.
 On Windows you can also double-click **`START_CONSOLE.bat`**. To get the newest version later: `git pull`
 (or double-click **`UPDATE.bat`**).
 
+**No terminal at all (Windows):** double-click **`FYP_SRM.exe`**. It opens the console in its own window and
+shows an error box if something is wrong. Which Python it uses is written in `FYP_SRM.ini`
+(see [Merge notes](MERGE_NOTES.md#the-exe)).
+
 ### Try it in 60 seconds (no robot)
 
 1. Top bar: **Simulator**, then **Start simulator** (Drive tab).
@@ -141,22 +151,59 @@ On Windows you can also double-click **`START_CONSOLE.bat`**. To get the newest 
 4. **Esc** lands. The flight video is in `Videos\UAV footage`.
 5. Planned flight: switch **Flight mode** to **Planned flight**, add *Up 20*, *Turn right 360*, *Forward 40*, *Land*, press **RUN PLAN**.
 
-Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](docs/UAV.md)** · Real robot: **[Robot setup](docs/ROBOT_SETUP.md)**
+### Try a team in 60 seconds (no robot)
+
+1. Top bar: **Simulator**. In *Robots in the simulator* press **3**.
+2. **Start team simulator**.
+3. Press **Goal** of R1 and click the map; do the same for R2 and R3 (the tool moves on by itself).
+4. **Plan team routes**: the card *Order of the team* shows who waits for whom.
+5. **AUTHORIZE + START TEAM**, confirm, and watch. **Esc** stops every robot.
+
+Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](docs/UAV.md)** · Team: **[Team simulator](docs/TEAM.md)** · Real robot: **[Robot setup](docs/ROBOT_SETUP.md)**
+
+## Combined system: DAG scheduler + ORB-SLAM3 + A\* + YOLOv5n
+
+A teammate's integration package is merged into this folder (`DAG_scheduler/`, `ORB_handoff/`). It checks three
+parts of the team project in one run, in the right order: Kahn's algorithm releases a task when the tasks it
+depends on have succeeded.
+
+```text
+ready recording -> ORB-SLAM3 ---------------------+
+saved occupancy -> this project's A* -------------+-> combined report
+saved example images -> YOLOv5n inference ---------+
+```
+
+- It calls **this project's own A\* and YOLOv5n code** (not copies of it), so it checks the version in this folder.
+- The detector is **YOLOv5n ONNX**, not YOLOv8. No model was converted or retrained.
+- ORB-SLAM3 results are imported from saved exports; a fresh ORB run needs Linux / WSL and has not been done.
+- It is a **component check with saved inputs**: it does not connect to the robot or the drone and moves nothing.
+  **ORB-to-navigation-map conversion is still missing**, so this is not a completed rescue mission.
+- Run it: double-click **`RUN_COMBINED.cmd`** (Windows) or `bash run_combined.sh` (Linux).
+  Expected last line: `Status: COMPONENT_INTEGRATION_SUCCEEDED`.
+- The scheduler's Kahn algorithm is also what orders the robots of the **team simulator** in the console
+  (2 to 4 simulated robots): see [Team simulator](docs/TEAM.md).
+
+Guides: **[Run on the edge computer](EDGE_SETUP.md)** · **[Connections and what is missing](COMBINED_INTEGRATION.md)** ·
+**[Verification and limits](verification/COMBINED_RESULTS.md)** · **[What was merged and what was changed](MERGE_NOTES.md)**
 
 ## Project layout
 
 | Folder | Runs on | What it is |
 |---|---|---|
 | `ugv_planner/` | laptop | The A\* planner, occupancy grid, collision and clearance checks |
-| `ugv_nav/` | laptop | Localization, room-based LiDAR tracking, path following, safety, YOLO mapping, search mission |
+| `ugv_nav/` | laptop | Localization, room-based LiDAR tracking, path following, safety, YOLO mapping, search mission, team simulator |
 | `ugv_console/` | laptop | The console: Python backend and the web page (`web/`) |
 | `uav/` | laptop | The UAV section: link to the Tello, flight plans, video receiver and recorder, simulated drone |
 | `ugv_bridge/` | robot | The only program on the MentorPi: authenticated link, watchdog, ROS 2 topics |
 | `third_party/wro_yolo/` | laptop | YOLOv5n model (ONNX) for green / red blocks |
 | `data/` | laptop | Three arena maps (ENV1-3): occupancy grid + ground truth |
 | `config/` | laptop | `navigation.toml`: robot size, speeds, limits |
-| `tests/` | laptop | 339 automated tests |
+| `tests/` | laptop | 426 automated tests |
 | `docs/` | | Guides and technical notes |
+| `DAG_scheduler/` | laptop | Combined system: Kahn scheduler, ORB / A\* / YOLO adapters, its own 62 tests |
+| `ORB_handoff/` | laptop | Combined system: ORB-SLAM3 source, settings, saved results and the two Tello recordings (about 700 MB) |
+| `scripts/`, `assets/`, `verification/` | laptop | Combined system: test runner, ORB asset record, recorded results |
+| `launcher/` | laptop | Source of `FYP_SRM.exe` (the no-terminal starter), its picture `icon.png` and the build script |
 
 ## Safety design
 
@@ -178,7 +225,7 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](
 
 | Area | Status |
 |---|---|
-| A\* planning, smoothing, mission logic, vision filters, console | ✅ 339 automated tests + browser end-to-end runs |
+| A\* planning, smoothing, mission logic, vision filters, console | ✅ 426 automated tests + browser end-to-end runs |
 | Full loop in the built-in simulator (real bridge code, simulated robot, LiDAR and camera) | ✅ working |
 | Room-based LiDAR tracking, Find robot, real field size | ✅ in a simulated room · 🔧 not yet tried in a real one |
 | Mission video | ✅ recorded and played back from simulated missions · 🔧 not yet tried with the real robot's camera stream |
@@ -186,6 +233,8 @@ Full instructions: **[User guide](docs/USER_GUIDE.md)** · Drone: **[UAV guide](
 | UAV section, planned flight: written plans and copied manual flights | ✅ with the simulated drone · 🔧 **not yet flown with a real Tello** |
 | Link to the real MentorPi (authentication, odometry, IMU, LiDAR received) | ✅ verified |
 | Autonomous driving and YOLO on the real robot | 🔧 in progress, **not yet verified** |
+| Team simulator: 2 to 4 simulated robots, ordered by the task graph with the scheduler's Kahn algorithm | ✅ in the simulator: 82 tests and a browser run · simulator only by design, there is no team of real robots |
+| Combined system: scheduler + saved ORB results + this A\* + this YOLOv5n on saved images | ✅ its 62 tests and two full runs on this version (Windows, Python 3.14) · 🔧 fresh ORB-SLAM3 run, ORB-to-map conversion and the scheduler's link to the robot are **not done** |
 
 Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works](docs/HOW_IT_WORKS.md)**
 
@@ -195,12 +244,19 @@ Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works]
 |---|---|
 | [User guide](docs/USER_GUIDE.md) | Using the console: planner, simulator, real robot, search mission, settings |
 | [UAV guide](docs/UAV.md) | The drone section: keys, planned flight, readings, footage, troubleshooting |
+| [Team simulator](docs/TEAM.md) | 2 to 4 simulated robots: placing them, goals, the order from the task graph, limits |
 | [Robot setup](docs/ROBOT_SETUP.md) | Putting the bridge on the MentorPi and connecting, step by step |
 | [How it works](docs/HOW_IT_WORKS.md) | Architecture, A\*, vision, mission, protocol, safety rules |
 | [Testing](docs/TESTING.md) | What was tested, how, and what is still open |
+| [Run on the edge computer](EDGE_SETUP.md) | Combined system: setup and running the component check |
+| [Connections and what is missing](COMBINED_INTEGRATION.md) | Combined system: how the modules connect, what still has to be built |
+| [Merge notes](MERGE_NOTES.md) | What was merged into this folder, what was changed to make it fit, `FYP_SRM.exe` |
 
 ## Credits
 
 Final-year project by **Abbas Faisal Modhaffar**: A\* navigation, operator console and robot integration.
 The YOLOv5n red / green block detector in `third_party/wro_yolo/` was trained by a project teammate.
+The DAG scheduler, its adapters and the ORB-SLAM3 handoff in `DAG_scheduler/` and `ORB_handoff/` come from the
+team's combined-integration package; ORB-SLAM3 and its bundled libraries keep their own licences
+(see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
 Robot platform: HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble). Drone: Tello (Ryze / DJI), Tello SDK 1.3.

@@ -60,3 +60,31 @@ def wait_for(predicate, timeout=3.0, step=0.02):
             return True
         time.sleep(step)
     return predicate()
+
+
+SECOND_ADDRESS = '127.0.0.2'
+NO_SECOND_ADDRESS = ('this computer does not deliver datagrams sent from a second loopback address (%s), '
+                     'so a datagram "from another address" cannot be made here' % SECOND_ADDRESS)
+
+
+def second_address_socket(test):
+    """A UDP socket on another address of this computer, for a test that forges the sender of a datagram.
+
+    None when this computer cannot do that: some systems have no second loopback address, and Windows has been
+    seen to stop delivering datagrams that are sent from one. The test then has nothing to send and should say
+    so (``skipTest(NO_SECOND_ADDRESS)``) instead of failing. The socket is closed when the test ends.
+    """
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    test.addCleanup(sock.close)
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        sock.bind((SECOND_ADDRESS, 0))
+        probe.bind(('127.0.0.1', 0))
+        probe.settimeout(1.0)
+        sock.sendto(b'probe', probe.getsockname())
+        sender = probe.recvfrom(16)[1]
+        return sock if sender[0] == SECOND_ADDRESS else None
+    except OSError:                         # no such address, sending refused, or nothing arrived in time
+        return None
+    finally:
+        probe.close()

@@ -20,12 +20,12 @@ The first button in the top bar, **UAV**, is for the Tello drone. Short version:
    **My last flight** to copy the flight you just flew by hand. **RUN PLAN** shows the plan, asks, then flies it.
 
 Everything else (readings, footage, first real flight, problems): **[UAV guide](UAV.md)**.
-Planner, Simulator and Robot in the top bar bring you back to the UGV. The drone must be on the ground for that.
+UGV, Simulator and Planner in the top bar bring you back to the UGV. The drone must be on the ground for that.
 
 ## The console at a glance
 | Area | What is there |
 |---|---|
-| **Top bar** | **UAV** (the drone), then the UGV modes (Planner / Simulator / Robot), status chips (link, state, drift, mission), **STOP** (in the UAV section: **LAND**) |
+| **Top bar** | **UAV** (the drone), then the UGV modes (UGV / Simulator / Planner), status chips (link, state, drift, mission), **STOP** (in the UAV section: **LAND**) |
 | **Left tabs** | **Drive** (connect, start, goal, authorize, speed) · **Map** (paint, save, layers) · **Robot** (size, calibration) · **Camera** · **Search** |
 | **Middle** | The map. Wheel = zoom, drag = move. x runs left to right 0-3 m, y bottom to top |
 | **Right** | Live camera with YOLO boxes, survivor list, activity log, system health |
@@ -35,9 +35,9 @@ There is no goal until you set one: choose the **Goal** tool and click the map.
 ## Three modes
 | Mode | Use it for |
 |---|---|
+| **UGV** | The real MentorPi. |
+| **Simulator** | The whole system with a simulated robot, LiDAR and camera. Safe place to try everything. With 2 to 4 robots: the team simulator. |
 | **Planner** | Plan and play back A\* routes on the map. No robot. |
-| **Simulator** | The whole system with a simulated robot, LiDAR and camera. Safe place to try everything. |
-| **Robot** | The real MentorPi. |
 
 ## Simulator, step by step
 1. Top bar **Simulator**, Drive tab **Start simulator**.
@@ -45,10 +45,19 @@ There is no goal until you set one: choose the **Goal** tool and click the map.
 3. Tool **Goal**: click the map. The orange line is the A\* route.
 4. **AUTHORIZE**, read the question, confirm.
 5. Camera tab: **Camera + YOLO** on, then **Place / remove blocks** to drop green or red test blocks.
+   The simulated camera does not see through the arena's walls: a block behind a wall is found only when the
+   robot gets to where it can see it.
+
+### More than one robot
+The card *Robots in the simulator* (Drive tab) offers **1 to 4** robots. With 1 the simulator is as described
+above. With 2 to 4 the team view opens: every robot gets its own start, goal, colour and camera, and the order
+they drive in comes from a task graph. The Drive tab becomes the team panel and the Robot tab stays; Map,
+Camera and Search belong to the single robot. A robot that sees a survivor (a green block) drives up to it
+after its other tasks and secures it. See the **[Team simulator guide](TEAM.md)**.
 
 ## Real robot
 1. Robot on, laptop on the robot's Wi-Fi, bridge started on the robot ([Robot setup](ROBOT_SETUP.md)).
-2. Top bar **Robot**, Drive tab: enter the robot's IP, **Connect**.
+2. Top bar **UGV**, Drive tab: enter the robot's IP, **Connect**.
 3. Tell the console where the robot is: see the next section.
 4. Set the **Goal**, then **AUTHORIZE**.
 

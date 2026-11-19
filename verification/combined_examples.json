@@ -1,0 +1,76 @@
+[
+  {
+    "status": "COMPONENT_INTEGRATION_SUCCEEDED",
+    "scope": "reference_components_only",
+    "navigation_ready": false,
+    "planning": {
+      "environment": "ENV1",
+      "map_id": "ENV1_db43f64ebd22",
+      "source": "supplied_saved_occupancy",
+      "grid_size": [
+        100,
+        100
+      ],
+      "resolution_m": 0.03,
+      "waypoints": 126,
+      "distance_m": 4.197350647362942,
+      "planning_radius_m": 0.16299999999999998,
+      "collision_checked": true,
+      "derived_from_current_orb": false
+    },
+    "vision": {
+      "detector": "YOLOv5n",
+      "input_kind": "repository_annotated_example_images",
+      "images": 3,
+      "detections": 4,
+      "coordinates": "original_image_pixels",
+      "model_sha256": "a52ddba025c6b54cd0a2326905cafe8d377d0f906c91bcac3669cdfa4c4bcaad"
+    },
+    "robot_motion_executed": false,
+    "orb_to_grid_fusion_implemented": false,
+    "orb": {
+      "execution_kind": "archived_export_import",
+      "fresh_slam_run": false,
+      "keyframes": 17,
+      "map_points": 1755,
+      "coordinate_units": "arbitrary_monocular_slam_units"
+    }
+  },
+  {
+    "status": "COMPONENT_INTEGRATION_SUCCEEDED",
+    "scope": "reference_components_only",
+    "navigation_ready": false,
+    "planning": {
+      "environment": "ENV1",
+      "map_id": "ENV1_db43f64ebd22",
+      "source": "supplied_saved_occupancy",
+      "grid_size": [
+        100,
+        100
+      ],
+      "resolution_m": 0.03,
+      "waypoints": 126,
+      "distance_m": 4.197350647362942,
+      "planning_radius_m": 0.16299999999999998,
+      "collision_checked": true,
+      "derived_from_current_orb": false
+    },
+    "vision": {
+      "detector": "YOLOv5n",
+      "input_kind": "repository_annotated_example_images",
+      "images": 3,
+      "detections": 4,
+      "coordinates": "original_image_pixels",
+      "model_sha256": "a52ddba025c6b54cd0a2326905cafe8d377d0f906c91bcac3669cdfa4c4bcaad"
+    },
+    "robot_motion_executed": false,
+    "orb_to_grid_fusion_implemented": false,
+    "orb": {
+      "execution_kind": "archived_export_import",
+      "fresh_slam_run": false,
+      "keyframes": 21,
+      "map_points": 1943,
+      "coordinate_units": "arbitrary_monocular_slam_units"
+    }
+  }
+]

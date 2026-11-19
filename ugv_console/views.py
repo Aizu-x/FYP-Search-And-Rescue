@@ -21,7 +21,7 @@ from . import options as O
 from .options import OFFLINE, SIM
 
 SECTIONS = ('static', 'settings', 'map', 'plan', 'nav', 'scan', 'vision', 'mission', 'seen', 'trail', 'log',
-            'offline', 'diag', 'room', 'recording', 'uav', 'uavplan')
+            'offline', 'diag', 'room', 'recording', 'uav', 'uavplan', 'team')
 
 
 def pack_mask(mask):
@@ -86,6 +86,9 @@ class Views:
                 out['pose'] = [round(position[0], 4), round(position[1], 4), round(yaw, 4)]
                 out['pt'] = out['t']
                 out['state'] = sim.state
+        team = self.team
+        if team is not None:                        # the team simulator: where its robots are (team_console.py)
+            out['team'] = team.poses()
         return out
 
     # ------------------------------------------------------------------ sections

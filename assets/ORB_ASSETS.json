@@ -1,0 +1,9 @@
+{
+  "filename": "ORB_assets.zip",
+  "bytes": 576184429,
+  "sha256": "3441805b2587c30a79458f0bffe426d71bdc136380a5ab980614bb7bc31f86f0",
+  "files": 1388,
+  "extract_into": "combined project root",
+  "contains": "ORB source, original licences, vocabulary, settings, saved exports, both complete recordings",
+  "fresh_slam_execution_verified": false
+}

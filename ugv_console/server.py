@@ -136,6 +136,9 @@ class _Handler(BaseHTTPRequestHandler):
             elif path == '/api/uav_frame':
                 if self._trusted(query):
                     self._uav_frame(query)
+            elif path == '/api/team_frame':
+                if self._trusted(query):
+                    self._team_frame(query)
             elif path == '/api/state':
                 if self._trusted(query):
                     self._json(200, console.full_state())
@@ -173,6 +176,24 @@ class _Handler(BaseHTTPRequestHandler):
             return self._send(204)
         frame_id, jpeg, width, height, boxes = frame
         meta = dict(id=frame_id, w=width, h=height,
+                    boxes=[dict(b=[round(v, 1) for v in box['box']], c=box['cls'], p=round(box['conf'], 2),
+                                r=None if box['range'] is None else round(box['range'], 3), u=bool(box['used']),
+                                n=box['note']) for box in boxes[:40]])
+        self._send(200, jpeg, 'image/jpeg', extra=(('X-Frame', json.dumps(meta, separators=(',', ':'))),))
+
+    def _team_frame(self, query):
+        """The newest camera picture of one robot of the team simulator: /api/team_frame?robot=2 (like /api/frame)."""
+        try:
+            after = int((query.get('after') or ['-1'])[0])
+            robot = int((query.get('robot') or ['0'])[0])
+        except ValueError:
+            return self._send(404, b'Not found.')
+        frame = self.server.console.app.team_frame(robot, after, timeout=1.5) if 1 <= robot <= 4 else None
+        if frame is None:
+            time.sleep(0.3)                       # no team, no such robot, no camera or nothing new: do not spin
+            return self._send(204)
+        frame_id, jpeg, width, height, boxes = frame
+        meta = dict(id=frame_id, w=width, h=height, robot=robot,
                     boxes=[dict(b=[round(v, 1) for v in box['box']], c=box['cls'], p=round(box['conf'], 2),
                                 r=None if box['range'] is None else round(box['range'], 3), u=bool(box['used']),
                                 n=box['note']) for box in boxes[:40]])

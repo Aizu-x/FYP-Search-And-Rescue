@@ -85,13 +85,17 @@ export class UI {
     this.dirty = new Set(); this.timers = {}; this.lastLog = 0; this.knownSurvivors = null; this.knownRecordings = null; this.theme = null;
     this.logPinned = true;
     this.uav = null;                               // the UAV section (uav.js), set by main.js
+    this.team = null;                              // the team simulator (team.js), set by main.js
     this.bind();
   }
 
-  // 'uav' while the UAV section is on screen, otherwise the UGV mode (offline / sim / robot)
+  // 'uav' while the UAV section is on screen, 'team' while the simulator is set to 2-4 robots, otherwise the
+  // UGV mode (offline / sim / robot)
   shown() {
     const o = this.settings ? this.settings.opts : null;
-    return !o ? 'offline' : o.section === 'uav' ? 'uav' : o.mode;
+    if (!o) return 'offline';
+    if (o.section === 'uav') return 'uav';
+    return o.mode === 'sim' && o.sim_robots >= 2 ? 'team' : o.mode;
   }
 
   // ---------------------------------------------------------------- wiring
@@ -200,6 +204,7 @@ export class UI {
     const typing = ['INPUT', 'SELECT', 'TEXTAREA'].includes((e.target.tagName || '')) || modalClose;
     if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
     if (this.shown() === 'uav') return;            // the map is not on screen; the flight keys are handled in uav.js
+    if (this.shown() === 'team') return;           // the team map has its own tools (team.js)
     const tools = {1: 'pan', 2: 'start', 3: 'goal', 4: 'paint', 5: 'erase', 6: 'block', 7: 'measure'};
     if (tools[e.key]) { if (e.key !== '6' || (this.settings && this.settings.opts.mode === 'sim')) this.map.setTool(tools[e.key]); }
     else if (e.key === 'f' || e.key === 'F') this.map.fit();
@@ -305,16 +310,17 @@ export class UI {
     const first = !this.settings;
     const modeChanged = first || this.settings.opts.mode !== s.opts.mode || this.settings.opts.lidar_sees !== s.opts.lidar_sees;
     const sectionChanged = first || this.settings.opts.section !== s.opts.section;
+    const was = first ? null : this.shown();
     this.settings = s;
     const o = s.opts;
-    const shown = this.shown(), uav = shown === 'uav';
+    const shown = this.shown(), uav = shown === 'uav', team = shown === 'team';
     if (this.theme !== o.theme) {
       this.theme = o.theme;
       document.documentElement.dataset.theme = o.theme;
       this.map.readPalette();
     }
     this.map.setSettings(s);
-    $$('#mode-seg button').forEach((b) => b.classList.toggle('active', b.dataset.mode === shown));
+    $$('#mode-seg button').forEach((b) => b.classList.toggle('active', b.dataset.mode === (team ? 'sim' : shown)));
     $$('[data-show]').forEach((el) => { el.hidden = !el.dataset.show.split(' ').includes(shown); });
     if (sectionChanged) {                          // the red button: STOP for the robot, LAND for the drone
       const stop = $('#btn-stop');
@@ -324,6 +330,15 @@ export class UI {
       if (!uav && !first) { this.map.resize(); if (this.nav) this.on_nav(this.nav); }
     }
     if (this.uav) this.uav.setActive(uav);
+    if (this.team) { this.team.setSettings(s); this.team.setActive(team); }
+    if (was === 'team' && !team && !uav) {         // back from the team map: the single map was hidden meanwhile
+      this.map.resize();
+      if (this.nav) this.on_nav(this.nav);
+    }
+    if (!first && (was === 'team') !== team) {     // the Map / Camera / Search tabs belong to the single robot
+      const active = $('#tabs button.active');
+      if (!active || active.hidden) this.showTab('drive');
+    }
     if (modeChanged && !uav) {
       const active = $('#tabs button.active');
       if (!active || active.hidden) this.showTab('drive');
@@ -429,6 +444,7 @@ export class UI {
   on_map(m) {
     this.mapInfo = m;
     this.map.setMap(m);
+    if (this.team) this.team.setMap(m);
     $('#lidar-card').hidden = !m.lidar_count;
     $('#lidar-tag').textContent = `${m.lidar_count} cells`;
     this.title();
@@ -533,6 +549,7 @@ export class UI {
 
   on_uav(u) { if (this.uav) this.uav.update(u); }
   on_uavplan(p) { if (this.uav) this.uav.updatePlan(p); }
+  on_team(t) { if (this.team) this.team.update(t); }
 
   banner(n) {
     const el = $('#banner'), btn = $('#banner-btn');

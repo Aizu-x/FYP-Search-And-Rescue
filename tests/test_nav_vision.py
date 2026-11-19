@@ -264,6 +264,91 @@ class ClosedLoopVisionTests(unittest.TestCase):
         self.assertFalse(self.session.backend.collided)
 
 
+class WallsHideTests(unittest.TestCase):
+    """The simulated camera does not see through the walls of the simulated arena (ugv_nav/vision_sim.py)."""
+
+    class Robot:                                    # as much of the simulated robot as the camera asks for
+        def __init__(self, world, pose):
+            self.world, self.pose = world, pose
+
+        def truth_pose(self):
+            return self.pose
+
+    def setUp(self):
+        from ugv_nav.vision_sim import SimBlocks
+        self.occ, self.gt = load_environment('ENV1')
+        self.cam = CameraModel(pitch_rad=math.radians(15), x_offset_m=0.08)
+        self.blocks = SimBlocks()
+        # ENV1 has a wall from x = 0.2 to 0.9 m at y = 0.6 ... 0.7 m, with a small room behind it
+        self.front = self.blocks.add(0.50, 0.48, 'green_obstacle')
+        self.behind = self.blocks.add(0.62, 1.00, 'green_obstacle')
+        self.also_behind = self.blocks.add(0.38, 0.95, 'red_obstacle')
+        self.pose = (0.5, 0.15, math.pi / 2)        # in front of that wall, looking at it
+
+    def seen(self, world, pose=None, **options):
+        from ugv_nav.vision_sim import SimDetector
+        found = SimDetector(self.Robot(world, pose or self.pose), self.blocks, self.cam, **options).predict(None)
+        return sorted(d['class_name'] for d in found), found
+
+    def test_a_block_behind_a_wall_is_not_detected(self):
+        names, found = self.seen(self.gt)
+        self.assertEqual(names, ['green_obstacle'])                 # only the one in front of the wall
+        x1, y1, x2, y2 = found[0]['bbox_xyxy']
+        self.assertTrue(x1 < self.cam.width / 2 < x2)               # ... which is straight ahead
+        names, _ = self.seen(self.gt, pose=(1.6, 0.5, math.pi))     # from the open part: both rooms' walls hide them
+        self.assertEqual(names, ['green_obstacle'])
+
+    def test_without_walls_everything_in_view_is_detected_as_before(self):
+        every = ['green_obstacle', 'green_obstacle', 'red_obstacle']
+        self.assertEqual(self.seen(self.gt, wall_height=0)[0], every)      # walls switched off
+        self.assertEqual(self.seen(None)[0], every)                        # a robot without an arena
+        empty = self.gt.edited(self.gt.world_to_cell((0.5, 0.65)), False)
+        self.assertEqual(self.seen(empty)[0], ['green_obstacle'])          # one cell less is still a wall
+
+    def test_a_block_is_seen_again_when_the_robot_stands_where_it_can_see_it(self):
+        names, _ = self.seen(self.gt, pose=(0.62, 0.80, math.pi / 2))      # inside the room, 20 cm in front of it
+        self.assertIn('green_obstacle', names)
+        self.blocks.remove(self.front)
+        self.assertEqual(self.seen(self.gt)[0], [])                        # from outside: nothing
+
+    def test_a_block_half_behind_a_corner_is_cut_or_dropped(self):
+        from ugv_nav.vision_sim import SimBlocks, WallView, _box_for_block
+        view = WallView(self.cam, self.pose, self.gt)
+        box = _box_for_block(self.cam, self.pose, 0.62, 1.00, 0.05, 0.10)
+        self.assertIsNone(view.visible(0.62, 1.00, 0.05, 0.10, box))               # fully hidden
+        whole = _box_for_block(self.cam, self.pose, 0.50, 0.48, 0.05, 0.10)
+        self.assertEqual(view.visible(0.50, 0.48, 0.05, 0.10, whole), whole)       # fully in view: unchanged
+        view.dist[:] = np.where(view.bearings > 0, 0.1, np.inf)                   # a wall hides the left half
+        part = view.visible(0.50, 0.48, 0.05, 0.10, whole, min_fraction=0.0)
+        self.assertGreater(part[0], whole[0] + 20)                                 # the box is cut on the left
+        self.assertEqual(part[2:], whole[2:])
+        view.dist[:] = np.where(view.bearings > -0.02, 0.1, np.inf)               # ... and nearly all of it
+        self.assertIsNone(view.visible(0.50, 0.48, 0.05, 0.10, whole))             # too little to know a block
+        self.assertIsNotNone(SimBlocks)
+
+    @unittest.skipUnless(HAVE_CV2, 'OpenCV not installed (pip install -r requirements-yolo.txt)')
+    def test_the_picture_shows_the_wall_and_not_what_is_behind_it(self):
+        import cv2
+        from ugv_nav.vision_sim import SimCamera
+
+        def picture(world):
+            data = SimCamera(self.Robot(world, self.pose), self.blocks, self.cam).latest_image()[0]
+            return cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR).astype(int)
+
+        def count(image, bgr, tolerance=45):
+            return int((np.abs(image - np.array(bgr)).max(axis=2) < tolerance).sum())
+
+        with_walls, without = picture(self.gt), picture(None)
+        red, green = (50, 50, 210), (60, 160, 60)
+        self.assertGreater(count(without, red), 1500)               # no walls: the red block behind is in the picture
+        self.assertEqual(count(with_walls, red), 0)                 # walls: it is not
+        self.assertGreater(count(with_walls, green), 10000)         # the green one in front is
+        self.assertLess(count(with_walls, green), count(without, green))       # the green one behind is not
+        dark = int((with_walls.max(axis=2) < 135).sum())            # the wall itself: a dark band across the picture
+        self.assertGreater(dark, 60000)
+        self.assertLess(int((without.max(axis=2) < 135).sum()), 500)        # (only the edges of the blocks)
+
+
 class TiltFromBlockSizeTests(unittest.TestCase):
     """The known block height tells the camera tilt, whatever tilt is configured."""
 

@@ -59,6 +59,7 @@ from uav.tello import check_host
 
 from . import options as O
 from .options import OFFLINE, SIM, arg_bool, arg_choice, arg_number, arg_points
+from .team_console import TeamConsole
 from .uav_console import UavConsole
 from .uav_plans import UavPlans
 from .views import Views
@@ -76,7 +77,7 @@ def result(ok, message='', level=None, **extra):
     return dict(ok=bool(ok), message=message, level=level or ('info' if ok else 'error'), **extra)
 
 
-class ConsoleApp(UavPlans, UavConsole, Views):
+class ConsoleApp(TeamConsole, UavPlans, UavConsole, Views):
     VERSION = VERSION
 
     def __init__(self, config_path=DEFAULT_CONFIG, settings_path=DEFAULT_SETTINGS, edit_dir=EDIT_DIR,
@@ -130,6 +131,7 @@ class ConsoleApp(UavPlans, UavConsole, Views):
         self._gt_guard = None
         self._stroke_dirty = False
         self._uav_init()                           # the UAV section (uav_console.py)
+        self._team_init()                          # the team simulator (team_console.py)
         self._restore_settings()
         self._ticker = None
         if start_ticker:
@@ -408,7 +410,7 @@ class ConsoleApp(UavPlans, UavConsole, Views):
                           math.degrees(cam.yaw_offset_rad)))
         if 'heading' in keys:
             self._bump('plan')
-        return message
+        return self._team_options_changed(keys, before) or message
 
     def _planner_changed(self):
         """Footprint / clearance / smoothing changed: replan (offline) or hand the settings to the navigator."""
@@ -713,7 +715,10 @@ class ConsoleApp(UavPlans, UavConsole, Views):
     def cmd_connect(self, args):
         with self._lock:
             if not self.nav_active():
-                return self._fail('Choose Simulator or Robot mode first.')
+                return self._fail('Choose Simulator or UGV mode first.')
+            if self.team_selected():
+                return self._fail('The simulator is set to %d robots: use "Start team simulator" (or choose 1 robot).'
+                                  % self.opts['sim_robots'])
             self._disconnect()
             o = self.opts
             try:
@@ -807,6 +812,7 @@ class ConsoleApp(UavPlans, UavConsole, Views):
         self._auth = None
         self.sim_blocks = None
         self.field_samples, self.field_measured = [], None
+        self._team_close()                        # a team simulator ends with everything else
 
     def close(self):
         """Program exit: stop everything, keep unsaved map edits as a backup file, save settings."""
@@ -835,12 +841,15 @@ class ConsoleApp(UavPlans, UavConsole, Views):
             nav.emergency_stop(reason)
         elif client is not None:
             client.stop()
+        team = self._team_stop(reason)            # the team simulator: every robot
         self.sim.pause()
         self._auth = None
         if landing:
             self._say('STOP pressed: the drone is landing.', 'warn')
         elif self.opts['section'] == 'uav':
             self._say('STOP pressed. The drone is not in the air.', 'warn', log=False)
+        elif team:
+            self._say('STOP pressed: every robot of the team stopped. Plan again to continue.', 'warn')
         else:
             self._say('STOP pressed: robot stopped and disarmed. Re-plan / authorize to continue.', 'warn')
         self._bump('offline')
@@ -849,7 +858,8 @@ class ConsoleApp(UavPlans, UavConsole, Views):
     def is_moving(self):
         nav, mission = self.nav, self.mission
         return bool((nav is not None and nav.state == RUNNING)
-                    or (mission is not None and mission.active and not mission.paused))
+                    or (mission is not None and mission.active and not mission.paused)
+                    or self.team_moving())
 
     def cmd_set_start(self, args):
         x, y = arg_number(args, 'x', -1, 100), arg_number(args, 'y', -1, 100)
@@ -978,7 +988,7 @@ class ConsoleApp(UavPlans, UavConsole, Views):
         corner = arg_choice(args, 'corner', CORNERS)
         with self._lock:
             if not self.nav_active():
-                return self._fail('Corner start is for Simulator and Robot mode.')
+                return self._fail('Corner start is for Simulator and UGV mode.')
             ok, text = self._corner_start(corner)
             return result(True, text, 'info' if ok else 'warn')
 
@@ -1744,6 +1754,11 @@ class ConsoleApp(UavPlans, UavConsole, Views):
         if self.recorder is not None and self._lock.acquire(blocking=False):
             try:
                 self._record_housekeeping()
+            finally:
+                self._lock.release()
+        if self.team is not None and self._lock.acquire(blocking=False):
+            try:
+                self._team_tick()
             finally:
                 self._lock.release()
         nav = self.nav

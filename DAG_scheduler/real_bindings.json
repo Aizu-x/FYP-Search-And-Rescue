@@ -1,0 +1,29 @@
+{
+  "handlers": {
+    "prepare_recording": "team_adapters:prepare_recording",
+    "run_slam": "team_adapters:run_slam",
+    "run_erfnet": null,
+    "fuse_map": null,
+    "prepare_planning_map": null,
+    "select_target": null,
+    "get_ugv_pose": null,
+    "plan_path": "team_adapters:plan_path",
+    "navigate": null,
+    "inspect_target": "team_adapters:inspect_target"
+  },
+  "stop_navigation": null,
+  "timeouts_s": {
+    "run_slam": 300,
+    "prepare_recording": 120,
+    "plan_path": 120,
+    "inspect_target": 180
+  },
+  "parameters": {
+    "orb": {
+      "root": "../ORB_handoff/ORB_SLAM3",
+      "sequence": "video1",
+      "source": "execute",
+      "binary": null
+    }
+  }
+}

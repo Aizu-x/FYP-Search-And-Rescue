@@ -11,7 +11,7 @@ from uav.sim import FakeTello
 from uav.tello import (FLYING, LANDING, READY, TAKING_OFF, TelloConfig, TelloError, TelloLink, check_host,
                        parse_state, parse_value, sticks_from_keys)
 
-from nav_helpers import wait_for
+from nav_helpers import NO_SECOND_ADDRESS, second_address_socket, wait_for
 
 
 class TextTests(unittest.TestCase):
@@ -285,6 +285,7 @@ class LinkTests(LinkCase):
         self.assertIn('Landing (nothing heard', events)
 
     def test_datagrams_from_elsewhere_are_dropped(self):
+        other = second_address_socket(self)                                     # None: not possible on this computer
         link = self.connect()
         self.assertTrue(wait_for(lambda: link.battery() is not None, 3))
         link.takeoff()                                                          # waiting for the drone's answer
@@ -295,17 +296,14 @@ class LinkTests(LinkCase):
         time.sleep(0.2)
         self.assertEqual(link.state, TAKING_OFF)
         self.assertEqual(link.rejected, 1)
-        other = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.addCleanup(other.close)
-        try:
-            other.bind(('127.0.0.2', 0))                                        # another address of this computer
-            other.sendto(b'bat:3;h:900;', ('127.0.0.1', link.state_port))
-        except OSError:
-            self.skipTest('this system has no second loopback address')
-        time.sleep(0.3)
-        self.assertEqual(link.rejected, 2)
-        self.assertGreater(link.battery(), 80)                                  # the forged status changed nothing
+        if other is not None:
+            other.sendto(b'bat:3;h:900;', ('127.0.0.1', link.state_port))       # another address of this computer
+            time.sleep(0.3)
+            self.assertEqual(link.rejected, 2)
+            self.assertGreater(link.battery(), 80)                              # the forged status changed nothing
         self.assertTrue(wait_for(lambda: link.state == FLYING, 4))
+        if other is None:
+            self.skipTest('the wrong-port half passed; the wrong-address half was not run: ' + NO_SECOND_ADDRESS)
 
     def test_no_answer_says_what_to_check(self):
         probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

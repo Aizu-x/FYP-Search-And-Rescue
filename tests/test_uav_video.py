@@ -19,7 +19,7 @@ from uav.h264 import IpcmEncoder
 from uav.sim import FakeTello, Scene
 from uav.video import VideoError, VideoFeed
 
-from nav_helpers import wait_for
+from nav_helpers import NO_SECOND_ADDRESS, second_address_socket, wait_for
 
 
 def decode(jpeg):
@@ -210,12 +210,9 @@ class WorkerTests(WorkerCase):
         self.assertFalse(self.feed.dead)
 
     def test_video_from_another_address_is_dropped(self):
-        other = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.addCleanup(other.close)
-        try:
-            other.bind(('127.0.0.2', 0))                                        # another address of this computer
-        except OSError:
-            self.skipTest('this system has no second loopback address')
+        other = second_address_socket(self)                                     # another address of this computer
+        if other is None:
+            self.skipTest(NO_SECOND_ADDRESS)
         data = IpcmEncoder(320, 240).encode(np.full((240, 320, 3), 200, np.uint8))
         for _ in range(3):
             for start in range(0, len(data), 1460):
