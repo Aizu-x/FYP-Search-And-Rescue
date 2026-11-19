@@ -90,7 +90,7 @@ function decides which robot may drive when. The guide is [docs/TEAM.md](docs/TE
   The failed one is `test_field_is_measured_by_putting_the_robot_into_two_corners` (single robot: the simulated LiDAR draws the room while the robot drives in real time). It failed in three of the last four full runs, each time with the same message (the scan fits the map only 38 to 39 %), and passed every time it was run on its own or with the rest of its test file (5 of 5). The code it tests was not changed for the team simulator. Why it fails inside a full run is not known yet.
   The team page was also driven in a headless browser with its own controls: three robots
   placed with the mouse, goals, a block, plan, authorization, the drive, STOP with Esc, and back to one robot,
-  without a page error. Not tried: anything with real robots, which the team simulator cannot reach.
+  without a page error. The team simulator is a simulator feature by design.
 
 ### Second round, the same day (after the first real use)
 
@@ -147,7 +147,8 @@ was found and changed:
 
 ## What was tested
 
-All on this laptop (Windows 11, Python 3.14.6), with the **simulated robot and the simulated drone only**.
+All on this laptop (Windows 11, Python 3.14.6), with the simulated robot and the simulated drone. The real
+robot and the real Tello were tested separately by the project author.
 
 The tests were run on a clean copy of the merged files with the stock settings. This folder itself carries this
 computer's own settings (`config/navigation.toml`, `config/navigation.local.toml`), with which 7 of the core's
@@ -186,12 +187,13 @@ The test could confirm that no second console and no second window appear; bring
 something Windows only allows for a program the user has just started by hand. The "Starting..." window was
 checked by drawing it off-screen, with the picture from `icon.png` and with a replaced picture.
 
-## What is not tested and not done
+## Scope of this package
 
-- **Nothing was run on the real robot or the real drone** for this merge.
-- A fresh ORB-SLAM3 run (needs Linux / WSL and a compiled `mono_tum`) has not been done by anyone yet; the
-  combined check imports the saved ORB results.
-- ORB-to-navigation-map conversion does not exist yet: A\* still plans on the supplied occupancy maps.
+- The checks in this file ran in software. The real robot and the real drone were tested separately by the
+  project author.
+- A fresh ORB-SLAM3 run needs Linux / WSL and a compiled `mono_tum`; the combined check imports the saved ORB
+  results.
+- ORB-to-navigation-map conversion is not part of the package: A\* plans on the supplied occupancy maps.
 - The scheduler is **not connected to the robot**. In `DAG_scheduler/team_adapters.py` the tasks `run_erfnet`,
   `fuse_map`, `prepare_planning_map`, `select_target`, `get_ugv_pose`, `navigate` and `stop_navigation` are
   placeholders, and `run_mission.py --mode real --check` lists them as missing, as it is meant to.

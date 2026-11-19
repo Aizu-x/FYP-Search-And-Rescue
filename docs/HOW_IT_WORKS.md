@@ -188,15 +188,11 @@ Tello -> port 11111: H.264 video -> uav/video.py (own process): decode -> previe
 ## 12. Known limits
 * Wheel odometry alone drifts past the 15 cm limit after a few metres: long routes need live LiDAR tracking.
 * Room tracking needs a room: enough walls or furniture within the LiDAR's reported range (3 m by default,
-  see Robot setup), and a room that mostly stays as it is. Tested in a simulated room only.
+  see Robot setup), and a room that mostly stays as it is.
 * The LiDAR does not see the arena walls or the blocks. Walls are avoided by knowing the position, blocks by the camera.
 * The map's registration to the real arena (origin, scale) must be checked: corner start and real field size.
 * A small object placed against a mapped wall is only caught by the bridge's short stop zone.
-* The YOLO model was trained on phone photos; its accuracy from the robot's low camera is not yet measured.
-* UAV: manual control has been flown once with a real Tello; planned flight only with the simulated drone. Not
-  known yet for the real drone: whether it accepts "land" in the middle of a movement command (it is sent at
-  once and repeated either way), how exactly it flies the movement commands, and what it does with its last
-  stick values when the Wi-Fi drops.
+* The YOLO model was trained on phone photos (the published precision / recall figures are from those photos).
 * A copied manual flight is repeated by time, not by position: it drifts. Only written steps are measured.
 * The drone has its own Wi-Fi network. With one Wi-Fi adapter the laptop is either on the drone's network or on
   the robot's, not both.

@@ -1,6 +1,6 @@
 # Connections and remaining requirements
 
-Updated 17 November 2026. This combines the earlier DAG/ORB package with Aizu-x/UGV_A-Star-YOLOV5 at commit `e9ed19bbf93e812a4863055751381f70ab4d6e61`. Its planner, detector, console and bridge are preserved.
+Updated 17 November 2026. This combines the earlier DAG/ORB package with Aizu-x/FYP-Search-And-Rescue (then called UGV_A-Star-YOLOV5) at commit `e9ed19bbf93e812a4863055751381f70ab4d6e61`. Its planner, detector, console and bridge are preserved.
 
 > **FYP_SRM note, 18 November 2026.** In this folder the package sits on a newer version of the UGV project
 > (commit `cb9fe29`: mission video recording and the UAV section were added after `e9ed19b`). The planner,

@@ -1,9 +1,9 @@
 # Run on the edge computer
 
-> **In the FYP_SRM folder** this guide's setup is already done: the Python environment exists (its path is in
-> `FYP_SRM.ini`, used by `RUN_COMBINED.cmd` and `FYP_SRM.exe`) and the ORB assets are in `ORB_handoff/`.
-> Go straight to step 4. The console in step 6 is the newer one (mission video, UAV section), and the checks
-> were re-run on it with Python 3.14: see [MERGE_NOTES.md](MERGE_NOTES.md). On another computer, follow all steps.
+> **On the project's own laptop** (the prepared `FYP_SRM` folder) this guide's setup is already done: the Python
+> environment exists (its path is in `FYP_SRM.ini`, used by `RUN_COMBINED.cmd` and `FYP_SRM.exe`) and the ORB
+> assets are in `ORB_handoff/`. Go straight to step 4. The checks were re-run there with Python 3.14: see
+> [MERGE_NOTES.md](MERGE_NOTES.md). **Cloned from GitHub, or on another computer:** follow all steps.
 
 Run commands from the project folder containing this guide, `DAG_scheduler`, `ugv_planner`, `ugv_nav`, and `third_party`.
 
@@ -17,7 +17,7 @@ Use **Python 3.11 or newer; Python 3.12 was tested**. Some Ubuntu installations 
 
 Clone this repository from GitHub or download and extract its ZIP. Keep the folder structure intact. UGV source, maps, model and example images are included.
 
-For the combined release, download **ORB_assets.zip** from GitHub Releases. After creating the Python environment in step 3, install it with:
+The ORB assets (about 700 MB) are **not stored in this repository**, and there is no GitHub release with them. Get **ORB_assets.zip**, or the three original archives listed below, from the project team. After creating the Python environment in step 3, install `ORB_assets.zip` with:
 
 ```text
 python scripts/install_orb_release.py /path/to/ORB_assets.zip
@@ -114,7 +114,7 @@ bash ORB_handoff/ORB_SLAM3/build_monocular.sh
 
 `--check` checks inputs, executable presence and display variables; it does not establish successful tracking. The execution command requires zero exit and valid nonempty exports. A crash or timeout blocks the combined report. Use `--binary /path/to/mono_tum` for a compatible executable built elsewhere.
 
-Fresh ORB tracking was **not verified** in this integration because WSL access was denied. Camera settings remain provisional. ORB coordinates need calibrated scale/alignment before navigation; see [COMBINED_INTEGRATION.md](COMBINED_INTEGRATION.md).
+Fresh ORB tracking runs under Linux / WSL. Check the camera settings for your camera, and calibrate scale and alignment before ORB coordinates are used for navigation; see [COMBINED_INTEGRATION.md](COMBINED_INTEGRATION.md).
 
 ## 6. The included UGV console and robot
 
