@@ -14,11 +14,16 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Aizu-x/FYP-Search-And-Rescue/releases/latest"><img src="https://img.shields.io/badge/%E2%AC%87%20Download-Windows%20package%20(no%20install)-2563eb?style=for-the-badge" alt="Download the Windows package (no install needed)"></a>
+</p>
+
+<p align="center">
   <b>A ground robot that plans its own route with A*, spots survivors with YOLOv5 and drives up to them.</b><br>
   A Tello drone scouts first, up to four robots work as a team, and one console on a laptop runs it all.
 </p>
 
 <p align="center">
+  <a href="https://github.com/Aizu-x/FYP-Search-And-Rescue/releases/latest"><b>Download</b></a> ·
   <a href="#-quick-start"><b>Quick start</b></a> ·
   <a href="#-what-it-does"><b>Features</b></a> ·
   <a href="#-screenshots"><b>Screenshots</b></a> ·
@@ -109,7 +114,18 @@ The team is a simulator feature: [Team simulator guide](docs/TEAM.md).
 
 ## 🚀 Quick start
 
-You need **Python 3.11 or newer** on Windows, macOS or Linux. No robot or drone is needed to try it.
+### Easiest: the Windows package (nothing to install)
+
+1. Download **`FYP-Search-And-Rescue-v2.0-Windows.zip`** from the [latest release](https://github.com/Aizu-x/FYP-Search-And-Rescue/releases/latest).
+2. Unzip it (right-click > *Extract All*).
+3. Double-click **`FYP_SRM.exe`**. The console opens in your browser.
+
+Everything it needs is inside the folder, Python included. Windows may say *"Windows protected your PC"* because
+the program is not signed: *More info* > *Run anyway*. The file `START HERE.txt` in the folder has the first steps.
+
+### From the source code (Windows, macOS, Linux)
+
+You need **Python 3.11 or newer**. No robot or drone is needed to try it.
 
 ```bash
 git clone https://github.com/Aizu-x/FYP-Search-And-Rescue.git
