@@ -8,7 +8,7 @@
 
 <table>
   <tr>
-    <td align="center" valign="top" width="190"><img src="docs/images/team/abbas.png" width="120" height="120" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>UGV / UAV navigation<br>A* path planning · Console app</sub></td>
+    <td align="center" valign="top" width="190"><img src="docs/images/team/abbas.png" width="120" height="120" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>UGV / UAV navigation<br>A* path planning<br>Console app</sub></td>
     <td align="center" valign="top" width="190"><img src="docs/images/team/sara.png" width="120" height="120" alt="Sara Salman"><br><b>Sara Salman</b><br><sub>Team Leader<br>YOLOv5 · ERFNet<br>ORB-SLAM3</sub></td>
     <td align="center" valign="top" width="190"><img src="docs/images/team/haneen.png" width="120" height="120" alt="Haneen Albadry"><br><b>Haneen Albadry</b><br><sub>DAG scheduler</sub></td>
     <td align="center" valign="top" width="190"><img src="docs/images/team/haya.png" width="120" height="120" alt="Haya Haif"><br><b>Haya Haif</b><br><sub>Kahn's algorithm<br>Video editor</sub></td>
