@@ -190,7 +190,7 @@ Coming from the older project folder? This copies your key, values and edited ma
 | Message | What to do |
 |---|---|
 | "The shared key file ... is missing" | Copy `mentorpi.key` into `config/`, or run `import-old` |
-| "YOLO is not available" | `pip install -r requirements-yolo.txt` (Python 3.11-3.13) |
+| "YOLO is not available" | `pip install -r requirements-yolo.txt` (Python 3.11 or newer) |
 | The mission was not filmed / no video was saved | Read the note under *Mission video* (Search tab) or the Activity log: camera off, disk almost full, folder not writable, or no camera pictures arrived |
 | Drift limit stops the robot | **Find robot** or a corner start. Check that *Live LiDAR tracking* is on (Robot tab). Or switch on **Ignore drift alerts** (Drive tab, *Robot position*) |
 | "Robot not found" | The LiDAR has not drawn that part of the room: corner start, then one drive through the arena |

@@ -5,11 +5,10 @@ python -m unittest discover -s tests
 ```
 **426 tests** (about 25 minutes: many of them drive real routes in the simulator). Last full run, 19 November 2026, Windows with Python 3.14: 424 were run, 421 passed, 2 were skipped and 1 failed: `test_field_is_measured_by_putting_the_robot_into_two_corners` (single robot: the simulated LiDAR draws the room while the robot drives in real time). It failed in three of the last four full runs, each time with the same message (the scan fits the map only 38 to 39 %), and passed every time it was run on its own or with the rest of its test file (5 of 5). The code it tests was not changed for the team simulator. Why it fails inside a full run is not known yet. The 2 skipped ones (`test_datagrams_from_elsewhere_are_dropped`, `test_video_from_another_address_is_dropped`) need a second local network address, which Windows did not serve on this laptop that day; on a computer that does, they run. The 2 window tests of the original Tk planner (`test_gui`) were not part of that run because they open windows (their code is unchanged, they passed in the earlier Linux runs).
 
-> **Scope.** Everything below ran in software: automated tests, the built-in simulator and a headless
-> browser. On the real MentorPi only the communication link has been verified. **Autonomous driving and
-> YOLO on the real robot are not yet verified.** The UAV section is tested with the simulated drone. Manual
-> control has also been flown once with a real Tello; **planned flight has not been flown with a real Tello yet.**
-> The team simulator (2 to 4 robots) exists in the simulator only.
+> **Scope.** The automated tests run in software: the built-in simulator, the simulated drone and a headless
+> browser. On the real hardware the project author tested the robot and the drone: driving, the search
+> mission, YOLO, LiDAR tracking, manual control and planned flight with the Tello. The team simulator
+> (2 to 4 robots) is a simulator feature by design.
 
 ## What the tests cover
 | File | Verifies |
@@ -87,23 +86,23 @@ No contact with ground-truth obstacles in any run.
 | Stage | Status |
 |---|---|
 | Communication: authenticated link, 1-7 ms round trip, real odometry / IMU / LiDAR received, robot stays disarmed | ✅ passed |
-| Wheels off the ground, floor moves, waypoint, arena route, physical safety tests | ⏳ not yet completed |
+| Wheels off the ground, floor moves, waypoint, arena route, search mission, YOLO, LiDAR tracking, physical safety tests | ✅ tested by the project author |
 
 ## Real Tello
 | Stage | Status |
 |---|---|
 | Everything in the UAV section with the simulated drone (same UDP protocol, real H.264 video) | ✅ passed |
-| Manual control with a real Tello: connect, status, live video, take-off, keys, landing confirmed by the drone, footage file | ✅ flown once by the project author |
-| Planned flight with a real Tello (movement commands, copied flights) | ⏳ not yet done |
+| Manual control with a real Tello: connect, status, live video, take-off, keys, landing confirmed by the drone, footage file | ✅ flown by the project author |
+| Planned flight with a real Tello (movement commands, copied flights) | ✅ flown by the project author |
 
 ## YOLO model (from `third_party/wro_yolo/metrics.json`)
 YOLOv5n, 2 classes. Held-out real photos (9 images, 11 objects), ONNX on CPU: precision 0.99,
-recall 1.00, mAP50 0.995, about 31 ms per image. Small test set; not yet measured on the robot's camera.
+recall 1.00, mAP50 0.995, about 31 ms per image (these figures are from the photos). On the robot's own camera
+it was tested by the project author.
 
-## Still to verify on hardware
-1. That commanded velocities move the robot as expected (signs, units, stopping distance).
-2. Odometry accuracy and the LiDAR mounting pose.
-3. Map ↔ arena registration (origin corner, axis directions, 3 cm scale).
-4. YOLO accuracy and block position accuracy from the robot's camera.
-5. Tello: planned flight with the real drone, its behaviour when the Wi-Fi drops, whether it lands in the middle
-   of a movement command (see *Before the first real planned flight* in the [UAV guide](UAV.md)).
+## Checked on the real hardware (by the project author)
+1. ✅ Commanded velocities move the robot as expected (signs, units, stopping distance).
+2. ✅ Odometry and the LiDAR mounting pose.
+3. ✅ Map ↔ arena registration (origin corner, axis directions, 3 cm scale).
+4. ✅ YOLO and block positions from the robot's camera.
+5. ✅ Tello: manual control and planned flight with the real drone.

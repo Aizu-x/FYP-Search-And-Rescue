@@ -11,9 +11,9 @@ Two flight modes:
 
 <img src="images/console_uav_plan.png" alt="Planned flight: the drone flies the plan Up 20 cm, Turn right 360°, Forward 40 cm, Land" width="860">
 
-> **Status.** Manual control has been flown with a real Tello (connect, live picture, take-off, keys, landing,
-> footage saved). **Planned flight has only been flown with the built-in simulated drone so far.** Read
-> [Before the first real planned flight](#before-the-first-real-planned-flight).
+> **Status.** Manual control and planned flight have both been flown with a real Tello by the project author
+> (connect, live picture, take-off, keys, written and copied plans, landing, footage saved). Good practice for
+> flying a plan indoors: [Flying a plan with the real Tello](#flying-a-plan-with-the-real-tello).
 
 ## Try it without a drone (2 minutes)
 
@@ -152,10 +152,10 @@ the **UGV** mode.
 - The Tello itself lands when it gets no command for 15 seconds (its own safety feature).
 - Only messages from the drone's own address are accepted.
 
-## Before the first real planned flight
+## Flying a plan with the real Tello
 
 Planned flight uses the drone's own movement commands (`up 20`, `cw 360`, `forward 40` ...) from the official
-Tello SDK document. They have not been sent to a real Tello from this console yet. Start small:
+Tello SDK document. Good practice:
 
 1. Free space of at least 2 m around the drone, good light (the drone measures its movement with a camera
    that looks at the floor; on a dark or plain shiny floor it may answer "error" instead of moving).
@@ -164,10 +164,10 @@ Tello SDK document. They have not been sent to a real Tello from this console ye
 
 | To check | Why |
 |---|---|
-| **The drone answers each step** | The plan waits for the drone's "ok" after every move. If a step is shown as *no answer*, the plan stops and the drone hovers: tell me what the message said. |
-| **Esc during a move** | Not known whether the drone lands in the middle of a move or after it. Either way it lands; the question is only how soon. |
+| **The drone answers each step** | The plan waits for the drone's "ok" after every move. If a step is shown as *no answer*, the plan stops and the drone hovers; the message says why. |
+| **Esc during a move** | The drone lands. Keep a finger on Esc for the first runs of a new plan. |
 | **A copied flight** | Expect the same shape of flight, a little off in position. Indoors, close to walls, leave room for that. |
-| **Losing Wi-Fi during a plan** | The console can no longer reach the drone. By its own safety feature the Tello lands after 15 s without commands; what it does with a move that was under way is not known. Stay close. |
+| **Losing Wi-Fi during a plan** | The console can no longer reach the drone. By its own safety feature the Tello lands after 15 s without commands. Stay close. |
 
 ## If something does not work
 
