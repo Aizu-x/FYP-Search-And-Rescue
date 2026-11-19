@@ -65,7 +65,7 @@ real values.
 |---|---|---|
 | Wheels off the ground | Robot on a stand. `python nav_main.py motor-test --host <PI_IP>` | Wheels turn the right way, STOP halts them, they stop by themselves within 0.35 s when commands end |
 | Small floor moves | Clear, level floor. Compare the distance driven with a tape measure | Use the result for the scale calibration |
-| One waypoint | Console in **Robot** mode, goal at most 0.5 m away | Arrives within 5 cm |
+| One waypoint | Console in **UGV** mode, goal at most 0.5 m away | Arrives within 5 cm |
 | Arena route | A full A\* route on a verified-clear map | Arrives without contact |
 | Safety | Pull the Wi-Fi, close the console, block the route, press STOP | The robot stops every time and never resumes on its own |
 
@@ -76,7 +76,7 @@ Robot:
 ```bash
 python3 -m ugv_bridge.run_bridge --config ugv_bridge/config/bridge_config.json --backend ros2 --verbose
 ```
-Laptop: start the console, **Robot** mode, **Connect**.
+Laptop: start the console, **UGV** mode, **Connect**.
 
 ## Optional: let the console see more of the room
 The console follows the robot by looking at the room with the LiDAR ([How it works](HOW_IT_WORKS.md), 4a). By

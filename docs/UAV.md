@@ -125,7 +125,7 @@ lands).
 7. Fly. **Esc** or **LAND** brings it down.
 
 The drone's Wi-Fi is not the robot's network. Switch the laptop back to the robot's network before you use
-the **Robot** mode.
+the **UGV** mode.
 
 ## Footage
 

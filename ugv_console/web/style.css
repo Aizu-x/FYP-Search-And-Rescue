@@ -363,3 +363,43 @@ input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius
 .plan-add input { width: 62px; flex: none; }
 .plan-add .unit { width: 30px; }
 .plan-add .btn { flex: none; }
+
+/* ------------------------------------------------------------------ team simulator (2 to 4 simulated robots) */
+.team-side { display: flex; flex-direction: column; gap: 10px; }
+.team-side[hidden] { display: none; }
+#team-map { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; touch-action: none; }
+.team-robots { display: flex; flex-direction: column; }
+.team-robot { padding: 8px 0 9px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.team-robot:first-child { border-top: 0; padding-top: 2px; }
+.team-robot .who { display: flex; align-items: center; gap: 8px; }
+.team-robot .who b { color: var(--c); font-weight: 750; flex: 1; }
+.team-robot .dot, .team-task .dot { width: 11px; height: 11px; border-radius: 4px; background: var(--c); flex: none; display: inline-block; }
+.team-robot .where { display: grid; grid-template-columns: 58px minmax(0, 1fr) 54px minmax(0, 1fr) 16px; align-items: center; gap: 5px; }
+.team-robot .tool-chip { width: auto; justify-content: center; padding: 0 6px; height: 26px; color: var(--c); }
+.team-robot .tool-chip.active { background: var(--c); color: #06111d; border-color: var(--c); }
+.team-robot .xy { color: var(--muted); font: 11px var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.team-robots + .note { margin-top: 6px; }
+.team-robot .why { color: var(--danger); font-size: 11.5px; line-height: 1.35; }
+.team-robot .why.mild { color: var(--muted); }
+.team-robot .where .x { width: 16px; height: 20px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: var(--faint); font: 700 14px/1 var(--font); cursor: pointer; }
+.team-robot .where .x:hover { color: var(--danger); background: var(--danger-soft); }
+.team-tasks { display: flex; flex-direction: column; max-height: 232px; overflow-y: auto; }
+.team-tasks .empty { padding: 10px 4px; color: var(--faint); text-align: center; font-size: 12px; }
+.team-tasks .wave { margin-top: 7px; padding-bottom: 3px; color: var(--faint); font-size: 10.5px; display: flex; gap: 7px; align-items: baseline; border-bottom: 1px solid var(--line); }
+.team-tasks .wave:first-child { margin-top: 0; }
+.team-tasks .wave span { color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.team-task { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; }
+.team-task span { flex: 1; min-width: 0; }
+.team-task em { font-style: normal; }
+.team-task.bad span { color: var(--danger); }
+.team-why { padding: 5px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.4; }
+#team-tool-block.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.team-cams { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 10px 10px; }
+.team-cam { position: relative; min-width: 0; }
+.team-cam .cam-wrap { margin: 0; border-color: var(--c); border-width: 2px; }
+.team-cam canvas { width: 100%; height: 100%; display: block; }
+.team-cam .cam-empty { font-size: 10.5px; gap: 4px; }
+.team-cam .cam-empty .ic { width: 18px; height: 18px; }
+.team-cam > b { position: absolute; left: 6px; bottom: 6px; padding: 1px 7px; border-radius: 6px; background: var(--c); color: #06111d; font: 750 10.5px var(--font); }
+.team-legend { max-width: 70%; }
+.team-legend i { border-radius: 3px; }

@@ -5,8 +5,8 @@ import {fetchFrame} from './api.js';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export class CameraView {
-  constructor(canvas, empty) {
-    this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.empty = empty;
+  constructor(canvas, empty, path = '/api/frame') {              // path: which camera (a team robot has its own)
+    this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.empty = empty; this.path = path;
     this.on = false; this.running = false; this.last = -1; this.shown = 0;
   }
 
@@ -22,7 +22,7 @@ export class CameraView {
     this.running = true;
     while (this.on) {
       try {
-        const frame = await fetchFrame(this.last);
+        const frame = await fetchFrame(this.last, this.path);
         if (!this.on) { if (frame) frame.bitmap.close(); break; }
         if (frame) { this.draw(frame.bitmap, frame.meta); frame.bitmap.close(); this.last = frame.meta.id; }
         else await sleep(120);

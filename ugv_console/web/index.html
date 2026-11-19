@@ -70,9 +70,9 @@
     <div class="seg mode-seg" id="mode-seg" aria-label="Mode">
       <button data-mode="uav" title="First the drone: fly the Tello, watch and record its camera"><svg class="ic"><use href="#i-drone"/></svg>UAV</button>
       <i class="seg-sep" aria-hidden="true"></i>
+      <button data-mode="robot" title="The real UGV (MentorPi) over Wi-Fi"><svg class="ic"><use href="#i-robot"/></svg>UGV</button>
+      <button data-mode="sim" title="Simulated UGVs (1 to 4), LiDAR and camera on this laptop"><svg class="ic"><use href="#i-cube"/></svg>Simulator</button>
       <button data-mode="offline" title="Plan and play back A* routes (no robot)"><svg class="ic"><use href="#i-route"/></svg>Planner</button>
-      <button data-mode="sim" title="Simulated robot, LiDAR and camera on this laptop"><svg class="ic"><use href="#i-cube"/></svg>Simulator</button>
-      <button data-mode="robot" title="The real MentorPi over Wi-Fi"><svg class="ic"><use href="#i-robot"/></svg>Robot</button>
     </div>
     <div class="chips">
       <span class="chip" id="chip-uav" data-show="uav" hidden><i class="dot"></i><span>Drone not connected</span></span>
@@ -198,22 +198,88 @@
                 <li>Fly indoors, with free space, propeller guards on, battery above 20 %.</li>
                 <li>Practise with the simulated drone first, then start with <b>Gentle</b>.</li>
               </ol>
-              <div class="note">The drone's Wi-Fi is not the robot's: switch the laptop back to the robot's network before you use the Robot mode.</div>
+              <div class="note">The drone's Wi-Fi is not the robot's: switch the laptop back to the robot's network before you use the UGV mode.</div>
             </div>
           </div>
         </div>
       </div>
 
-      <nav class="tabs" id="tabs" data-show="offline sim robot">
+      <nav class="tabs" id="tabs" data-show="offline sim robot team">
         <button data-tab="drive" class="active"><svg class="ic"><use href="#i-route"/></svg>Drive</button>
-        <button data-tab="map"><svg class="ic"><use href="#i-map"/></svg>Map</button>
+        <button data-tab="map" data-show="offline sim robot"><svg class="ic"><use href="#i-map"/></svg>Map</button>
         <button data-tab="robot"><svg class="ic"><use href="#i-sliders"/></svg>Robot</button>
         <button data-tab="camera" data-show="sim robot"><svg class="ic"><use href="#i-camera"/></svg>Camera</button>
         <button data-tab="search" data-show="sim robot"><svg class="ic"><use href="#i-search"/></svg>Search</button>
       </nav>
-      <div class="tab-body" data-show="offline sim robot">
+      <div class="tab-body" data-show="offline sim robot team">
         <!-- ---------------------------------------------------- Drive -->
         <section class="tab-panel active" data-panel="drive">
+          <!-- the team simulator (2 to 4 simulated robots): this tab while the team view is on -->
+          <div class="team-side" id="team-side" data-show="team" hidden>
+            <ol class="steps" id="team-steps">
+              <li data-step="1"><b>1</b><span>Place robots</span></li>
+              <li data-step="2"><b>2</b><span>Goals</span></li>
+              <li data-step="3"><b>3</b><span>Plan</span></li>
+              <li data-step="4"><b>4</b><span>Go</span></li>
+            </ol>
+
+            <div class="card">
+              <div class="card-h"><svg class="ic"><use href="#i-robot"/></svg><h3>Team simulator</h3><span class="tag" id="team-tag"></span></div>
+              <div class="card-b">
+                <div class="row"><label>Robots</label>
+                  <div class="seg small team-count" aria-label="Number of robots">
+                    <button data-set-opt="sim_robots" data-value="1">1</button><button data-set-opt="sim_robots" data-value="2">2</button><button data-set-opt="sim_robots" data-value="3">3</button><button data-set-opt="sim_robots" data-value="4">4</button>
+                  </div>
+                </div>
+                <div class="row"><label for="team-env">Environment</label><select id="team-env" class="grow-0"></select></div>
+                <button class="btn primary block" id="team-btn-start"><svg class="ic"><use href="#i-play"/></svg><span>Start team simulator</span></button>
+                <div class="note" id="team-note">Simulated robots only: nothing real moves. Choose 1 to go back to the single-robot simulator.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><svg class="ic"><use href="#i-pin"/></svg><h3>Robots: start and goal</h3></div>
+              <div class="card-b tight">
+                <div class="team-robots" id="team-robots"></div>
+                <div class="note">Press <b>Start</b> or <b>Goal</b> of a robot, then click the map. For a start, drag to turn the robot. A robot without a goal stays where it is.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><svg class="ic"><use href="#i-shield"/></svg><h3>Team mission</h3><span class="tag" id="team-phase"></span></div>
+              <div class="card-b">
+                <label class="switch-row" title="After reaching its goal every robot turns once on the spot so its camera sees all around"><input type="checkbox" data-opt="team_scan"><i class="switch"></i><span>Look around at the goal</span></label>
+                <label class="switch-row" title="A robot that has seen a survivor (a green block) drives up to it after its other tasks, faces it and stands there for a moment: secured"><input type="checkbox" data-opt="team_approach"><i class="switch"></i><span>Drive up to survivors found</span></label>
+                <div class="btn-row">
+                  <button class="btn" id="team-btn-plan"><svg class="ic"><use href="#i-route"/></svg>Plan team routes</button>
+                  <button class="btn" id="team-btn-reset" title="Put every robot back at its starting place"><svg class="ic"><use href="#i-reset"/></svg>Back to start</button>
+                </div>
+                <button class="btn go block big" id="team-btn-run" disabled><svg class="ic"><use href="#i-shield"/></svg><span>AUTHORIZE + START TEAM</span></button>
+                <div class="note" id="team-run-note"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><svg class="ic"><use href="#i-cube"/></svg><h3>Test blocks</h3></div>
+              <div class="card-b">
+                <div class="row"><label>Colour</label>
+                  <div class="seg small" data-opt="sim_block_colour"><button data-value="green">Green (survivor)</button><button data-value="red">Red</button></div></div>
+                <button class="btn block" id="team-tool-block"><svg class="ic"><use href="#i-cube"/></svg>Place / remove blocks on the map</button>
+                <div class="note">Blocks are seen by the robots' cameras only, and not through a wall. Green is a survivor; red is an obstacle the robot plans around.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" data-show="sim">
+            <div class="card-h"><svg class="ic"><use href="#i-robot"/></svg><h3>Robots in the simulator</h3></div>
+            <div class="card-b">
+              <div class="seg small wide team-count" aria-label="Number of robots">
+                <button data-set-opt="sim_robots" data-value="1">1</button><button data-set-opt="sim_robots" data-value="2">2</button><button data-set-opt="sim_robots" data-value="3">3</button><button data-set-opt="sim_robots" data-value="4">4</button>
+              </div>
+              <div class="note">With 2 to 4 robots the simulator becomes a team: each robot gets its own start, goal, colour and camera, and the order they drive in comes from the task graph.</div>
+            </div>
+          </div>
+
           <ol class="steps" id="steps" data-show="sim robot">
             <li data-step="1"><b>1</b><span>Connect</span></li>
             <li data-step="2"><b>2</b><span>Place robot</span></li>
@@ -234,7 +300,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" data-show="offline sim robot">
             <div class="card-h"><svg class="ic"><use href="#i-route"/></svg><h3>Route</h3><span class="tag" id="route-tag"></span></div>
             <div class="card-b">
               <div class="row"><label for="env">Environment</label><select id="env" class="grow-0"></select></div>
@@ -304,7 +370,7 @@
             </div>
           </div>
 
-          <div class="card" data-show="sim robot">
+          <div class="card" data-show="sim robot team">
             <div class="card-h"><svg class="ic"><use href="#i-gauge"/></svg><h3>Robot speed</h3><span class="tag" id="speed-tag"></span></div>
             <div class="card-b">
               <input type="range" data-opt="robot_speed" min="10" max="100" step="5">
@@ -555,7 +621,18 @@
           </div>
         </section>
       </div>
+
     </aside>
+
+    <!-- ============================================================ centre: team simulator map -->
+    <section class="stage team-stage" id="team-stage" data-show="team" hidden aria-label="Team map">
+      <canvas id="team-map" tabindex="0"></canvas>
+      <div class="hud map-title" id="team-title"></div>
+      <div class="hud cursor" id="team-cursor">x —  ·  y —</div>
+      <div class="hud hint" id="team-hint"></div>
+      <div class="banner" id="team-banner" hidden><svg class="ic"><use href="#i-alert"/></svg><span id="team-banner-text"></span></div>
+      <div class="legend team-legend" id="team-legend"></div>
+    </section>
 
     <!-- ============================================================ centre: drone camera (UAV section) -->
     <section class="stage uav-stage" id="uav-stage" data-show="uav" hidden tabindex="0" aria-label="Drone camera and flight keys">
@@ -633,6 +710,19 @@
           <button class="icon-btn small" data-cmd="export_survivors" title="Export the list as CSV"><svg class="ic"><use href="#i-download"/></svg></button>
           <button class="icon-btn small" data-cmd="clear_survivors" title="Clear the list"><svg class="ic"><use href="#i-x"/></svg></button></div>
         <div class="card-b flush"><div class="list" id="survivors"><div class="empty">No survivors found yet.</div></div></div>
+      </div>
+      <div class="card" data-show="team" hidden>
+        <div class="card-h"><svg class="ic"><use href="#i-layers"/></svg><h3>Order of the team</h3><span class="tag info" title="The tasks of the team form a graph without circles (a DAG). Kahn's algorithm releases a task when the tasks it needs have finished.">DAG · Kahn</span></div>
+        <div class="card-b tight"><div class="team-tasks" id="team-tasks"><div class="empty">Plan the team routes to see who waits for whom.</div></div></div>
+      </div>
+      <div class="card" data-show="team" hidden>
+        <div class="card-h"><svg class="ic"><use href="#i-camera"/></svg><h3>Team cameras</h3><span class="tag" id="team-cam-tag"></span></div>
+        <div class="card-b flush"><div class="team-cams" id="team-cams"></div></div>
+      </div>
+      <div class="card" data-show="team" hidden>
+        <div class="card-h"><svg class="ic"><use href="#i-heart"/></svg><h3>Team findings</h3><span class="tag" id="team-found-tag">0 found</span>
+          <button class="icon-btn small" data-cmd="team_clear_findings" title="Clear the list"><svg class="ic"><use href="#i-x"/></svg></button></div>
+        <div class="card-b flush"><div class="list" id="team-findings"><div class="empty">No survivors seen yet.</div></div></div>
       </div>
       <div class="card grow">
         <div class="card-h"><svg class="ic"><use href="#i-list"/></svg><h3>Activity</h3></div>

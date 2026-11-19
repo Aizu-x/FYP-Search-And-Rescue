@@ -13,8 +13,21 @@ config/gui_settings.json
 data/edited/
 data/rooms/
 data/uav_plans/
+FYP_SRM.ini
 
 # generated when you run the batch / demo commands
 example_outputs/
 nav_outputs/
 recordings/
+launcher/last_run.log
+launcher/running.txt
+launcher/MakeIcon.exe
+launcher/FYP_SRM.ico
+
+# combined system (DAG scheduler + ORB-SLAM3): generated runs, the large ORB assets, local test logs
+combined_runs/
+ORB_handoff/
+verification/local/
+*.zip
+*.log
+DAG_scheduler/*TEST_RESULTS.txt

@@ -5,6 +5,7 @@ import {MapView} from './map.js';
 import {CameraView} from './camera.js';
 import {UI, showResult, toast} from './ui.js';
 import {UavView} from './uav.js';
+import {TeamView} from './team.js';
 
 const $ = (sel) => document.querySelector(sel);
 const tip = $('#tip');
@@ -35,8 +36,10 @@ const camera = new CameraView($('#cam'), $('#cam-empty'));
 const ui = new UI(map, camera);
 const uav = new UavView();                        // the UAV section: drone camera, readings, flight keys
 ui.uav = uav;
+const team = new TeamView();                      // the team simulator: 2 to 4 simulated robots
+ui.team = team;
 map.setTool('pan');
-window.__ugv = {map, ui, camera, uav};            // handy for checks from the browser console
+window.__ugv = {map, ui, camera, uav, team};      // handy for checks from the browser console
 
 if (!TOKEN) {
   const lost = $('#lost');
@@ -46,7 +49,7 @@ if (!TOKEN) {
 } else {
   openEvents((data) => {
     for (const [name, value] of Object.entries(data)) {
-      if (name === 'fast') map.pushFast(value);
+      if (name === 'fast') { map.pushFast(value); team.pushFast(value); }
       else ui.update(name, value);
     }
   }, (alive) => { $('#lost').hidden = alive; });
