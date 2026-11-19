@@ -2,6 +2,21 @@
   <img src="docs/images/banner.png" alt="Search & Rescue: a ground robot (UGV) that plans with A* and finds survivors with YOLOv5, a Tello drone scout, and a team of up to four robots" width="100%">
 </p>
 
+<div align="center">
+
+<h3>🎓 The team</h3>
+
+<table>
+  <tr>
+    <td align="center" width="190"><img src="docs/images/team/abbas.png" width="120" height="120" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>A* algorithm · Drone · App</sub></td>
+    <td align="center" width="190"><img src="docs/images/team/sara.png" width="120" height="120" alt="Sara Salman"><br><b>Sara Salman</b><br><sub>YOLOv5 · ERFNet · ORB-SLAM3</sub></td>
+    <td align="center" width="190"><img src="docs/images/team/haneen.png" width="120" height="120" alt="Haneen Albadry"><br><b>Haneen Albadry</b><br><sub>DAG scheduler</sub></td>
+    <td align="center" width="190"><img src="docs/images/team/haya.png" width="120" height="120" alt="Haya Haif"><br><b>Haya Haif</b><br><sub>Kahn's algorithm</sub></td>
+  </tr>
+</table>
+
+</div>
+
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+">
   <img src="https://img.shields.io/badge/Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-0f172a?style=flat-square" alt="Windows, macOS, Linux">
@@ -250,8 +265,10 @@ saved example images -> YOLOv5n inference ---------+
 - The detector is **YOLOv5n ONNX**. No model was converted or retrained.
 - ORB-SLAM3 results are imported from saved exports; a fresh ORB run needs Linux / WSL. Turning an ORB map into a
   navigation map is not part of this package.
-- The ORB assets (`ORB_handoff/`, about 700 MB) are **not stored in this repository**: they are installed from the
-  team's archives ([Run on the edge computer](EDGE_SETUP.md)).
+- The full ORB assets (`ORB_handoff/`, about 700 MB) are **not stored in this repository**: they are installed from
+  the team's archives ([Run on the edge computer](EDGE_SETUP.md)). A reference copy of the ORB-SLAM3 source with
+  sample keyframes and saved results, and the ERFNet model with its inputs and outputs, is in
+  [`perception/`](perception/README.md).
 - Run it: double-click **`RUN_COMBINED.cmd`** (Windows) or `bash run_combined.sh` (Linux).
   Expected last line: `Status: COMPONENT_INTEGRATION_SUCCEEDED`.
 
@@ -274,6 +291,7 @@ Guides: **[Run on the edge computer](EDGE_SETUP.md)** · **[Connections](COMBINE
 | `docs/` | | Guides and technical notes |
 | `DAG_scheduler/` | laptop | Combined system: Kahn scheduler, ORB / A\* / YOLO adapters, its own 62 tests |
 | `scripts/`, `assets/`, `verification/` | laptop | Combined system: ORB asset installer and record, combined check, recorded results |
+| `perception/` | laptop | Optional reference: ORB-SLAM3 source, sample keyframes and saved results; the ERFNet model, arena photos, masks and grids. About 110 MB, so it is left out of ZIP downloads and the Windows package: clone the repository to get it |
 | `launcher/` | laptop | Source of `FYP_SRM.exe` (the no-terminal starter), its picture `icon.png` and the build script |
 
 ## 🛡 Safety design
@@ -322,13 +340,17 @@ Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works]
 | [Testing](docs/TESTING.md) | What was tested and how |
 | [Run on the edge computer](EDGE_SETUP.md) | Combined system: setup and running the component check |
 | [Connections](COMBINED_INTEGRATION.md) | Combined system: how the modules connect |
+| [Perception reference](perception/README.md) | ORB-SLAM3 and ERFNet: what went in and what came out (optional) |
 | [Merge notes](MERGE_NOTES.md) | What was merged, what was changed to make it fit, `FYP_SRM.exe` |
 
 ## 🙏 Credits
 
-Final-year project by **Abbas Faisal Modhaffar**: A\* navigation, operator console and robot integration.
-The YOLOv5n red / green block detector in `third_party/wro_yolo/` was trained by a project teammate.
+The team is shown at the top of this page.
+The YOLOv5n red / green block detector in `third_party/wro_yolo/` was trained by Sara Salman.
 The DAG scheduler, its adapters and the ORB-SLAM3 handoff in `DAG_scheduler/` come from the team's
 combined-integration package; ORB-SLAM3 and its bundled libraries keep their own licences
 (see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
+The reference folder `perception/` builds on [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) (GPL-3.0) and on
+[ERFNet](https://github.com/Eromera/erfnet_pytorch) by Eduardo Romera et al., whose code is licensed CC BY-NC 4.0
+(non-commercial use).
 Robot platform: HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble). Drone: Tello (Ryze / DJI), Tello SDK 1.3.
