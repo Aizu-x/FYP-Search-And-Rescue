@@ -3,3 +3,7 @@
 *.md text eol=lf
 *.json text eol=lf
 *.cmd text eol=crlf
+
+# Optional reference data (about 110 MB): left out of ZIP downloads, release source archives and
+# the Windows package (all made with git archive). Clone the repository to get it.
+/perception export-ignore
