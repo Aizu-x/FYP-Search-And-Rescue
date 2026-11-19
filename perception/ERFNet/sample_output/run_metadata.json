@@ -1,0 +1,497 @@
+{
+  "status": "completed",
+  "started_utc": "2026-11-07T19:58:52.278188+00:00",
+  "samples": [
+    {
+      "sample_id": "ENV1",
+      "source_image": "/workspace/scratch/b7fe339d87b0/output/FYP_Three_Modules_DAG_Handoff_2026-11-07/ERFNet/inputs/source_photographs/ENV1__IMG_3242_result.jpg",
+      "source_sha256": "8dbe2db019766ea9d482634528f9278b4d7b3950462b0a8f60ae7afbcaefb09f",
+      "capture_timestamp": null,
+      "capture_timestamp_note": "Not provided; processing time is not camera capture time.",
+      "geometry": {
+        "x": 0,
+        "y": 80,
+        "width": 640,
+        "height": 480,
+        "original_size": [
+          4032,
+          3024
+        ],
+        "network_size": 640,
+        "quarter_turns_ccw": 0,
+        "model_forward_seconds": 0.7468759139997019
+      },
+      "original_mask": "ENV1_raw_labels_original.png",
+      "mask_frame": "EXIF-normalized source image; x right, y down; top-left origin",
+      "original_mask_shape_hw": [
+        3024,
+        4032
+      ],
+      "class_ids": {
+        "0": "free_space",
+        "1": "blocked",
+        "2": "obstacle",
+        "255": "ignore"
+      },
+      "original_mask_values": [
+        0,
+        1,
+        2
+      ],
+      "method": "ERFNet with automatic appearance-guided semantic-map refinement",
+      "annotation_assisted_roi": true,
+      "manual_interior_labels_used": false,
+      "homography_original_to_800": [
+        [
+          1.0161439733366504,
+          0.6578461110503182,
+          -1663.0918520174453
+        ],
+        [
+          -0.030057688933944855,
+          1.8890527057446578,
+          -1270.221795470571
+        ],
+        [
+          3.069269894945294e-05,
+          0.0013388565211413517,
+          1.0
+        ]
+      ],
+      "refined_topdown_mask": "ENV1_refined_labels_topdown.png",
+      "refined_topdown_sha256": "3b57b47b5298ba90c854a2030d4ccbb85026a0b23cc99757b91b1591f14adfbc",
+      "refinement_seconds": 0.06652927799996178,
+      "refinement_operations": {
+        "settings": {
+          "yellow_hue_min": 20,
+          "yellow_hue_max": 42,
+          "yellow_saturation_min": 80,
+          "yellow_value_min": 85,
+          "pink_hue_min": 140,
+          "pink_hue_max": 179,
+          "pink_saturation_min": 65,
+          "pink_value_min": 55,
+          "blue_hue_min": 85,
+          "blue_hue_max": 135,
+          "object_saturation_min": 75,
+          "object_value_min": 70,
+          "component_min_area_at_800": 40,
+          "seed_min_pixels_at_800": 3,
+          "rail_seed_probability": 0.25,
+          "obstacle_seed_probability": 0.35,
+          "closing_kernel_at_800": 3,
+          "dark_rail_bridge_length_at_800": 31,
+          "dark_rail_saturation_max": 100,
+          "dark_rail_value_max": 110,
+          "dark_rail_probability_min": 0.05,
+          "dark_rail_growth_radius_at_800": 5,
+          "blue_seed_probability": 0.35,
+          "blue_component_max_area_at_800": 6000,
+          "blue_component_max_aspect": 4.0
+        },
+        "operations": [
+          {
+            "cue": "yellow rail",
+            "accepted_components": 2,
+            "free_pixels_relabelled": 5246
+          },
+          {
+            "cue": "pink rail panel",
+            "accepted_components": 1,
+            "free_pixels_relabelled": 244
+          },
+          {
+            "cue": "blue object",
+            "accepted_components": 2,
+            "free_pixels_relabelled": 778
+          },
+          {
+            "cue": "red object",
+            "accepted_components": 1,
+            "free_pixels_relabelled": 74
+          },
+          {
+            "cue": "image-supported short dark-rail bridge",
+            "free_pixels_relabelled": 1483
+          },
+          {
+            "cue": "bounded dark rail-edge recovery",
+            "free_pixels_relabelled": 916
+          },
+          {
+            "cue": "class 1 small-gap closing",
+            "free_pixels_relabelled": 962
+          },
+          {
+            "cue": "class 2 small-gap closing",
+            "free_pixels_relabelled": 1
+          }
+        ],
+        "ground_truth_classes_used": false,
+        "manual_repair_polygons_used": false
+      },
+      "grid": {
+        "photo_frame_file": "ENV1_occupancy_photo_frame.npy",
+        "planning_frame_file": "ENV1_occupancy_planning_frame.npy",
+        "shape_rc": [
+          60,
+          60
+        ],
+        "dtype": "uint8",
+        "cell_meanings": {
+          "0": "free",
+          "1": "occupied",
+          "255": "unknown_nontraversable"
+        },
+        "nominal_resolution_m_per_cell": 0.05,
+        "metric_scale_measured": false,
+        "array_origin": "top-left",
+        "row_direction": "down",
+        "column_direction": "right",
+        "nominal_xy_origin": "bottom-left of the selected grid frame",
+        "nominal_xy_axes": "x right, y up; not registered to SLAM or robot odometry",
+        "cell_center_formula": "x=(col+0.5)*0.05; y=(60-row-0.5)*0.05",
+        "planning_rotation_ccw_quarter_turns": 0,
+        "robot_footprint_included": false,
+        "map_margin_cells": 0,
+        "dynamic_obstacle_updates_implemented": false
+      },
+      "processing_seconds": 1.5948647589998473,
+      "processing_finished_utc": "2026-11-07T19:58:53.996423+00:00"
+    },
+    {
+      "sample_id": "ENV2",
+      "source_image": "/workspace/scratch/b7fe339d87b0/output/FYP_Three_Modules_DAG_Handoff_2026-11-07/ERFNet/inputs/source_photographs/ENV2__IMG_3266_result.jpg",
+      "source_sha256": "8c5381f3f48f3204551b05381bed48d83c6230ee895ffac938fadd67c4c42a33",
+      "capture_timestamp": null,
+      "capture_timestamp_note": "Not provided; processing time is not camera capture time.",
+      "geometry": {
+        "x": 0,
+        "y": 80,
+        "width": 640,
+        "height": 480,
+        "original_size": [
+          4032,
+          3024
+        ],
+        "network_size": 640,
+        "quarter_turns_ccw": 0,
+        "model_forward_seconds": 0.5269338840003002
+      },
+      "original_mask": "ENV2_raw_labels_original.png",
+      "mask_frame": "EXIF-normalized source image; x right, y down; top-left origin",
+      "original_mask_shape_hw": [
+        3024,
+        4032
+      ],
+      "class_ids": {
+        "0": "free_space",
+        "1": "blocked",
+        "2": "obstacle",
+        "255": "ignore"
+      },
+      "original_mask_values": [
+        0,
+        1,
+        2
+      ],
+      "method": "ERFNet with automatic appearance-guided semantic-map refinement",
+      "annotation_assisted_roi": true,
+      "manual_interior_labels_used": false,
+      "homography_original_to_800": [
+        [
+          0.6651706237381222,
+          0.3026454834662109,
+          -895.878107689763
+        ],
+        [
+          0.019816472046496246,
+          1.2195076290267008,
+          -702.3447218711434
+        ],
+        [
+          1.1723976501201425e-05,
+          0.0007842906968021711,
+          1.0
+        ]
+      ],
+      "refined_topdown_mask": "ENV2_refined_labels_topdown.png",
+      "refined_topdown_sha256": "ce58009869e23e1a241e7f5a447f78e2aa9a3df1996c695efa7d6956f9d3561a",
+      "refinement_seconds": 0.10989180400019904,
+      "refinement_operations": {
+        "settings": {
+          "yellow_hue_min": 20,
+          "yellow_hue_max": 42,
+          "yellow_saturation_min": 80,
+          "yellow_value_min": 85,
+          "pink_hue_min": 140,
+          "pink_hue_max": 179,
+          "pink_saturation_min": 65,
+          "pink_value_min": 55,
+          "blue_hue_min": 85,
+          "blue_hue_max": 135,
+          "object_saturation_min": 75,
+          "object_value_min": 70,
+          "component_min_area_at_800": 40,
+          "seed_min_pixels_at_800": 3,
+          "rail_seed_probability": 0.25,
+          "obstacle_seed_probability": 0.35,
+          "closing_kernel_at_800": 3,
+          "dark_rail_bridge_length_at_800": 31,
+          "dark_rail_saturation_max": 100,
+          "dark_rail_value_max": 110,
+          "dark_rail_probability_min": 0.05,
+          "dark_rail_growth_radius_at_800": 5,
+          "blue_seed_probability": 0.35,
+          "blue_component_max_area_at_800": 6000,
+          "blue_component_max_aspect": 4.0
+        },
+        "operations": [
+          {
+            "cue": "yellow rail",
+            "accepted_components": 1,
+            "free_pixels_relabelled": 7793
+          },
+          {
+            "cue": "pink rail panel",
+            "accepted_components": 2,
+            "free_pixels_relabelled": 2326
+          },
+          {
+            "cue": "blue object",
+            "accepted_components": 3,
+            "free_pixels_relabelled": 381
+          },
+          {
+            "cue": "red object",
+            "accepted_components": 3,
+            "free_pixels_relabelled": 128
+          },
+          {
+            "cue": "image-supported short dark-rail bridge",
+            "free_pixels_relabelled": 1092
+          },
+          {
+            "cue": "bounded dark rail-edge recovery",
+            "free_pixels_relabelled": 573
+          },
+          {
+            "cue": "class 1 small-gap closing",
+            "free_pixels_relabelled": 656
+          },
+          {
+            "cue": "class 2 small-gap closing",
+            "free_pixels_relabelled": 34
+          }
+        ],
+        "ground_truth_classes_used": false,
+        "manual_repair_polygons_used": false
+      },
+      "grid": {
+        "photo_frame_file": "ENV2_occupancy_photo_frame.npy",
+        "planning_frame_file": "ENV2_occupancy_planning_frame.npy",
+        "shape_rc": [
+          60,
+          60
+        ],
+        "dtype": "uint8",
+        "cell_meanings": {
+          "0": "free",
+          "1": "occupied",
+          "255": "unknown_nontraversable"
+        },
+        "nominal_resolution_m_per_cell": 0.05,
+        "metric_scale_measured": false,
+        "array_origin": "top-left",
+        "row_direction": "down",
+        "column_direction": "right",
+        "nominal_xy_origin": "bottom-left of the selected grid frame",
+        "nominal_xy_axes": "x right, y up; not registered to SLAM or robot odometry",
+        "cell_center_formula": "x=(col+0.5)*0.05; y=(60-row-0.5)*0.05",
+        "planning_rotation_ccw_quarter_turns": -1,
+        "robot_footprint_included": false,
+        "map_margin_cells": 0,
+        "dynamic_obstacle_updates_implemented": false
+      },
+      "processing_seconds": 1.2233948839998448,
+      "processing_finished_utc": "2026-11-07T19:58:55.220475+00:00"
+    },
+    {
+      "sample_id": "ENV3",
+      "source_image": "/workspace/scratch/b7fe339d87b0/output/FYP_Three_Modules_DAG_Handoff_2026-11-07/ERFNet/inputs/source_photographs/ENV3__IMG_3290_result.jpg",
+      "source_sha256": "304d7aa6bb120061dfd4d009d2e4a29b6e518a26b87f3a7ff281f15bbf403e79",
+      "capture_timestamp": null,
+      "capture_timestamp_note": "Not provided; processing time is not camera capture time.",
+      "geometry": {
+        "x": 80,
+        "y": 0,
+        "width": 480,
+        "height": 640,
+        "original_size": [
+          3024,
+          4032
+        ],
+        "network_size": 640,
+        "quarter_turns_ccw": 1,
+        "model_forward_seconds": 0.6113416949997372
+      },
+      "original_mask": "ENV3_raw_labels_original.png",
+      "mask_frame": "EXIF-normalized source image; x right, y down; top-left origin",
+      "original_mask_shape_hw": [
+        4032,
+        3024
+      ],
+      "class_ids": {
+        "0": "free_space",
+        "1": "blocked",
+        "2": "obstacle",
+        "255": "ignore"
+      },
+      "original_mask_values": [
+        0,
+        1,
+        2
+      ],
+      "method": "ERFNet with automatic appearance-guided semantic-map refinement",
+      "annotation_assisted_roi": true,
+      "manual_interior_labels_used": false,
+      "homography_original_to_800": [
+        [
+          0.17343628261699712,
+          0.003707402169712829,
+          -97.00035459827346
+        ],
+        [
+          -0.11225305990176503,
+          0.2065740200213679,
+          25.25421646368325
+        ],
+        [
+          -0.00025404446506153706,
+          9.29018608871856e-06,
+          1.0
+        ]
+      ],
+      "refined_topdown_mask": "ENV3_refined_labels_topdown.png",
+      "refined_topdown_sha256": "7f0376050a279977d22b39c3b8bfdd13c2e4753ad197dad4597735b09c7d2aed",
+      "refinement_seconds": 0.06754346799971245,
+      "refinement_operations": {
+        "settings": {
+          "yellow_hue_min": 20,
+          "yellow_hue_max": 42,
+          "yellow_saturation_min": 80,
+          "yellow_value_min": 85,
+          "pink_hue_min": 140,
+          "pink_hue_max": 179,
+          "pink_saturation_min": 65,
+          "pink_value_min": 55,
+          "blue_hue_min": 85,
+          "blue_hue_max": 135,
+          "object_saturation_min": 75,
+          "object_value_min": 70,
+          "component_min_area_at_800": 40,
+          "seed_min_pixels_at_800": 3,
+          "rail_seed_probability": 0.25,
+          "obstacle_seed_probability": 0.35,
+          "closing_kernel_at_800": 3,
+          "dark_rail_bridge_length_at_800": 31,
+          "dark_rail_saturation_max": 100,
+          "dark_rail_value_max": 110,
+          "dark_rail_probability_min": 0.05,
+          "dark_rail_growth_radius_at_800": 5,
+          "blue_seed_probability": 0.35,
+          "blue_component_max_area_at_800": 6000,
+          "blue_component_max_aspect": 4.0
+        },
+        "operations": [
+          {
+            "cue": "yellow rail",
+            "accepted_components": 1,
+            "free_pixels_relabelled": 1824
+          },
+          {
+            "cue": "pink rail panel",
+            "accepted_components": 2,
+            "free_pixels_relabelled": 864
+          },
+          {
+            "cue": "blue object",
+            "accepted_components": 2,
+            "free_pixels_relabelled": 272
+          },
+          {
+            "cue": "red object",
+            "accepted_components": 3,
+            "free_pixels_relabelled": 97
+          },
+          {
+            "cue": "image-supported short dark-rail bridge",
+            "free_pixels_relabelled": 631
+          },
+          {
+            "cue": "bounded dark rail-edge recovery",
+            "free_pixels_relabelled": 794
+          },
+          {
+            "cue": "class 1 small-gap closing",
+            "free_pixels_relabelled": 664
+          },
+          {
+            "cue": "class 2 small-gap closing",
+            "free_pixels_relabelled": 30
+          }
+        ],
+        "ground_truth_classes_used": false,
+        "manual_repair_polygons_used": false
+      },
+      "grid": {
+        "photo_frame_file": "ENV3_occupancy_photo_frame.npy",
+        "planning_frame_file": "ENV3_occupancy_planning_frame.npy",
+        "shape_rc": [
+          60,
+          60
+        ],
+        "dtype": "uint8",
+        "cell_meanings": {
+          "0": "free",
+          "1": "occupied",
+          "255": "unknown_nontraversable"
+        },
+        "nominal_resolution_m_per_cell": 0.05,
+        "metric_scale_measured": false,
+        "array_origin": "top-left",
+        "row_direction": "down",
+        "column_direction": "right",
+        "nominal_xy_origin": "bottom-left of the selected grid frame",
+        "nominal_xy_axes": "x right, y up; not registered to SLAM or robot odometry",
+        "cell_center_formula": "x=(col+0.5)*0.05; y=(60-row-0.5)*0.05",
+        "planning_rotation_ccw_quarter_turns": 1,
+        "robot_footprint_included": false,
+        "map_margin_cells": 0,
+        "dynamic_obstacle_updates_implemented": false
+      },
+      "processing_seconds": 1.2251731890000883,
+      "processing_finished_utc": "2026-11-07T19:58:56.447461+00:00"
+    }
+  ],
+  "execution_ready": false,
+  "scope": "offline perception and optional semantic grid export",
+  "model_load_seconds": 0.10850969700004498,
+  "checkpoint": {
+    "epoch": 6,
+    "num_classes": 3,
+    "class_weights": [
+      1.0,
+      1.0,
+      4.0
+    ],
+    "input_size": 640,
+    "experiment": "ERFNet matched continuation control",
+    "parent_checkpoint_sha256": "eaea13794a3e7deb0d1e73f99d854fd3ce5814f8e1cb4621a3fdc82c7f1c611c",
+    "phone_val_miou": 0.85052938839819,
+    "checkpoint_sha256": "7f24d4e0b1221fcda849636567341cb3c2fdfd5835dc323238d7df7c48f8303f"
+  },
+  "threads": 2,
+  "wall_seconds": 4.170288925000023,
+  "finished_utc": "2026-11-07T19:58:56.448476+00:00"
+}

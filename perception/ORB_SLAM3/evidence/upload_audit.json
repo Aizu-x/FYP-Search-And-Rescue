@@ -1,0 +1,107 @@
+[
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/include/System.h",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/src/System.cc",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/Examples/Monocular/mono_tum.cc",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/Examples/Monocular/Tello_ENV1_provisional.yaml",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/CMakeLists.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/build.sh",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Source_Config_Vocabulary.zip",
+    "path": "ORB_SLAM3/Vocabulary/ORBvoc.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Video1_Frames.zip",
+    "path": "datasets/ENV1/video1_first20s/rgb.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "ORB_Video2_Frames.zip",
+    "path": "datasets/ENV1/video2_first20s/rgb.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video1_3D_export/KeyFrameTrajectory.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video1_3D_export/MapPoints.xyz",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video1_3D_export/run.log",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_3D_export/KeyFrameTrajectory.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_3D_export/MapPoints.xyz",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_3D_export/run.log",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_shutdown_fixed/KeyFrameTrajectory.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_shutdown_fixed/MapPoints.xyz",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_shutdown_fixed/run.log",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_stability_test/KeyFrameTrajectory.txt",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_stability_test/MapPoints.xyz",
+    "matches_manifest": true
+  },
+  {
+    "archive": "results(1).zip",
+    "path": "results/ENV1/video2_stability_test/run.log",
+    "matches_manifest": true
+  }
+]

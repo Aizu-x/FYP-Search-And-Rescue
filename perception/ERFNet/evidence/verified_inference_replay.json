@@ -1,0 +1,208 @@
+{
+  "checkpoint": {
+    "epoch": 6,
+    "num_classes": 3,
+    "class_weights": [
+      1.0,
+      1.0,
+      4.0
+    ],
+    "input_size": 640,
+    "experiment": "ERFNet matched continuation control",
+    "parent_checkpoint_sha256": "eaea13794a3e7deb0d1e73f99d854fd3ce5814f8e1cb4621a3fdc82c7f1c611c",
+    "phone_val_miou": 0.85052938839819,
+    "checkpoint_sha256": "7f24d4e0b1221fcda849636567341cb3c2fdfd5835dc323238d7df7c48f8303f"
+  },
+  "method": "ERFNet plus automatic appearance-guided semantic refinement",
+  "refinement_settings": {
+    "yellow_hue_min": 20,
+    "yellow_hue_max": 42,
+    "yellow_saturation_min": 80,
+    "yellow_value_min": 85,
+    "pink_hue_min": 140,
+    "pink_hue_max": 179,
+    "pink_saturation_min": 65,
+    "pink_value_min": 55,
+    "blue_hue_min": 85,
+    "blue_hue_max": 135,
+    "object_saturation_min": 75,
+    "object_value_min": 70,
+    "component_min_area_at_800": 40,
+    "seed_min_pixels_at_800": 3,
+    "rail_seed_probability": 0.25,
+    "obstacle_seed_probability": 0.35,
+    "closing_kernel_at_800": 3,
+    "dark_rail_bridge_length_at_800": 31,
+    "dark_rail_saturation_max": 100,
+    "dark_rail_value_max": 110,
+    "dark_rail_probability_min": 0.05,
+    "dark_rail_growth_radius_at_800": 5,
+    "blue_seed_probability": 0.35,
+    "blue_component_max_area_at_800": 6000,
+    "blue_component_max_aspect": 4.0
+  },
+  "annotation_assisted_roi": true,
+  "manual_interior_labels_used": false,
+  "execution_ready": false,
+  "environments": [
+    {
+      "environment": "ENV1",
+      "label_sha256": "3b57b47b5298ba90c854a2030d4ccbb85026a0b23cc99757b91b1591f14adfbc",
+      "planning_grid_sha256": "ea0dbc36ebc5d23da290768596d44e474b5272f23c4dd8aa5d6cad7364e7eaba",
+      "model_forward_and_softmax_seconds": 0.5772808300002907,
+      "refinement_seconds": 0.05405181800006176,
+      "operations": [
+        {
+          "cue": "yellow rail",
+          "accepted_components": 2,
+          "free_pixels_relabelled": 5246
+        },
+        {
+          "cue": "pink rail panel",
+          "accepted_components": 1,
+          "free_pixels_relabelled": 244
+        },
+        {
+          "cue": "blue object",
+          "accepted_components": 2,
+          "free_pixels_relabelled": 778
+        },
+        {
+          "cue": "red object",
+          "accepted_components": 1,
+          "free_pixels_relabelled": 74
+        },
+        {
+          "cue": "image-supported short dark-rail bridge",
+          "free_pixels_relabelled": 1483
+        },
+        {
+          "cue": "bounded dark rail-edge recovery",
+          "free_pixels_relabelled": 916
+        },
+        {
+          "cue": "class 1 small-gap closing",
+          "free_pixels_relabelled": 962
+        },
+        {
+          "cue": "class 2 small-gap closing",
+          "free_pixels_relabelled": 1
+        }
+      ],
+      "grid_shape": [
+        60,
+        60
+      ],
+      "nominal_resolution_m": 0.05,
+      "map_margin_cells": 0,
+      "metric_scale_measured": false,
+      "planning_rotation_ccw_quarter_turns": 0
+    },
+    {
+      "environment": "ENV2",
+      "label_sha256": "ce58009869e23e1a241e7f5a447f78e2aa9a3df1996c695efa7d6956f9d3561a",
+      "planning_grid_sha256": "ef8393fa1da4b7828f155dc27bb327e2468e87ea00a2f8e66aa2fff4e8dbee31",
+      "model_forward_and_softmax_seconds": 0.4412051489998703,
+      "refinement_seconds": 0.05599934599968037,
+      "operations": [
+        {
+          "cue": "yellow rail",
+          "accepted_components": 1,
+          "free_pixels_relabelled": 7793
+        },
+        {
+          "cue": "pink rail panel",
+          "accepted_components": 2,
+          "free_pixels_relabelled": 2326
+        },
+        {
+          "cue": "blue object",
+          "accepted_components": 3,
+          "free_pixels_relabelled": 381
+        },
+        {
+          "cue": "red object",
+          "accepted_components": 3,
+          "free_pixels_relabelled": 128
+        },
+        {
+          "cue": "image-supported short dark-rail bridge",
+          "free_pixels_relabelled": 1092
+        },
+        {
+          "cue": "bounded dark rail-edge recovery",
+          "free_pixels_relabelled": 573
+        },
+        {
+          "cue": "class 1 small-gap closing",
+          "free_pixels_relabelled": 656
+        },
+        {
+          "cue": "class 2 small-gap closing",
+          "free_pixels_relabelled": 34
+        }
+      ],
+      "grid_shape": [
+        60,
+        60
+      ],
+      "nominal_resolution_m": 0.05,
+      "map_margin_cells": 0,
+      "metric_scale_measured": false,
+      "planning_rotation_ccw_quarter_turns": -1
+    },
+    {
+      "environment": "ENV3",
+      "label_sha256": "7f0376050a279977d22b39c3b8bfdd13c2e4753ad197dad4597735b09c7d2aed",
+      "planning_grid_sha256": "55b9a5e8e0784a0743432d86cfd0f45a94e8bcd4d42abccbada9104e5adb1457",
+      "model_forward_and_softmax_seconds": 0.5538903840001694,
+      "refinement_seconds": 0.05025988000033976,
+      "operations": [
+        {
+          "cue": "yellow rail",
+          "accepted_components": 1,
+          "free_pixels_relabelled": 1824
+        },
+        {
+          "cue": "pink rail panel",
+          "accepted_components": 2,
+          "free_pixels_relabelled": 864
+        },
+        {
+          "cue": "blue object",
+          "accepted_components": 2,
+          "free_pixels_relabelled": 272
+        },
+        {
+          "cue": "red object",
+          "accepted_components": 3,
+          "free_pixels_relabelled": 97
+        },
+        {
+          "cue": "image-supported short dark-rail bridge",
+          "free_pixels_relabelled": 631
+        },
+        {
+          "cue": "bounded dark rail-edge recovery",
+          "free_pixels_relabelled": 794
+        },
+        {
+          "cue": "class 1 small-gap closing",
+          "free_pixels_relabelled": 664
+        },
+        {
+          "cue": "class 2 small-gap closing",
+          "free_pixels_relabelled": 30
+        }
+      ],
+      "grid_shape": [
+        60,
+        60
+      ],
+      "nominal_resolution_m": 0.05,
+      "map_margin_cells": 0,
+      "metric_scale_measured": false,
+      "planning_rotation_ccw_quarter_turns": 1
+    }
+  ]
+}

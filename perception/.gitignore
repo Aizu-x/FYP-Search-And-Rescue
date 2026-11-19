@@ -1,0 +1,6 @@
+# Files created when running the examples.
+__pycache__/
+.venv/
+/runs/
+/ORB_SLAM3/source/ORB_SLAM3/Vocabulary/ORBvoc.txt
+/ORB_SLAM3/datasets/ENV1/*/rgb/*.png

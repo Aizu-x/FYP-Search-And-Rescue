@@ -1,0 +1,88 @@
+{
+  "grid_shape": [
+    60,
+    60
+  ],
+  "nominal_resolution_m": 0.05,
+  "metric_scale_measured": false,
+  "map_margin_cells": 0,
+  "annotation_assisted_roi": true,
+  "environments": [
+    {
+      "environment": "ENV1",
+      "source_photo": "source_photographs/ENV1__IMG_3242_result.jpg",
+      "topdown_photo": "topdown_photographs/ENV1_topdown.jpg",
+      "valid_roi": "valid_roi/ENV1_valid.png",
+      "homography_original_to_800": [
+        [
+          1.0161439733366504,
+          0.6578461110503182,
+          -1663.0918520174453
+        ],
+        [
+          -0.030057688933944855,
+          1.8890527057446578,
+          -1270.221795470571
+        ],
+        [
+          3.069269894945294e-05,
+          0.0013388565211413517,
+          1.0
+        ]
+      ],
+      "input_rotation_ccw_quarter_turns": 0,
+      "planning_rotation_ccw_quarter_turns": 0
+    },
+    {
+      "environment": "ENV2",
+      "source_photo": "source_photographs/ENV2__IMG_3266_result.jpg",
+      "topdown_photo": "topdown_photographs/ENV2_topdown.jpg",
+      "valid_roi": "valid_roi/ENV2_valid.png",
+      "homography_original_to_800": [
+        [
+          0.6651706237381222,
+          0.3026454834662109,
+          -895.878107689763
+        ],
+        [
+          0.019816472046496246,
+          1.2195076290267008,
+          -702.3447218711434
+        ],
+        [
+          1.1723976501201425e-05,
+          0.0007842906968021711,
+          1.0
+        ]
+      ],
+      "input_rotation_ccw_quarter_turns": 0,
+      "planning_rotation_ccw_quarter_turns": -1
+    },
+    {
+      "environment": "ENV3",
+      "source_photo": "source_photographs/ENV3__IMG_3290_result.jpg",
+      "topdown_photo": "topdown_photographs/ENV3_topdown.jpg",
+      "valid_roi": "valid_roi/ENV3_valid.png",
+      "homography_original_to_800": [
+        [
+          0.17343628261699712,
+          0.003707402169712829,
+          -97.00035459827346
+        ],
+        [
+          -0.11225305990176503,
+          0.2065740200213679,
+          25.25421646368325
+        ],
+        [
+          -0.00025404446506153706,
+          9.29018608871856e-06,
+          1.0
+        ]
+      ],
+      "input_rotation_ccw_quarter_turns": 1,
+      "planning_rotation_ccw_quarter_turns": 1
+    }
+  ],
+  "map_margin_note": "One-cell hard padding was tested but rejected because it blocked the unchanged example start/goal poses."
+}
