@@ -8,10 +8,10 @@
 
 <table>
   <tr>
-    <td align="center" width="190"><img src="docs/images/team/abbas.png" width="120" height="120" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>A* algorithm · Drone · App</sub></td>
-    <td align="center" width="190"><img src="docs/images/team/sara.png" width="120" height="120" alt="Sara Salman"><br><b>Sara Salman</b><br><sub>YOLOv5 · ERFNet · ORB-SLAM3</sub></td>
-    <td align="center" width="190"><img src="docs/images/team/haneen.png" width="120" height="120" alt="Haneen Albadry"><br><b>Haneen Albadry</b><br><sub>DAG scheduler</sub></td>
-    <td align="center" width="190"><img src="docs/images/team/haya.png" width="120" height="120" alt="Haya Haif"><br><b>Haya Haif</b><br><sub>Kahn's algorithm</sub></td>
+    <td align="center" valign="top" width="190"><img src="docs/images/team/abbas.png" width="120" height="120" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>A* algorithm · Drone · App</sub></td>
+    <td align="center" valign="top" width="190"><img src="docs/images/team/sara.png" width="120" height="120" alt="Sara Salman"><br><b>Sara Salman</b><br><sub>YOLOv5 · ERFNet<br>ORB-SLAM3</sub></td>
+    <td align="center" valign="top" width="190"><img src="docs/images/team/haneen.png" width="120" height="120" alt="Haneen Albadry"><br><b>Haneen Albadry</b><br><sub>DAG scheduler</sub></td>
+    <td align="center" valign="top" width="190"><img src="docs/images/team/haya.png" width="120" height="120" alt="Haya Haif"><br><b>Haya Haif</b><br><sub>Kahn's algorithm</sub></td>
   </tr>
 </table>
 
@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Aizu-x/FYP-Search-And-Rescue/releases/latest"><img src="https://img.shields.io/badge/%E2%AC%87%20Download-Windows%20package%20(no%20install)-2563eb?style=for-the-badge" alt="Download the Windows package (no install needed)"></a>
+  <a href="https://github.com/Aizu-x/FYP-Search-And-Rescue/releases/latest"><img src="https://img.shields.io/badge/Download-Windows%20package%20(no%20install)-2563eb?style=for-the-badge" alt="Download the Windows package (no install needed)"></a>
 </p>
 
 <p align="center">
