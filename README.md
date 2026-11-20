@@ -354,3 +354,7 @@ The reference folder `perception/` builds on [ORB-SLAM3](https://github.com/UZ-S
 [ERFNet](https://github.com/Eromera/erfnet_pytorch) by Eduardo Romera et al., whose code is licensed CC BY-NC 4.0
 (non-commercial use).
 Robot platform: HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble). Drone: Tello (Ryze / DJI), Tello SDK 1.3.
+
+**Licence:** the project's own code is released under the [MIT License](LICENSE). Third-party code and models keep
+their own licences: ORB-SLAM3 (GPL-3.0), ERFNet (CC BY-NC 4.0, non-commercial) and the Ultralytics YOLOv5 framework
+the detector was trained with (AGPL-3.0). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
