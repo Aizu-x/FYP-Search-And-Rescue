@@ -345,16 +345,84 @@ Details: **[Testing](docs/TESTING.md)** · How each part works: **[How it works]
 
 ## 🙏 Credits
 
-The team is shown at the top of this page.
-The YOLOv5n red / green block detector in `third_party/wro_yolo/` was trained by Sara Salman.
-The DAG scheduler, its adapters and the ORB-SLAM3 handoff in `DAG_scheduler/` come from the team's
-combined-integration package; ORB-SLAM3 and its bundled libraries keep their own licences
-(see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
-The reference folder `perception/` builds on [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) (GPL-3.0) and on
-[ERFNet](https://github.com/Eromera/erfnet_pytorch) by Eduardo Romera et al., whose code is licensed CC BY-NC 4.0
-(non-commercial use).
-Robot platform: HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble). Drone: Tello (Ryze / DJI), Tello SDK 1.3.
+This is the final-year project of four Computer Engineering students at the CSE Department of the
+Kuwait College of Science and Technology, supervised by **Dr. Ismaeel Al Ridhawi**.
 
-**Licence:** the project's own code is released under the [MIT License](LICENSE). Third-party code and models keep
-their own licences: ORB-SLAM3 (GPL-3.0), ERFNet (CC BY-NC 4.0, non-commercial) and the Ultralytics YOLOv5 framework
-the detector was trained with (AGPL-3.0). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+### 👥 Who did what
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="160"><img src="docs/images/team/abbas.png" width="90" height="90" alt="Abbas Modhaffar"><br><b>Abbas Modhaffar</b><br><sub>UGV / UAV navigation<br>A* path planning<br>Console app</sub></td>
+    <td valign="top">
+      <ul>
+        <li><b>A* path planner</b> (<code>ugv_planner/</code>, <code>ugv_nav/fast_planner.py</code>): an 8-connected grid search that grows the walls by the robot's real size, prefers routes with clearance and smooths the result. It plans a route in about 3 ms.</li>
+        <li><b>UGV navigation</b> (<code>ugv_nav/</code>, <code>ugv_bridge/</code>): the navigator on the edge laptop, the HMAC-signed Wi-Fi link to the MentorPi-M1, LiDAR room tracking and the safety stops.</li>
+        <li><b>UAV section</b> (<code>uav/</code>): Tello connection, live video, keyboard flight and planned flight routes.</li>
+        <li><b>Console app</b> (<code>ugv_console/</code>, <code>FYP_SRM.exe</code>): one web console for the drone, the robot, the survivor search mission and the team simulator with 2 to 4 robots, plus the Windows release package.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="160"><img src="docs/images/team/sara.png" width="90" height="90" alt="Sara Salman"><br><b>Sara Salman</b><br><sub>Team Leader<br>YOLOv5 · ERFNet<br>ORB-SLAM3</sub></td>
+    <td valign="top">
+      <ul>
+        <li><b>Team leader</b> of the project.</li>
+        <li><b>YOLOv5n detector</b> (<code>third_party/wro_yolo/</code>): trained the two-class model that finds survivors (green blocks) and obstacles (red blocks). On real hold-out photos: precision 0.991, recall 1.000, about 31 ms per image on a laptop CPU.</li>
+        <li><b>ERFNet segmentation</b> (<code>perception/ERFNet/</code>): labels drone photos of the arenas as free floor, wall or obstacle and turns them into 60 × 60 occupancy grids. A refinement step raised the arena-map mIoU from 80.8 % to 85.6 %.</li>
+        <li><b>ORB-SLAM3 mapping</b> (<code>perception/ORB_SLAM3/</code>): sparse 3D maps and keyframe camera paths from two drone recordings of the first arena.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="160"><img src="docs/images/team/haneen.png" width="90" height="90" alt="Haneen Albadry"><br><b>Haneen Albadry</b><br><sub>DAG scheduler<br>Kahn's algorithm</sub></td>
+    <td valign="top">
+      <ul>
+        <li><b>DAG scheduler</b> (<code>DAG_scheduler/</code>): models a mission as a graph of dependent tasks (map, plan, detect, drive). A task starts only when everything it depends on has finished and returned valid results.</li>
+        <li><b>Kahn's algorithm</b> in the scheduler, together with Haya Alhajraf: works out which tasks are ready and refuses a graph with circular dependencies.</li>
+        <li>Time limits, per-task logs and JSON reports, a safe stop, no automatic retry of any movement, and adapters that bring ORB-SLAM3, A* and YOLOv5n into one combined run.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="160"><img src="docs/images/team/haya.png" width="90" height="90" alt="Haya Alhajraf"><br><b>Haya Alhajraf</b><br><sub>Kahn's algorithm<br>Video editor</sub></td>
+    <td valign="top">
+      <ul>
+        <li><b>Kahn's algorithm</b>, together with Haneen Albadry: the topological ordering at the heart of the scheduler. It releases tasks in a safe order and stops a mission from starting if its graph contains a cycle. The same ordering decides which robot drives first in the team simulator.</li>
+        <li><b>Video editor</b>: edited the project's videos.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+### 🎓 Acknowledgements
+
+- **Supervisor:** Dr. Ismaeel Al Ridhawi, CSE Department, Kuwait College of Science and Technology, for his guidance and review.
+- **Hardware:** HiWonder MentorPi-M1 (Raspberry Pi 5, ROS 2 Humble) and the Ryze / DJI Tello drone with Tello SDK 1.3.
+- **Open-source work this project builds on:** [ORB-SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3) (UZ-SLAMLab),
+  [ERFNet](https://github.com/Eromera/erfnet_pytorch) (Eduardo Romera et al.), [YOLOv5](https://github.com/ultralytics/yolov5)
+  (Ultralytics), and ROS 2, PyTorch, ONNX Runtime, OpenCV and NumPy.
+
+### 📜 Licences
+
+The project's own code is released under the [MIT License](LICENSE). Parts made by others keep their own licences:
+
+| Part | Where | Licence |
+|---|---|---|
+| Our code: planner, navigation, UAV section, console app, team simulator, DAG scheduler | everything not listed below | [![MIT](https://img.shields.io/badge/licence-MIT-2ea44f?style=flat-square)](LICENSE) |
+| ORB-SLAM3 reference copy (its bundled libraries keep their own notices) | `perception/ORB_SLAM3/` | ![GPL-3.0](https://img.shields.io/badge/licence-GPL--3.0-1f6feb?style=flat-square) |
+| ERFNet model code (non-commercial use only) | `perception/ERFNet/` | ![CC BY-NC 4.0](https://img.shields.io/badge/licence-CC%20BY--NC%204.0-e36209?style=flat-square) |
+| YOLOv5n model files, trained with Ultralytics YOLOv5 (not covered by MIT) | `third_party/wro_yolo/models/` | ![AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-cf222e?style=flat-square) |
+
+Sources and details: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The `perception/` folder is left out of the
+Download ZIP and the Windows release package.
+
+### 📖 References
+
+1. P. E. Hart, N. J. Nilsson and B. Raphael, "A Formal Basis for the Heuristic Determination of Minimum Cost Paths,"
+   *IEEE Transactions on Systems Science and Cybernetics*, 4(2), 1968.
+2. A. B. Kahn, "Topological Sorting of Large Networks," *Communications of the ACM*, 5(11), 1962.
+3. E. Romera, J. M. Álvarez, L. M. Bergasa and R. Arroyo, "ERFNet: Efficient Residual Factorized ConvNet for Real-Time
+   Semantic Segmentation," *IEEE Transactions on Intelligent Transportation Systems*, 19(1), 2018.
+4. C. Campos, R. Elvira, J. J. Gómez Rodríguez, J. M. M. Montiel and J. D. Tardós, "ORB-SLAM3: An Accurate Open-Source
+   Library for Visual, Visual-Inertial and Multimap SLAM," *IEEE Transactions on Robotics*, 37(6), 2021.
+5. G. Jocher et al., "YOLOv5 by Ultralytics," 2020. https://github.com/ultralytics/yolov5
